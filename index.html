@@ -1,2370 +1,1271 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#FAF6EE" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <title>Lumina - 学習習慣化×2.5D箱庭開拓RPG</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina - 学習習慣化 × 街づくりRPG</title>
+    <style>
+        :root {
+            --bg-color: #f5f2eb;
+            --card-bg: #ffffff;
+            --panel-bg: #faf8f3;
+            --text-color: #2c2825;
+            --sub-text: #756e65;
+            --accent-wood: #8c6239;
+            --accent-wood-hover: #734f2c;
+            --accent-green: #4e7356;
+            --accent-green-hover: #3d5c44;
+            --accent-gold: #d49b35;
+            --border-color: #e2dcd0;
+            --shadow: 0 6px 24px rgba(44, 40, 37, 0.07);
+            --sky-tint: rgba(255, 255, 255, 0);
+        }
 
-  <style>
-    /* ==========================================================================
-       [MODULE 1: CSS DESIGN SYSTEM & ANIMATIONS]
-       アイボリーホワイト＆温かなウッド調のCozy RPGテーマと動的レイヤー演出
-       ========================================================================== */
-    :root {
-      --bg-ivory: #FAF6EE;
-      --bg-parchment: #F3ECE0;
-      --wood-dark: #4A3525;
-      --wood-mid: #7C583E;
-      --wood-light: #C89F78;
-      --wood-border: #DECBB3;
-      --gold-glow: #F59E0B;
-      --leaf-green: #4D7C5D;
-      --blueprint-blue: #2B5B84;
-    }
+        body.theme-sunset {
+            --bg-color: #f3e6dc;
+            --card-bg: #fffaf6;
+            --panel-bg: #f9efe7;
+            --sky-tint: rgba(235, 130, 65, 0.18);
+        }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
+        body.theme-night {
+            --bg-color: #161822;
+            --card-bg: #202331;
+            --panel-bg: #282c3d;
+            --text-color: #efeae1;
+            --sub-text: #9fa3b5;
+            --accent-wood: #b88958;
+            --accent-wood-hover: #cfa06e;
+            --accent-green: #64946e;
+            --accent-green-hover: #78ab82;
+            --border-color: #353a4f;
+            --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+            --sky-tint: rgba(15, 22, 48, 0.38);
+        }
 
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-ivory);
-      color: var(--wood-dark);
-      font-family: 'Zen Maru Gothic', sans-serif;
-      overflow-x: hidden;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+        }
 
-    .font-serif-cozy {
-      font-family: 'Kiwi Maru', serif;
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    /* Cozy Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #EFE7DA;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #C8AD8D;
-      border-radius: 4px;
-    }
+        /* ヘッダー */
+        header {
+            width: 100%;
+            max-width: 960px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 12px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+        }
 
-    /* Wood & Ivory Cards */
-    .cozy-card {
-      background: linear-gradient(180deg, #FFFDF9 0%, #F7F1E5 100%);
-      border: 2px solid var(--wood-border);
-      box-shadow: 0 6px 20px -4px rgba(74, 53, 37, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      border-radius: 1.25rem;
-    }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
 
-    .wood-header-pill {
-      background: linear-gradient(135deg, #6B4C35 0%, #4A3525 100%);
-      color: #FFFDF9;
-      border: 1.5px solid #9A7456;
-      box-shadow: 0 3px 10px rgba(74, 53, 37, 0.2);
-    }
+        .logo-emblem {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-wood));
+            color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            box-shadow: 0 2px 8px rgba(78, 115, 86, 0.3);
+        }
 
-    .wood-btn-primary {
-      background: linear-gradient(180deg, #689F77 0%, #487A56 100%);
-      color: #FFFFFF;
-      border: 2px solid #88BD96;
-      box-shadow: 0 4px 12px rgba(72, 122, 86, 0.3), inset 0 1px 1px rgba(255,255,255,0.4);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .wood-btn-primary:active {
-      transform: translateY(2px) scale(0.98);
-    }
+        .logo-title h1 {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
 
-    .wood-btn-amber {
-      background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
-      color: #FFFFFF;
-      border: 2px solid #FCD34D;
-      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35), inset 0 1px 1px rgba(255,255,255,0.45);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .wood-btn-amber:active {
-      transform: translateY(2px) scale(0.98);
-    }
+        .logo-title span {
+            font-size: 11px;
+            color: var(--sub-text);
+            display: block;
+        }
 
-    /* 2.5D Scrollable Map Container */
-    .map-viewport {
-      position: relative;
-      width: 100%;
-      height: 460px;
-      overflow: auto;
-      border-radius: 1.25rem;
-      border: 3px solid #D5C0A5;
-      box-shadow: inset 0 0 24px rgba(74, 53, 37, 0.25), 0 8px 24px rgba(74, 53, 37, 0.12);
-      background: #D9E5D6;
-      cursor: grab;
-      touch-action: pan-x pan-y;
-    }
-    .map-viewport:active {
-      cursor: grabbing;
-    }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-    /* Map Canvas Fixed 16:9 World Space */
-    .map-world {
-      position: relative;
-      width: 1120px;
-      height: 630px;
-      transform-origin: top left;
-      overflow: hidden;
-      background-color: #DFECE2;
-    }
+        .stat-pill {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-    /* Sunbeam & Cloud Layer Animations */
-    @keyframes cloudDrift {
-      0% { transform: translateX(-8%) translateY(0px); opacity: 0.35; }
-      50% { transform: translateX(8%) translateY(-8px); opacity: 0.5; }
-      100% { transform: translateX(-8%) translateY(0px); opacity: 0.35; }
-    }
-    .sunbeam-overlay {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 45%, rgba(255, 250, 225, 0.18) 0%, transparent 65%),
-        linear-gradient(125deg, rgba(255,252,235,0.22) 0%, transparent 35%, rgba(255,252,235,0.16) 55%, transparent 80%);
-      pointer-events: none;
-      z-index: 4;
-      mix-blend-mode: soft-light;
-    }
-    .cloud-shadow-layer {
-      position: absolute;
-      inset: -60px;
-      background:
-        radial-gradient(ellipse 260px 110px at 22% 30%, rgba(255,255,255,0.38) 0%, transparent 70%),
-        radial-gradient(ellipse 320px 130px at 78% 22%, rgba(255,255,255,0.32) 0%, transparent 70%),
-        radial-gradient(ellipse 290px 120px at 82% 78%, rgba(255,255,255,0.35) 0%, transparent 70%);
-      animation: cloudDrift 26s ease-in-out infinite;
-      pointer-events: none;
-      z-index: 5;
-    }
+        .theme-switcher {
+            display: flex;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2px;
+        }
 
-    /* Water Shimmer Effect on Map */
-    @keyframes waterRipple {
-      0%, 100% { opacity: 0.25; transform: scale(0.96); }
-      50% { opacity: 0.7; transform: scale(1.04); }
-    }
-    .water-shimmer {
-      animation: waterRipple 3.6s ease-in-out infinite;
-      pointer-events: none;
-    }
+        .theme-btn {
+            border: none;
+            background: transparent;
+            padding: 4px 9px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0.6;
+        }
 
-    /* Creation Laser Line (段階的ビルドアップの境界レーザー) */
-    @keyframes laserPulse {
-      0%, 100% {
-        box-shadow: 0 0 10px 2px rgba(251, 191, 36, 0.95), 0 0 22px 5px rgba(52, 211, 153, 0.65);
-        filter: brightness(1.05);
-      }
-      50% {
-        box-shadow: 0 0 16px 4px rgba(254, 240, 138, 1), 0 0 32px 9px rgba(16, 185, 129, 0.85);
-        filter: brightness(1.25);
-      }
-    }
-    .creation-laser-line {
-      height: 4px;
-      background: linear-gradient(90deg, transparent 2%, #FDE68A 18%, #FFFFFF 50%, #6EE7B7 82%, transparent 98%);
-      border-radius: 999px;
-      animation: laserPulse 2s ease-in-out infinite;
-      z-index: 15;
-    }
+        .theme-btn.active {
+            background: var(--card-bg);
+            opacity: 1;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+        }
 
-    /* Architectural Blueprint & Scaffolding Overlay Texture */
-    .blueprint-shroud {
-      background-color: rgba(235, 224, 204, 0.88);
-      background-image:
-        linear-gradient(rgba(59, 130, 246, 0.16) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(59, 130, 246, 0.16) 1px, transparent 1px),
-        radial-gradient(circle at 50% 50%, rgba(43, 91, 132, 0.14) 0%, rgba(74, 53, 37, 0.22) 100%);
-      background-size: 14px 14px, 14px 14px, 100% 100%;
-      backdrop-filter: sepia(0.55) blur(2.5px) brightness(0.95);
-      border: 1.5px dashed rgba(217, 119, 6, 0.65);
-      box-shadow: inset 0 0 18px rgba(74, 53, 37, 0.25);
-      transition: clip-path 0.7s cubic-bezier(0.22, 1, 0.36, 1), height 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    }
+        /* メインコンテナ */
+        main {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-    /* Floating Light Particles */
-    @keyframes floatUpSparkle {
-      0% { transform: translateY(8px) scale(0.6); opacity: 0; }
-      35% { opacity: 0.95; }
-      100% { transform: translateY(-28px) scale(1.15); opacity: 0; }
-    }
-    .sparkle-particle {
-      position: absolute;
-      pointer-events: none;
-      animation: floatUpSparkle 2.8s ease-out infinite;
-    }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
 
-    /* Hammer / Construction Subtle Bobbing */
-    @keyframes constructWork {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-3px) rotate(-6deg); }
-    }
-    .work-badge-anim {
-      animation: constructWork 1.8s ease-in-out infinite;
-    }
+        /* 2.5D ワールドマップエリア */
+        .map-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
 
-    /* Spot Marker Hover / Active */
-    .spot-node {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 12;
-    }
-    .spot-node:hover {
-      transform: translate(-50%, -52%) scale(1.04);
-      z-index: 25;
-    }
+        .map-title {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    /* Active Focus Breathing Aura */
-    @keyframes breatheAura {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4), 0 0 25px rgba(245, 158, 11, 0.25); }
-      50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0), 0 0 40px rgba(16, 185, 129, 0.45); }
-    }
-    .live-focus-frame {
-      animation: breatheAura 3.5s ease-in-out infinite;
-    }
-  </style>
+        .fog-status-badge {
+            font-size: 12px;
+            background: rgba(212, 155, 53, 0.15);
+            color: var(--accent-wood);
+            border: 1px solid rgba(212, 155, 53, 0.35);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .map-viewport {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #8fb379 0%, #6d9661 50%, #5b8254 100%);
+        }
+
+        .map-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .map-base {
+            background-image: url('map_base.jpg');
+            z-index: 1;
+        }
+
+        /* 施設ごとの完成レイヤー切り抜き合成 */
+        .facility-complete-mask {
+            position: absolute;
+            inset: 0;
+            background-image: url('map_complete.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 2;
+            transition: opacity 0.6s ease, clip-path 0.6s ease;
+        }
+
+        /* 時間帯フィルター */
+        .map-sky-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--sky-tint);
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        /* マップ上の施設ピン＆建設中アニメーション */
+        .map-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .node-scaffold {
+            width: 44px;
+            height: 36px;
+            border: 2px dashed #e6b86a;
+            background: rgba(140, 98, 57, 0.35);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            animation: pulseBuild 2.2s infinite ease-in-out;
+            backdrop-filter: blur(1px);
+        }
+
+        @keyframes pulseBuild {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+            50% { transform: scale(1.06); box-shadow: 0 0 14px rgba(255, 215, 0, 0.65); }
+        }
+
+        .node-label {
+            margin-top: 4px;
+            background: rgba(34, 30, 27, 0.85);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .map-node:hover .node-label {
+            transform: scale(1.08);
+            background: var(--accent-wood);
+        }
+
+        .node-label.selected {
+            background: var(--accent-green);
+            border-color: #a8e6b4;
+        }
+
+        /* 未開拓の雲（霧）レイヤー */
+        .fog-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4;
+            overflow: hidden;
+        }
+
+        .cloud-bank {
+            position: absolute;
+            background: radial-gradient(circle, rgba(250,248,244,0.95) 35%, rgba(235,232,224,0.75) 65%, rgba(255,255,255,0) 75%);
+            border-radius: 50%;
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            animation: driftCloud 14s infinite alternate ease-in-out;
+        }
+
+        @keyframes driftCloud {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(12px, -6px) scale(1.03); }
+        }
+
+        /* キラキラ光粒子 */
+        .magic-sparkle {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: #ffe066;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffb700;
+            pointer-events: none;
+            z-index: 7;
+            animation: sparkleFloat 2.4s infinite ease-out;
+        }
+
+        @keyframes sparkleFloat {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            40% { opacity: 1; }
+            100% { transform: translateY(-28px) scale(1.2); opacity: 0; }
+        }
+
+        /* タブナビゲーション */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 18px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--sub-text);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-wood);
+            color: #fff;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* 集中・学習サイクルパネル */
+        .focus-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .focus-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .facility-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .facility-select-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 12px;
+            background: var(--border-color);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-wood), var(--accent-green));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .stage-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .stage-pill {
+            padding: 6px 4px;
+            border-radius: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--sub-text);
+            font-weight: 600;
+        }
+
+        .stage-pill.done {
+            background: rgba(78, 115, 86, 0.15);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+
+        /* タイマー操作エリア */
+        .timer-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--sub-text);
+            margin-bottom: 5px;
+        }
+
+        .duration-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+
+        .dur-btn {
+            padding: 9px 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1.2;
+        }
+
+        .dur-btn.selected {
+            background: var(--accent-wood);
+            color: #fff;
+            border-color: var(--accent-wood);
+        }
+
+        .ignition-box {
+            background: rgba(212, 155, 53, 0.12);
+            border: 1px solid rgba(212, 155, 53, 0.35);
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .timer-display {
+            font-size: 40px;
+            font-weight: 800;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 2px;
+            padding: 8px 0;
+            color: var(--accent-wood);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent-green);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(78, 115, 86, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-green-hover);
+        }
+
+        .btn-secondary {
+            padding: 13px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* 年代記・ログ */
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .log-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--sub-text);
+            margin-bottom: 6px;
+        }
+
+        .log-goal {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .log-result {
+            font-size: 13px;
+            color: var(--text-color);
+            background: var(--card-bg);
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 開拓パス・アップデート予告 */
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
+        }
+
+        .roadmap-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            position: relative;
+        }
+
+        .badge-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-active { background: rgba(78, 115, 86, 0.15); color: var(--accent-green); }
+        .badge-coming { background: rgba(140, 98, 57, 0.15); color: var(--accent-wood); }
+
+        /* 振り返りモーダル */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 100;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* 管理者スタジオ */
+        .admin-studio {
+            display: none;
+            border: 2px dashed var(--accent-wood);
+            background: rgba(140, 98, 57, 0.08);
+        }
+
+        .admin-studio.open {
+            display: block;
+        }
+
+        .admin-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .admin-btn {
+            padding: 7px 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent-wood);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body class="min-h-screen pb-24">
+<body>
 
-  <!-- ==========================================================================
-       [MODULE 2: TOP HEADER & GLOBAL STATUS BAR]
-       Luminaシンボル(🌱✨)・5回タップで管理者パネル起動・XP(✨)・コイン・環境音
-       ========================================================================== -->
-  <header class="sticky top-0 z-30 bg-[#FAF6EE]/95 backdrop-blur-md border-b-2 border-[#E2D4C0] px-3 py-2.5 shadow-sm">
-    <div class="max-w-xl mx-auto flex items-center justify-between gap-2">
-      <!-- Left: Lumina Logo (5-tap secret admin trigger) -->
-      <div id="luminaLogoBtn" onclick="handleLogoTap()" class="flex items-center gap-2 cursor-pointer select-none py-1 px-2 rounded-xl hover:bg-[#EFE6D5] transition" title="Lumina">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FDE68A] via-[#F59E0B] to-[#4D7C5D] flex items-center justify-center shadow-sm border border-[#FFF8E7]">
-          <span class="text-lg leading-none">🌱✨</span>
-        </div>
-        <div>
-          <div class="flex items-center gap-1">
-            <span class="font-serif-cozy font-bold text-lg tracking-wide text-[#4A3525]">Lumina</span>
-          </div>
-          <p class="text-[10px] text-[#8A6D53] -mt-0.5 font-medium">はじまりの開拓街</p>
-        </div>
-      </div>
-
-      <!-- Right: Status Pills & Ambient Sound Button -->
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <!-- Total Study / XP -->
-        <div class="bg-[#FFFDF9] border border-[#DECBB3] rounded-full px-2.5 py-1 flex items-center gap-1 shadow-xs">
-          <span class="text-xs">✨</span>
-          <span id="headerXpText" class="text-xs font-bold text-[#5A402C]">0</span>
-          <span class="text-[10px] text-[#8C7058]">XP</span>
-        </div>
-        <!-- Coins -->
-        <div class="bg-[#FFFDF9] border border-[#DECBB3] rounded-full px-2.5 py-1 flex items-center gap-1 shadow-xs">
-          <span class="text-xs">🪙</span>
-          <span id="headerCoinText" class="text-xs font-bold text-[#B45309]">0</span>
-        </div>
-        <!-- Ambient Sound (Ver 1.5 Preview Modal) -->
-        <button onclick="openComingSoonModal('ambient')" class="w-8 h-8 rounded-full bg-[#F2E9DA] border border-[#D8C3A8] flex items-center justify-center text-sm hover:bg-[#E6D8C3] transition" title="環境音">
-          🎧
-        </button>
-        <!-- Backup / Settings Modal Button -->
-        <button onclick="openSettingsModal()" class="w-8 h-8 rounded-full bg-[#F2E9DA] border border-[#D8C3A8] flex items-center justify-center text-sm hover:bg-[#E6D8C3] transition" title="設定・引継">
-          ⚙️
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Container -->
-  <main class="max-w-xl mx-auto px-3 pt-3 space-y-4">
-
-    <!-- ==========================================================================
-         [MODULE 3: TOP LIVE VISION & LONG-TERM GOAL BANNER]
-         街の創生ビジョン（ライブ）＆ 街全体の長期計画：叡智の大図書館（累計600分）
-         ========================================================================== -->
-    <section class="cozy-card p-3.5 relative overflow-hidden">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#EAE0D0]">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FCD34D] flex items-center gap-1">
-            <span class="w-2 h-2 rounded-full bg-[#F59E0B] animate-ping"></span>
-            街の創生ビジョン（ライブ）
-          </span>
-          <span id="liveTargetBadge" class="text-xs font-bold text-[#4A3525]">① 木漏れ日のカフェ</span>
-        </div>
-        <div class="text-[11px] text-[#7C583E] font-medium">
-          現在ターゲット進捗: <strong id="liveTargetPctText" class="text-[#D97706] text-xs">0%</strong>
-          （<span id="liveTargetMinText">0 / 100分</span>）
-        </div>
-      </div>
-
-      <!-- Mini Live Interactive Preview Bar & Long Term Project -->
-      <div class="mt-2.5 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-        <!-- Left: Live Building Preview Thumbnail with Real-time Shroud -->
-        <div class="sm:col-span-5 relative h-24 rounded-xl overflow-hidden border-2 border-[#D8C3A5] bg-[#E5EFE6] shadow-inner group cursor-pointer" onclick="switchTab('focus')">
-          <!-- Cropped Map / Architectural View -->
-          <div id="miniLiveArtwork" class="absolute inset-0 bg-cover bg-center transition-all duration-700"></div>
-          <!-- Unbuilt Top Shroud (Peels from bottom to top) -->
-          <div id="miniLiveShroud" class="absolute top-0 left-0 right-0 blueprint-shroud flex flex-col items-center justify-center overflow-hidden" style="height: 100%;">
-            <span class="text-[10px] font-bold text-[#4A3525] bg-[#FFFDF9]/85 px-2 py-0.5 rounded-full border border-[#C89F78] shadow-xs">
-              🔨 足場・設計図展開中
-            </span>
-          </div>
-          <!-- Creation Laser Boundary -->
-          <div id="miniLiveLaser" class="absolute left-0 right-0 creation-laser-line transition-all duration-700" style="bottom: 0%;"></div>
-          <div class="absolute bottom-1 right-1.5 bg-[#4A3525]/80 text-[#FFFDF9] text-[10px] px-2 py-0.5 rounded-md backdrop-blur-xs">
-            集中タブで拡大表示 ➔
-          </div>
-        </div>
-
-        <!-- Right: Long-term Goal & Active Target Selector -->
-        <div class="sm:col-span-7 space-y-2">
-          <div class="bg-[#F6EFE2] rounded-xl p-2.5 border border-[#E2D3BC]">
-            <div class="flex items-center justify-between text-[11px] font-bold text-[#5C4033] mb-1">
-              <span>🏛️ 街全体の長期計画：叡智の大図書館（累計600分）</span>
-              <span id="longTermGoalPct" class="text-[#B45309]">0%</span>
+    <header>
+        <div class="logo-area" id="logoTrigger" title="ロゴを5回連続タップで管理者スタジオ">
+            <div class="logo-emblem">✨</div>
+            <div class="logo-title">
+                <h1>Lumina</h1>
+                <span>学びが街と世界を拓くRPG</span>
             </div>
-            <div class="w-full h-2.5 bg-[#E2D5C1] rounded-full overflow-hidden p-0.5">
-              <div id="longTermGoalBar" class="h-full bg-gradient-to-r from-[#F59E0B] via-[#10B981] to-[#3B82F6] rounded-full transition-all duration-500" style="width: 0%;"></div>
+        </div>
+
+        <div class="header-right">
+            <div class="stat-pill">⭐ XP: <span id="headerXp">0</span></div>
+            <div class="stat-pill">⏱️ 累計: <span id="headerMins">0</span>分</div>
+            <div class="stat-pill">🏘️ 開拓度: <span id="headerTownPct">14</span>%</div>
+            <div class="theme-switcher">
+                <button class="theme-btn active" onclick="setTheme('day', this)" title="昼">☀️</button>
+                <button class="theme-btn" onclick="setTheme('sunset', this)" title="夕方">🌇</button>
+                <button class="theme-btn" onclick="setTheme('night', this)" title="夜">🌙</button>
             </div>
-            <div class="flex justify-between text-[10px] text-[#8A6D53] mt-1">
-              <span>街の累計学習: <strong id="totalStudyMinLabel">0分</strong> / 600分</span>
-              <span id="townRankLabel">開拓ランク: 🌱 芽吹きの村</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- はじまりの街 2.5Dマップ -->
+        <section class="card">
+            <div class="map-header-bar">
+                <div class="map-title">🗺️ はじまりの街：星雫の開拓地</div>
+                <div class="fog-status-badge" id="fogStatusText">未開拓の雲：外周エリアを覆っています（XPで解放）</div>
             </div>
-          </div>
 
-          <div class="flex items-center justify-between gap-2 text-xs">
-            <span class="text-[11px] text-[#7C583E] font-medium shrink-0">🔨 優先建築スポット:</span>
-            <select id="activeBuildingSelect" onchange="changeActiveBuilding(this.value)" class="flex-1 bg-[#FFFDF9] border border-[#D4BFA4] rounded-lg px-2 py-1 text-xs font-bold text-[#4A3525] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]">
-              <!-- Populated by JS -->
-            </select>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==========================================================================
-         [MODULE 4: TAB CONTENTS (1. 開拓マップ / 2. 集中タイマー / 3. 開拓パス / 4. 記録)]
-         ========================================================================== -->
-
-    <!-- ==================== TAB 1: 2.5D 開拓マップ ==================== -->
-    <div id="tab-map" class="space-y-3.5">
-      <!-- Map Control Bar -->
-      <div class="flex items-center justify-between px-1">
-        <div class="flex items-center gap-1.5">
-          <span class="text-sm font-bold text-[#4A3525]">🗺️ 2.5D箱庭開拓マップ</span>
-          <span class="text-[11px] text-[#8A6D53]">（指やマウスでスクロール・建物タップで詳細）</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <button onclick="centerMapOnActive()" class="text-[11px] bg-[#EFE6D5] hover:bg-[#E4D6BE] text-[#5C4033] font-bold px-2.5 py-1 rounded-lg border border-[#D4BFA4] transition">
-            🎯 建築中へ移動
-          </button>
-        </div>
-      </div>
-
-      <!-- 2.5D Scrollable Map Viewport -->
-      <div id="mapViewport" class="map-viewport">
-        <div id="mapWorld" class="map-world">
-          <!-- Layer 0: Base 2.5D Illustrated Village Map (Auto-loads ./map.jpg + Built-in Rich Fallback SVG) -->
-          <svg id="fallbackMapSvg" viewBox="0 0 1120 630" class="absolute inset-0 w-full h-full object-cover pointer-events-none">
-            <defs>
-              <radialGradient id="meadowGrad" cx="50%" cy="50%" r="60%">
-                <stop offset="0%" stop-color="#B8D89A" />
-                <stop offset="65%" stop-color="#87B37A" />
-                <stop offset="100%" stop-color="#6B9669" />
-              </radialGradient>
-              <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#93C5FD" />
-                <stop offset="50%" stop-color="#60A5FA" />
-                <stop offset="100%" stop-color="#3B82F6" />
-              </linearGradient>
-              <linearGradient id="pathGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#E7D4B5" />
-                <stop offset="100%" stop-color="#CBB08A" />
-              </linearGradient>
-            </defs>
-            <!-- Meadow Base -->
-            <rect width="1120" height="630" fill="url(#meadowGrad)" />
-            <!-- Rivers matching map.jpg layout -->
-            <path d="M 700,0 C 660,90 610,140 650,210 C 690,280 560,320 480,350 C 360,400 280,480 220,630" stroke="url(#riverGrad)" stroke-width="54" fill="none" stroke-linecap="round" />
-            <path d="M 420,0 C 400,110 310,160 280,250 C 240,340 160,360 190,460 C 220,540 380,580 540,630" stroke="url(#riverGrad)" stroke-width="48" fill="none" stroke-linecap="round" />
-            <!-- Central Cobblestone Plaza & Roads -->
-            <path d="M 320,310 L 560,320 L 740,280 M 560,320 L 450,190 M 560,320 L 700,180 M 560,320 L 820,390 M 560,320 L 560,460 M 560,320 L 230,550 M 740,280 L 980,130" stroke="url(#pathGrad)" stroke-width="34" fill="none" stroke-linecap="round" />
-            <circle cx="560" cy="318" r="78" fill="#DFCeb8" stroke="#BFA78A" stroke-width="6" />
-            <!-- High Cliff for Astronomical Lighthouse (Top Right) -->
-            <ellipse cx="980" cy="145" rx="115" ry="75" fill="#9A7B56" />
-            <ellipse cx="980" cy="130" rx="110" ry="65" fill="#A9C988" />
-            <!-- Soft Border Clouds -->
-            <circle cx="60" cy="70" r="95" fill="#FAF6EE" opacity="0.85" />
-            <circle cx="160" cy="40" r="80" fill="#FAF6EE" opacity="0.75" />
-            <circle cx="60" cy="560" r="100" fill="#FAF6EE" opacity="0.85" />
-            <circle cx="1060" cy="560" r="110" fill="#FAF6EE" opacity="0.85" />
-            <circle cx="960" cy="590" r="85" fill="#FAF6EE" opacity="0.75" />
-          </svg>
-
-          <!-- Actual ./map.jpg Image Layer (Automatically displayed when map.jpg exists or uploaded in Admin) -->
-          <img id="mapBackgroundImg" src="map.jpg" alt="Lumina 2.5D World Map"
-               class="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-500"
-               onload="handleMapImageLoaded()"
-               onerror="handleMapImageFallback()" />
-
-          <!-- Layer 1: Animated Water Ripples, Sunbeams, Drifting Clouds & Floating Mana Spores -->
-          <div class="sunbeam-overlay"></div>
-          <div class="cloud-shadow-layer"></div>
-          <div id="mapAmbientLayer" class="absolute inset-0 pointer-events-none z-10"></div>
-
-          <!-- Layer 2: Dynamic Building Nodes (7 Main Facilities + 3 Ver 1.5 Preview Nodes) -->
-          <div id="mapNodesContainer" class="absolute inset-0 z-20"></div>
-        </div>
-      </div>
-
-      <!-- Map Image Notice Banner (Only shown if ./map.jpg hasn't been placed yet, with 1-click upload button!) -->
-      <div id="mapSetupHelperBanner" class="hidden bg-[#FEF9E7] border border-[#F59E0B]/50 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs">
-        <div class="flex items-center gap-2 text-[#7C583E]">
-          <span>🖼️</span>
-          <span>同階層に <code>map.jpg</code> を置くか、右のボタンからマップイラストを選択すると本番2.5D背景が即時反映されます。</span>
-        </div>
-        <label class="shrink-0 bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold px-3 py-1.5 rounded-lg cursor-pointer transition shadow-xs">
-          マップ画像を読込
-          <input type="file" accept="image/*" class="hidden" onchange="uploadCustomMapFile(event)" />
-        </label>
-      </div>
-
-      <!-- Independent Idle Coin Vault (放置コイン金庫：マップ下部に独立配置) -->
-      <div class="cozy-card p-3.5 bg-gradient-to-r from-[#FFFDF7] via-[#FEF7E6] to-[#FFFDF7] border-2 border-[#E6C687]">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FDE68A] to-[#D97706] flex items-center justify-center text-2xl shadow-md border border-[#FFFBEB] relative">
-              🏦
-              <span id="vaultFullDot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#EF4444] border-2 border-white animate-bounce"></span>
+            <div class="map-viewport" id="mapViewport">
+                <!-- 最下層：更地ベースマップ -->
+                <div class="map-layer map-base"></div>
+                <!-- 完成レイヤー（進捗に応じてマスク表示） -->
+                <div class="facility-complete-mask" id="mapCompleteMask"></div>
+                <!-- 施設ピン＆建設中アニメーションレイヤー -->
+                <div id="mapNodesContainer"></div>
+                <!-- 動く未開拓の雲レイヤー -->
+                <div class="fog-layer" id="fogLayer"></div>
+                <!-- 光粒子レイヤー -->
+                <div id="sparkleContainer"></div>
+                <!-- 時間帯ティント -->
+                <div class="map-sky-overlay"></div>
             </div>
-            <div>
-              <div class="flex items-center gap-1.5">
-                <h3 class="text-sm font-bold text-[#4A3525]">街の放置コイン金庫</h3>
-                <span id="vaultRateBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] font-bold border border-[#FDE68A]">
-                  +12 🪙 / 時間
-                </span>
-              </div>
-              <p class="text-xs text-[#7C583E] mt-0.5">
-                完成した施設から自動でコインが集まります（現在蓄積: <strong id="vaultAccumulatedText" class="text-[#D97706] text-sm">0</strong> / <span id="vaultMaxText">120</span> 🪙）
-              </p>
+        </section>
+
+        <!-- メイン操作タブ -->
+        <section class="card">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('focus', this)">🔨 学習＆建築</button>
+                <button class="tab-btn" onclick="switchTab('chronicle', this)">📖 学習年代記（振り返りログ）</button>
+                <button class="tab-btn" onclick="switchTab('world', this)">🧭 外の世界・アップデート構想</button>
             </div>
-          </div>
-          <button id="collectVaultBtn" onclick="collectIdleCoins()" class="wood-btn-amber px-4 py-2.5 rounded-xl font-bold text-xs shrink-0 flex items-center gap-1.5">
-            <span>🪙</span>
-            <span>まとめて回収</span>
-          </button>
-        </div>
-      </div>
 
-      <!-- Ver 1.5 Preview Quick Access Row -->
-      <div class="grid grid-cols-3 gap-2">
-        <button onclick="openComingSoonModal('harbor')" class="cozy-card p-2.5 flex items-center gap-2 hover:bg-[#F5EDE0] transition text-left">
-          <span class="text-xl">⛵</span>
-          <div>
-            <div class="text-xs font-bold text-[#4A3525]">外の大陸への港</div>
-            <div class="text-[10px] text-[#8A6D53]">Ver 1.5 予告</div>
-          </div>
-        </button>
-        <button onclick="openComingSoonModal('myroom')" class="cozy-card p-2.5 flex items-center gap-2 hover:bg-[#F5EDE0] transition text-left">
-          <span class="text-xl">🏠</span>
-          <div>
-            <div class="text-xs font-bold text-[#4A3525]">マイルーム</div>
-            <div class="text-[10px] text-[#8A6D53]">Ver 1.5 予告</div>
-          </div>
-        </button>
-        <button onclick="openComingSoonModal('dungeon')" class="cozy-card p-2.5 flex items-center gap-2 hover:bg-[#F5EDE0] transition text-left">
-          <span class="text-xl">🏛️</span>
-          <div>
-            <div class="text-xs font-bold text-[#4A3525]">はじまりの遺跡</div>
-            <div class="text-[10px] text-[#8A6D53]">Ver 1.5 予告</div>
-          </div>
-        </button>
-      </div>
-    </div>
+            <!-- タブ1：学習＆建築 -->
+            <div id="pane-focus" class="tab-pane active">
+                <div class="focus-grid">
+                    <!-- 左：建築ステータス -->
+                    <div class="facility-box">
+                        <div class="input-group">
+                            <label>建築する施設を選択（マップ上の名前タップでも切替可）</label>
+                            <select id="facilitySelector" onchange="selectFacility(this.value)"></select>
+                        </div>
 
-    <!-- ==================== TAB 2: 集中タイマー（ライブ建築連動） ==================== -->
-    <div id="tab-focus" class="hidden space-y-4">
+                        <p id="facilityDesc" style="font-size: 13px; color: var(--sub-text); line-height: 1.5;"></p>
 
-      <!-- High-Quality Live Architectural Construction Stage (作業中にリアルタイムで建物が立ち上がる主役画面) -->
-      <div class="cozy-card p-4 relative overflow-hidden">
-        <div class="flex items-center justify-between mb-2.5">
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#ECFDF5] text-[#047857] border border-[#6EE7B7] flex items-center gap-1">
-              <span id="focusLiveIndicator" class="w-2 h-2 rounded-full bg-[#10B981]"></span>
-              <span id="focusStageStatusLabel">ライブ建築連動ビュー</span>
-            </span>
-            <h2 id="focusBuildingTitle" class="text-sm font-bold text-[#4A3525]">① 木漏れ日のカフェ</h2>
-          </div>
-          <span id="focusBuildingProgressBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
-            進捗 0.0%
-          </span>
-        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; margin-bottom:6px;">
+                                <span id="stageTitle">Stage 1：着工準備</span>
+                                <span id="facilityPctText">0%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" id="facilityProgressBar"></div>
+                            </div>
+                        </div>
 
-        <!-- High-Resolution 2.5D Architectural Viewport with Multi-Layer Live Shroud -->
-        <div id="focusLiveStageFrame" class="relative w-full h-60 sm:h-64 rounded-2xl overflow-hidden border-2 border-[#C89F78] bg-[#E8F0E6] shadow-inner">
-          <!-- Layer A: Zoomed High-Res Map Spot + Detailed 2.5D Architectural Illustration -->
-          <div id="focusStageZoomedMap" class="absolute inset-0 bg-cover bg-center transition-transform duration-1000"></div>
-          <div id="focusStageCustomIllustration" class="absolute inset-0 flex items-center justify-center pointer-events-none"></div>
+                        <div class="stage-steps" id="stageSteps">
+                            <div class="stage-pill" id="step-1">1. 着工</div>
+                            <div class="stage-pill" id="step-2">2. 骨組み</div>
+                            <div class="stage-pill" id="step-3">3. 外装</div>
+                            <div class="stage-pill" id="step-4">4. 完成</div>
+                        </div>
+                    </div>
 
-          <!-- Layer B: Top Unbuilt Blueprint & Wooden Scaffolding Shroud (Peels from bottom 0% to 100%) -->
-          <div id="focusStageShroud" class="absolute top-0 left-0 right-0 blueprint-shroud overflow-hidden transition-all duration-500" style="height: 100%;">
-            <!-- Isometric Wooden Scaffolding SVG Lattice inside the unbuilt region -->
-            <svg viewBox="0 0 600 300" preserveAspectRatio="none" class="w-full h-full opacity-75">
-              <defs>
-                <pattern id="scaffoldGrid" width="60" height="50" patternUnits="userSpaceOnUse">
-                  <!-- Vertical & Horizontal Timber Poles -->
-                  <line x1="0" y1="0" x2="0" y2="50" stroke="#8B5A2B" stroke-width="4" />
-                  <line x1="60" y1="0" x2="60" y2="50" stroke="#8B5A2B" stroke-width="4" />
-                  <line x1="0" y1="46" x2="60" y2="46" stroke="#A06B3B" stroke-width="5" />
-                  <!-- Diagonal Bracing -->
-                  <line x1="2" y1="46" x2="58" y2="2" stroke="#B88655" stroke-width="2" stroke-dasharray="4 2" />
-                  <!-- Blueprint Dimension Marks -->
-                  <circle cx="30" cy="25" r="2" fill="#3B82F6" opacity="0.6" />
-                </pattern>
-              </defs>
-              <rect width="600" height="300" fill="url(#scaffoldGrid)" />
-            </svg>
-            <!-- Floating Blueprint Seal -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
-              <div class="bg-[#FFFDF9]/90 backdrop-blur-xs border border-[#C89F78] px-3.5 py-1.5 rounded-xl shadow-sm">
-                <div class="text-xs font-bold text-[#4A3525] flex items-center justify-center gap-1.5">
-                  <span class="work-badge-anim inline-block">🔨</span>
-                  <span id="focusShroudLabel">木組み足場・光の設計図を展開中</span>
+                    <!-- 右：学習サイクル＆タイマー -->
+                    <div class="timer-box">
+                        <div class="input-group">
+                            <label>① 学習前の宣言：これから何に取り組みますか？</label>
+                            <input type="text" id="taskGoalInput" placeholder="例：英単語帳のSection3を20個覚える、資格テキスト10ページ">
+                        </div>
+
+                        <div class="input-group">
+                            <label>② 集中時間を選択</label>
+                            <div class="duration-grid">
+                                <button class="dur-btn" onclick="selectDuration(2, this)">2分<br><span style="font-size:10px; font-weight:normal;">着火</span></button>
+                                <button class="dur-btn" onclick="selectDuration(5, this)">5分</button>
+                                <button class="dur-btn" onclick="selectDuration(15, this)">15分</button>
+                                <button class="dur-btn selected" onclick="selectDuration(25, this)">25分</button>
+                                <button class="dur-btn" onclick="selectDuration(50, this)">50分</button>
+                            </div>
+                        </div>
+
+                        <div class="ignition-box" id="ignitionOption">
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:8px; font-weight:700; color:var(--accent-wood);">
+                                <input type="checkbox" id="prepModeCheck" onchange="togglePrepText()">
+                                <span>【2分着火モード】まずは机の片付け・教材を開く準備をする</span>
+                            </label>
+                        </div>
+
+                        <div class="timer-display" id="timerDisplay">25:00</div>
+
+                        <div class="btn-row">
+                            <button class="btn-primary" id="startPauseBtn" onclick="toggleTimer()">▶ 学習を開始して建築を進める</button>
+                            <button class="btn-secondary" id="finishEarlyBtn" onclick="openReflectionModal()" style="display:none;">完了して記録</button>
+                            <button class="btn-secondary" onclick="resetTimer()">リセット</button>
+                        </div>
+                    </div>
                 </div>
-                <p id="focusShroudSub" class="text-[10px] text-[#7C583E] mt-0.5">
-                  集中した時間の分だけ、下から上へカバーが剥がれて建物が立ち上がります
+            </div>
+
+            <!-- タブ2：学習年代記（振り返りログ） -->
+            <div id="pane-chronicle" class="tab-pane">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="font-size:15px;">これまでの学習記録と街の歩み</h3>
+                    <span style="font-size:12px; color:var(--sub-text);" id="logCountBadge">全 0 件</span>
+                </div>
+                <div class="log-list" id="logListContainer">
+                    <p style="font-size:13px; color:var(--sub-text); padding:20px; text-align:center;">まだ学習記録がありません。最初のセッションを完了すると、目標と振り返りがここに刻まれます。</p>
+                </div>
+            </div>
+
+            <!-- タブ3：外の世界・アップデート構想 -->
+            <div id="pane-world" class="tab-pane">
+                <p style="font-size:13px; color:var(--sub-text); margin-bottom:14px;">
+                    日々の学習でXPを貯めると「はじまりの街」を覆う雲が晴れ、やがて街の外へと続く道が解放されます。
                 </p>
-              </div>
+                <div class="roadmap-grid">
+                    <div class="roadmap-card">
+                        <span class="badge-tag badge-active">解放中・Phase 1</span>
+                        <h4 style="font-size:15px; margin-bottom:6px;">🏘️ はじまりの街（全7施設）</h4>
+                        <p style="font-size:13px; color:var(--sub-text); line-height:1.5;">
+                            中央の「星雫の噴水広場」を拠点に、カフェ・時計塔・大図書館・硝子温室・風車ベーカリー・天文灯台を建築。XP累計に応じて外周の雲が晴れていきます。
+                        </p>
+                    </div>
+                    <div class="roadmap-card">
+                        <span class="badge-tag badge-coming">今後のアップデート予定・Phase 2</span>
+                        <h4 style="font-size:15px; margin-bottom:6px;">🌍 外の大きなワールドマップ</h4>
+                        <p style="font-size:13px; color:var(--sub-text); line-height:1.5;">
+                            はじまりの街の北と東に伸びる街道の先の霧が晴れ、港町・天空の学院・職人の谷など新たな開拓エリアへ旅立てる拡張ワールド。
+                        </p>
+                    </div>
+                    <div class="roadmap-card">
+                        <span class="badge-tag badge-coming">今後のアップデート予定・Phase 3</span>
+                        <h4 style="font-size:15px; margin-bottom:6px;">⚔️ 封印された古代遺跡＆ダンジョン</h4>
+                        <p style="font-size:13px; color:var(--sub-text); line-height:1.5;">
+                            学習習慣の継続ボーナスや育てた施設の恩恵を使って挑戦できるRPGダンジョン探索・キャラクター育成システム。
+                        </p>
+                    </div>
+                </div>
             </div>
-          </div>
+        </section>
 
-          <!-- Layer C: Glowing Creation Laser Line at the exact boundary -->
-          <div id="focusStageLaser" class="absolute left-0 right-0 creation-laser-line transition-all duration-500" style="bottom: 0%;"></div>
-
-          <!-- Layer D: Active Particle & Builder Sparkle Layer -->
-          <div id="focusStageParticles" class="absolute inset-0 pointer-events-none"></div>
-
-          <!-- Bottom Live Telemetry Overlay -->
-          <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between bg-[#3E2B1D]/80 backdrop-blur-md text-[#FFFDF9] px-3 py-1.5 rounded-xl text-xs border border-[#9A7456]/50">
-            <div class="flex items-center gap-2">
-              <span>📐 建設必要時間:</span>
-              <strong id="focusStageMinInfo" class="text-[#FDE68A]">0 / 100分</strong>
+        <!-- 管理者スタジオ（ロゴ5回タップで表示） -->
+        <section class="card admin-studio" id="adminStudio">
+            <h4 style="font-size:14px; color:var(--accent-wood);">🛠️ 管理者スタジオ（開発・デモ検証用パネル）</h4>
+            <p style="font-size:12px; color:var(--sub-text); margin-top:4px;">一般ユーザーには見えません。画面の動作や雲の晴れ方・建築進捗のテストに使用します。</p>
+            <div class="admin-btn-group">
+                <button class="admin-btn" onclick="adminBoostProgress(35)">選択中の施設 +35%</button>
+                <button class="admin-btn" onclick="adminAddXp(150)">XP +150（雲を晴らすテスト）</button>
+                <button class="admin-btn" onclick="adminCompleteAll()">全施設100%完成デモ</button>
+                <button class="admin-btn" onclick="adminImmediateFinish()">タイマー即時完了（振り返り画面テスト）</button>
+                <button class="admin-btn" style="background:#a33b3b;" onclick="adminResetAll()">全データ初期化</button>
             </div>
-            <div id="focusLiveGainPreview" class="text-[11px] text-[#6EE7B7] font-bold">
-              待機中（タイマー開始でライブ建築稼働）
+        </section>
+    </main>
+
+    <!-- タイマー終了後の振り返り入力モーダル -->
+    <div class="modal-backdrop" id="reflectionModal">
+        <div class="modal-card">
+            <h3 style="font-size:18px;">🎉 お疲れ様でした！学習完了</h3>
+            <p style="font-size:13px; color:var(--sub-text);" id="modalSummaryText"></p>
+
+            <div class="input-group">
+                <label>③ 学習後の振り返り：実際にやったこと・気づきを入力してください</label>
+                <textarea id="reflectionInput" rows="3" placeholder="例：予定通り20単語覚えきった！次は発音も確認したい。"></textarea>
             </div>
-          </div>
+
+            <button class="btn-primary" onclick="confirmSessionComplete()">記録を保存して建築を進める ✨</button>
         </div>
-      </div>
-
-      <!-- STEP 1: Pre-Study Setup Panel (開始前：テーマ選択＋2分限定準備アクション＋宣言チップ) -->
-      <div id="focusSetupPanel" class="cozy-card p-4 space-y-4">
-        <!-- Timer Duration Selector (2, 5, 15, 25, 50 min) -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <label class="text-xs font-bold text-[#4A3525] flex items-center gap-1.5">
-              <span>⏳</span>
-              <span>1. 集中タイマー時間を選択</span>
-            </label>
-            <span id="selectedDurationHint" class="text-[11px] font-bold text-[#D97706]">25分（王道ポモドーロ）</span>
-          </div>
-          <div class="grid grid-cols-5 gap-2" id="durationButtonsContainer">
-            <!-- Populated by JS: 2, 5, 15, 25, 50 -->
-          </div>
-        </div>
-
-        <!-- Conditional 2-Minute Ignition / Preparation Hook (2分を選択したときだけ特別展開！) -->
-        <div id="twoMinPrepBox" class="hidden bg-gradient-to-r from-[#FEF9E7] to-[#ECFDF5] border-2 border-[#F59E0B] rounded-2xl p-3.5 space-y-2 transition-all">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-1.5">
-              <span class="text-base">🔥</span>
-              <span class="text-xs font-bold text-[#92400E]">2分限定：まずは「準備する・意識づけ」から始める</span>
-            </div>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] font-bold border border-[#FCD34D]">初動の着火</span>
-          </div>
-          <p class="text-[11px] text-[#5C4033] leading-relaxed">
-            やる気が出ない日でも大丈夫。まずは以下の「準備アクション」を1つ選んで2分間だけ机に向かい、学習のスイッチを入れましょう！
-          </p>
-          <div id="twoMinPrepChips" class="flex flex-wrap gap-1.5 pt-1">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-
-        <!-- Study Theme Selection (6 Themes) -->
-        <div>
-          <label class="text-xs font-bold text-[#4A3525] flex items-center gap-1.5 mb-2">
-            <span>🧭</span>
-            <span>2. 学習テーマを選択（任意）</span>
-          </label>
-          <div id="themeButtonsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-
-        <!-- Optional Short Declaration + 1-Tap Chips -->
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="text-xs font-bold text-[#4A3525] flex items-center gap-1.5">
-              <span>💬</span>
-              <span>3. 短い自由宣言 または ワンタップチップ（未入力でも開始可）</span>
-            </label>
-          </div>
-          <input id="declarationInput" type="text" maxlength="50"
-                 placeholder="例：単語を20個チェックする / まずはテキストを開く"
-                 class="w-full bg-[#FFFDF9] border-2 border-[#DECBB3] rounded-xl px-3.5 py-2 text-xs text-[#4A3525] placeholder-[#B09A82] focus:outline-none focus:border-[#F59E0B]" />
-          <div id="standardDeclarationChips" class="flex flex-wrap gap-1.5 mt-2">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-
-        <!-- Start Focus Button -->
-        <div class="pt-1">
-          <button onclick="startFocusSession()" class="w-full wood-btn-primary py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-md">
-            <span>🌱✨</span>
-            <span id="startFocusBtnLabel">25分の開拓セッションを開始する</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- STEP 2: Active Running Timer Panel (集中セッション稼働中) -->
-      <div id="focusRunningPanel" class="hidden cozy-card p-5 text-center space-y-4">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF3C7] text-[#92400E] text-xs font-bold border border-[#FDE68A]">
-          <span id="runningThemeBadge">🌍 英語・語学</span>
-          <span>・</span>
-          <span id="runningDeclarationText">集中して取り組む</span>
-        </div>
-
-        <!-- Large Cozy Timer Countdown -->
-        <div class="py-2">
-          <div id="timerDisplay" class="font-serif-cozy text-5xl sm:text-6xl font-bold text-[#4A3525] tracking-wider">
-            25:00
-          </div>
-          <p id="timerLiveSubtext" class="text-xs text-[#7C583E] mt-2">
-            ✨ あなたの集中に合わせて、リアルタイムで建物の足場が剥がれて建設が進んでいます…
-          </p>
-        </div>
-
-        <!-- Session Progress Bar -->
-        <div class="w-full h-3 bg-[#E6D9C6] rounded-full overflow-hidden p-0.5">
-          <div id="sessionTimerBar" class="h-full bg-gradient-to-r from-[#F59E0B] to-[#10B981] rounded-full transition-all duration-300" style="width: 0%;"></div>
-        </div>
-
-        <div class="flex items-center justify-center gap-3 pt-2">
-          <button id="pauseResumeBtn" onclick="togglePauseTimer()" class="px-5 py-2.5 rounded-xl bg-[#EFE6D5] hover:bg-[#E2D3BC] text-[#4A3525] font-bold text-xs border border-[#D4BFA4] transition">
-            ⏸️ 一時停止
-          </button>
-          <button onclick="finishFocusEarlyToComplete()" class="wood-btn-amber px-5 py-2.5 rounded-xl font-bold text-xs">
-            ⚡ 完了・刻印画面へ進む
-          </button>
-        </div>
-      </div>
-
-      <!-- STEP 3: Completion & Engraving Panel (完了時：3択＋1行成果メモ) -->
-      <div id="focusCompletePanel" class="hidden cozy-card p-5 space-y-4 border-2 border-[#F59E0B]">
-        <div class="text-center space-y-1">
-          <div class="inline-block text-2xl">🎉✨</div>
-          <h3 class="text-base font-bold text-[#4A3525]">開拓セッション完了！街の歴史に刻印しましょう</h3>
-          <p id="completeSummaryText" class="text-xs text-[#7C583E]">
-            今回の学習時間: 25分（① 木漏れ日のカフェ の建設が進行します）
-          </p>
-        </div>
-
-        <!-- Optional 1-line memo -->
-        <div>
-          <label class="text-xs font-bold text-[#4A3525] block mb-1.5">
-            🖋️ 任意の1行成果メモ（年代記に残すひとこと）
-          </label>
-          <input id="completeMemoInput" type="text" maxlength="60"
-                 placeholder="例：基礎パートを3ページ進めた！ / 机に座ってスイッチが入った"
-                 class="w-full bg-[#FFFDF9] border-2 border-[#DECBB3] rounded-xl px-3.5 py-2 text-xs text-[#4A3525] placeholder-[#B09A82] focus:outline-none focus:border-[#F59E0B]" />
-        </div>
-
-        <!-- 3 Simplified Completion Choices (複雑な％スライダー廃止) -->
-        <div class="space-y-2.5 pt-1">
-          <!-- Choice 1: Normal Engrave -->
-          <button onclick="submitSessionResult('normal')" class="w-full wood-btn-primary py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-between">
-            <span class="flex items-center gap-2">
-              <span class="text-base">✨</span>
-              <span>① 通常刻印して受取</span>
-            </span>
-            <span id="normalRewardPreview" class="bg-white/20 px-2.5 py-1 rounded-lg text-[11px]">
-              +25分 / +25✨ / +25🪙
-            </span>
-          </button>
-
-          <!-- Choice 2: Once-a-day +50% Bonus -->
-          <button id="dailyBonusBtn" onclick="submitSessionResult('bonus')" class="w-full wood-btn-amber py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-between">
-            <span class="flex items-center gap-2">
-              <span class="text-base">🌟</span>
-              <span id="dailyBonusBtnTitle">② 1日1回ボーナス(+50%)で刻印</span>
-            </span>
-            <span id="bonusRewardPreview" class="bg-white/25 px-2.5 py-1 rounded-lg text-[11px]">
-              +38分 / +38✨ / +38🪙
-            </span>
-          </button>
-
-          <!-- Choice 3: Did not study this time -->
-          <button onclick="submitSessionResult('cancel')" class="w-full bg-[#F3ECE0] hover:bg-[#E6D9C6] text-[#7C583E] border border-[#D4BFA4] py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
-            <span>🍃</span>
-            <span>③ 今回は学習できなかった（報酬・進捗を受け取らず終了）</span>
-          </button>
-        </div>
-      </div>
     </div>
 
-    <!-- ==================== TAB 3: 開拓パス（成長の軌跡） ==================== -->
-    <div id="tab-path" class="hidden space-y-3.5">
-      <div class="cozy-card p-4">
-        <div class="flex items-center justify-between mb-2">
-          <div>
-            <h2 class="text-sm font-bold text-[#4A3525] flex items-center gap-1.5">
-              <span>🌱✨</span>
-              <span>開拓パス（成長の軌跡）</span>
-            </h2>
-            <p class="text-xs text-[#7C583E] mt-0.5">
-              学習を積み重ねるだけで、街の祝福や称号が自動的に解放されます。
-            </p>
-          </div>
-          <div class="text-right">
-            <div class="text-[10px] text-[#8A6D53]">累計学習時間</div>
-            <div id="pathTotalMinText" class="text-base font-bold text-[#D97706]">0分</div>
-          </div>
-        </div>
+    <script>
+        // 7施設の定義（マップ座標％付き）
+        const FACILITIES = [
+            { id: 'fountain', name: '④ 星雫の噴水広場', x: 50, y: 52, progress: 100, fixed: true, desc: '街の中心で輝き続ける開拓のシンボル（初期から100%完成済み）。' },
+            { id: 'cafe', name: '① 木漏れ日のカフェ', x: 34, y: 31, progress: 0, fixed: false, desc: '学習の合間にホッと一息つける、木の温もりあふれる憩いのカフェ。' },
+            { id: 'clock', name: '② 暁の時計塔', x: 70, y: 27, progress: 0, fixed: false, desc: '規則正しい学習リズムと時間の大切さを街全体に知らせるシンボルタワー。' },
+            { id: 'library', name: '③ 叡智の大図書館', x: 67, y: 74, progress: 0, fixed: false, desc: '積み重ねた知識と学習年代記が蔵書として蓄積されていく知の殿堂。' },
+            { id: 'greenhouse', name: '⑤ 錬金術師の硝子温室', x: 37, y: 76, progress: 0, fixed: false, desc: '小さな習慣の種をじっくり育てて大きな成果に変えるガラス張りの温室。' },
+            { id: 'bakery', name: '⑥ そよ風の風車ベーカリー', x: 85, y: 49, progress: 0, fixed: false, desc: '丘の風を受けて回る風車とともに、香ばしい焼きたてパンが並ぶベーカリー。' },
+            { id: 'lighthouse', name: '⑦ 星見の天文灯台', x: 14, y: 48, progress: 0, fixed: false, desc: '崖の上から夜空と遠くの未開拓ワールドを見渡す希望の天文灯台。' }
+        ];
 
-        <div id="pioneerPathContainer" class="space-y-2.5 mt-3">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== TAB 4: 記録タブ（週間年代記・自己評価・SNSシェア） ==================== -->
-    <div id="tab-records" class="hidden space-y-4">
-
-      <!-- 1. Top: Weekly Chronicle & Day-of-Week Bar Chart -->
-      <div class="cozy-card p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <h2 class="text-sm font-bold text-[#4A3525] flex items-center gap-1.5">
-            <span>📖</span>
-            <span>週間年代記 ＆ 曜日グラフ</span>
-          </h2>
-          <span id="weeklyTotalBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
-            今週合計: 0分
-          </span>
-        </div>
-
-        <!-- 7-Day Bar Chart -->
-        <div id="weeklyChartGrid" class="grid grid-cols-7 gap-2 pt-3 pb-1 px-1 items-end h-36 bg-[#F7F1E5] rounded-xl border border-[#E5D7C3]">
-          <!-- Populated by JS -->
-        </div>
-
-        <!-- Recent Chronicle Logs -->
-        <div class="pt-2">
-          <div class="text-xs font-bold text-[#5C4033] mb-2">🖋️ 最近の開拓刻印ログ</div>
-          <div id="chronicleLogList" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. Middle: Theme Accumulated Time + Milestones & 3-Stage Self Evaluation -->
-      <div class="cozy-card p-4 space-y-3">
-        <div>
-          <h3 class="text-sm font-bold text-[#4A3525] flex items-center gap-1.5">
-            <span>🌿</span>
-            <span>テーマ別の蓄積時間 ＆ 3段階自己評価</span>
-          </h3>
-          <p class="text-[11px] text-[#7C583E] mt-0.5">
-            学習時間は自動で蓄積されます。右側のボタンで今の感覚（🌱基礎 / 🌿少し使える / 🌳自信あり）を自由に記録できます。
-          </p>
-        </div>
-
-        <div id="themeRecordsList" class="space-y-2.5">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- 3. Bottom: SNS Share -->
-      <div class="cozy-card p-4 space-y-3 bg-gradient-to-br from-[#FFFDF9] to-[#F5EDE0]">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-sm font-bold text-[#4A3525] flex items-center gap-1.5">
-              <span>🕊️</span>
-              <span>開拓の歩みをSNSでシェア</span>
-            </h3>
-            <p class="text-[11px] text-[#7C583E]">今日の積み上げと街の発展をシェアしてモチベーションを高めましょう</p>
-          </div>
-        </div>
-        <div id="snsSharePreviewBox" class="bg-[#FFFDF9] border border-[#DECBB3] rounded-xl p-3 text-xs text-[#4A3525] whitespace-pre-line leading-relaxed"></div>
-        <div class="flex gap-2">
-          <button onclick="copyShareText()" class="flex-1 bg-[#EFE6D5] hover:bg-[#E2D3BC] text-[#4A3525] font-bold py-2.5 rounded-xl text-xs border border-[#D4BFA4] transition">
-            📋 テキストをコピー
-          </button>
-          <button onclick="shareOnX()" class="flex-1 wood-btn-primary py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
-            <span>𝕏</span>
-            <span>ポスト画面を開く</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- ==========================================================================
-       [MODULE 5: BOTTOM NAVIGATION BAR]
-       ========================================================================== -->
-  <nav class="fixed bottom-0 left-0 right-0 z-30 bg-[#FAF6EE]/95 backdrop-blur-md border-t-2 border-[#E2D4C0] px-2 py-1.5 shadow-lg">
-    <div class="max-w-xl mx-auto grid grid-cols-4 gap-1">
-      <button id="nav-map" onclick="switchTab('map')" class="flex flex-col items-center py-1.5 rounded-xl transition bg-[#EFE6D5] text-[#4A3525] font-bold">
-        <span class="text-base">🗺️</span>
-        <span class="text-[11px] mt-0.5">開拓マップ</span>
-      </button>
-      <button id="nav-focus" onclick="switchTab('focus')" class="flex flex-col items-center py-1.5 rounded-xl transition text-[#8A6D53]">
-        <span class="text-base">⏳</span>
-        <span class="text-[11px] mt-0.5">集中タイマー</span>
-      </button>
-      <button id="nav-path" onclick="switchTab('path')" class="flex flex-col items-center py-1.5 rounded-xl transition text-[#8A6D53]">
-        <span class="text-base">🌱</span>
-        <span class="text-[11px] mt-0.5">開拓パス</span>
-      </button>
-      <button id="nav-records" onclick="switchTab('records')" class="flex flex-col items-center py-1.5 rounded-xl transition text-[#8A6D53]">
-        <span class="text-base">📖</span>
-        <span class="text-[11px] mt-0.5">記録・年代記</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- ==========================================================================
-       [MODULE 6: MODALS (建物詳細 / 近日公開予告 / 一般設定・引継 / 管理者専用パネル)]
-       ========================================================================== -->
-
-  <!-- Building Detail Modal -->
-  <div id="buildingDetailModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="cozy-card max-w-md w-full p-5 space-y-4 animate-fadeIn">
-      <div class="flex items-start justify-between">
-        <div class="flex items-center gap-2.5">
-          <div id="modalBuildingIcon" class="w-11 h-11 rounded-2xl bg-[#FEF3C7] border border-[#F59E0B] flex items-center justify-center text-2xl">☕</div>
-          <div>
-            <span id="modalBuildingStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]">建設中</span>
-            <h3 id="modalBuildingName" class="text-base font-bold text-[#4A3525] mt-0.5">① 木漏れ日のカフェ</h3>
-          </div>
-        </div>
-        <button onclick="closeBuildingModal()" class="w-8 h-8 rounded-full bg-[#EFE6D5] text-[#5C4033] font-bold">✕</button>
-      </div>
-
-      <p id="modalBuildingDesc" class="text-xs text-[#5C4033] leading-relaxed bg-[#F7F1E5] p-3 rounded-xl border border-[#E5D7C3]"></p>
-
-      <div class="space-y-1.5">
-        <div class="flex justify-between text-xs font-bold text-[#4A3525]">
-          <span>段階的ビルドアップ進捗</span>
-          <span id="modalBuildingProgressText" class="text-[#D97706]">0 / 100分 (0%)</span>
-        </div>
-        <div class="w-full h-3 bg-[#E5D7C3] rounded-full overflow-hidden p-0.5">
-          <div id="modalBuildingBar" class="h-full bg-gradient-to-r from-[#F59E0B] to-[#10B981] rounded-full transition-all" style="width: 0%;"></div>
-        </div>
-      </div>
-
-      <div class="flex gap-2 pt-1">
-        <button id="modalSetTargetBtn" onclick="selectBuildingFromModalAndFocus()" class="flex-1 wood-btn-primary py-2.5 rounded-xl font-bold text-xs">
-          🎯 この施設を優先建築して集中する
-        </button>
-        <button onclick="closeBuildingModal()" class="px-4 py-2.5 rounded-xl bg-[#EFE6D5] text-[#5C4033] font-bold text-xs">
-          閉じる
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ver 1.5 Coming Soon Preview Modal -->
-  <div id="comingSoonModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="cozy-card max-w-md w-full p-5 space-y-4 text-center">
-      <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[#FDE68A] to-[#F59E0B] flex items-center justify-center text-3xl shadow-md border-2 border-white" id="comingSoonIcon">
-        ⛵
-      </div>
-      <div class="space-y-1">
-        <span class="px-3 py-0.5 rounded-full text-[11px] font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FCD34D]">
-          ✨ 近日公開（アップデート予定）
-        </span>
-        <h3 id="comingSoonTitle" class="text-base font-bold text-[#4A3525] pt-1">外の大陸への港</h3>
-      </div>
-      <p id="comingSoonDesc" class="text-xs text-[#5C4033] leading-relaxed bg-[#F7F1E5] p-3.5 rounded-xl border border-[#E5D7C3] text-left"></p>
-      <button onclick="closeComingSoonModal()" class="w-full wood-btn-amber py-2.5 rounded-xl font-bold text-xs">
-        たのしみに待つ ✨
-      </button>
-    </div>
-  </div>
-
-  <!-- General User Settings / Backup Modal (一般ユーザーにはバックアップのみ表示) -->
-  <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="cozy-card max-w-md w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-[#E5D7C3] pb-2.5">
-        <h3 class="text-sm font-bold text-[#4A3525] flex items-center gap-1.5">
-          <span>⚙️</span>
-          <span>設定・データ引継（バックアップ）</span>
-        </h3>
-        <button onclick="closeSettingsModal()" class="w-8 h-8 rounded-full bg-[#EFE6D5] text-[#5C4033] font-bold">✕</button>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <p class="text-[#7C583E] leading-relaxed">
-          開拓データはブラウザに自動保存されています。機種変更や別ブラウザへ引き継ぐ場合は、以下のバックアップコードまたはJSONをご利用ください。
-        </p>
-
-        <div class="space-y-1.5">
-          <label class="font-bold text-[#4A3525] block">📤 バックアップ出力（コード / JSON）</label>
-          <textarea id="backupExportArea" readonly rows="3" class="w-full bg-[#FFFDF9] border border-[#DECBB3] rounded-xl p-2.5 text-[11px] text-[#5C4033] font-mono"></textarea>
-          <div class="flex gap-2">
-            <button onclick="copyBackupCode()" class="flex-1 bg-[#EFE6D5] hover:bg-[#E2D3BC] text-[#4A3525] font-bold py-2 rounded-xl border border-[#D4BFA4]">
-              📋 コードをコピー
-            </button>
-            <button onclick="downloadBackupJson()" class="flex-1 wood-btn-primary py-2 rounded-xl font-bold">
-              💾 JSONファイルを保存
-            </button>
-          </div>
-        </div>
-
-        <div class="space-y-1.5 pt-2 border-t border-[#E5D7C3]">
-          <label class="font-bold text-[#4A3525] block">📥 バックアップ復元（インポート）</label>
-          <textarea id="backupImportArea" rows="3" placeholder="ここにバックアップコードまたはJSONを貼り付けてください" class="w-full bg-[#FFFDF9] border border-[#DECBB3] rounded-xl p-2.5 text-[11px] text-[#5C4033] font-mono"></textarea>
-          <button onclick="importBackupData()" class="w-full wood-btn-amber py-2.5 rounded-xl font-bold">
-            🔄 データを復元する
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Secret Admin Panel Modal (ロゴ5回連続タップ または ?admin=1 で解放) -->
-  <div id="adminModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="cozy-card max-w-lg w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto border-2 border-[#F59E0B]">
-      <div class="flex items-center justify-between border-b border-[#E5D7C3] pb-2.5">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded-md bg-[#4A3525] text-[#FDE68A] text-[10px] font-bold">ADMIN</span>
-          <h3 class="text-sm font-bold text-[#4A3525]">管理者専用パネル（マップ画像・ビルドアップ検証）</h3>
-        </div>
-        <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-[#EFE6D5] text-[#5C4033] font-bold">✕</button>
-      </div>
-
-      <!-- 1. Custom Map Background Registration -->
-      <div class="bg-[#F7F1E5] p-3.5 rounded-xl border border-[#E5D7C3] space-y-2 text-xs">
-        <div class="font-bold text-[#4A3525]">🖼️ 1. 2.5Dマップ背景画像（map.jpg）の登録・変更</div>
-        <p class="text-[11px] text-[#7C583E]">
-          同一階層に <code>map.jpg</code> を配置すると自動適用されます。また、ここから直接画像を読み込んでブラウザに記憶させることも可能です。
-        </p>
-        <div class="flex gap-2 pt-1">
-          <label class="flex-1 wood-btn-primary py-2 px-3 rounded-xl font-bold text-center cursor-pointer">
-            📂 マップ画像を選択して適用
-            <input type="file" accept="image/*" class="hidden" onchange="uploadCustomMapFile(event)" />
-          </label>
-          <button onclick="clearCustomMapImage()" class="px-3 py-2 rounded-xl bg-[#EFE6D5] text-[#5C4033] font-bold border border-[#D4BFA4]">
-            標準(map.jpg)に戻す
-          </button>
-        </div>
-      </div>
-
-      <!-- 2. Real-time Building Progress Sliders (段階的ビルドアップ検証) -->
-      <div class="bg-[#F7F1E5] p-3.5 rounded-xl border border-[#E5D7C3] space-y-2.5 text-xs">
-        <div class="font-bold text-[#4A3525]">🏗️ 2. 各施設のビルドアップ進捗スライダー（0〜100%即時検証）</div>
-        <div id="adminSlidersContainer" class="space-y-2 max-h-56 overflow-y-auto pr-1">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- 3. Quick Debug Actions -->
-      <div class="grid grid-cols-2 gap-2 text-xs">
-        <button onclick="adminAddTestResources()" class="bg-[#EFE6D5] hover:bg-[#E2D3BC] text-[#4A3525] font-bold py-2 rounded-xl border border-[#D4BFA4]">
-          ➕ テスト資源(+50分/+100🪙)
-        </button>
-        <button onclick="adminResetDailyBonus()" class="bg-[#EFE6D5] hover:bg-[#E2D3BC] text-[#4A3525] font-bold py-2 rounded-xl border border-[#D4BFA4]">
-          🌟 1日1回ボーナス復活
-        </button>
-        <button onclick="adminCompleteAllBuildings()" class="bg-[#ECFDF5] text-[#047857] font-bold py-2 rounded-xl border border-[#6EE7B7]">
-          ✨ 全施設を100%完成にする
-        </button>
-        <button onclick="adminResetAllData()" class="bg-[#FEF2F2] text-[#B91C1C] font-bold py-2 rounded-xl border border-[#FCA5A5]">
-          🗑️ 全データを初期化する
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification -->
-  <div id="toastBox" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300">
-    <div id="toastMessage" class="wood-header-pill px-4 py-2 rounded-full text-xs font-bold shadow-lg flex items-center gap-2">
-      <span>✨</span>
-      <span>保存しました</span>
-    </div>
-  </div>
-
-  <!-- ==========================================================================
-       [MODULE 7: APPLICATION LOGIC & DATA ENGINE]
-       ========================================================================== -->
-  <script>
-    /* === 7-1. マスターデータ定義（添付の2.5Dマップ座標に完全一致） === */
-    const BUILDINGS_MASTER = [
-      {
-        id: 'cafe',
-        order: 1,
-        name: '① 木漏れ日のカフェ',
-        shortName: '① カフェ',
-        icon: '☕',
-        reqMinutes: 100,
-        defaultMinutes: 0,
-        // 添付マップ左中段の可愛らしいカフェ座標
-        mapX: 29.5,
-        mapY: 48.5,
-        boxW: 130,
-        boxH: 110,
-        coinRate: 4,
-        desc: '焼きたてのパンと香り高い珈琲で、開拓者たちの心を解きほぐす憩いのカフェ。最初の100分の学習で温かな灯りがともります。',
-        color: '#D97706'
-      },
-      {
-        id: 'clocktower',
-        order: 2,
-        name: '② 古の時計塔',
-        shortName: '② 時計塔',
-        icon: '🕰️',
-        reqMinutes: 100,
-        defaultMinutes: 0,
-        // 添付マップ左上の歯車付き時計塔座標
-        mapX: 40.5,
-        mapY: 28.5,
-        boxW: 125,
-        boxH: 145,
-        coinRate: 5,
-        desc: '街の歴史とあなたの集中時間を刻み続けるシンボルタワー。真鍮の歯車が回り出し、街全体に心地よい鐘の音が響き渡ります。',
-        color: '#B45309'
-      },
-      {
-        id: 'library',
-        order: 3,
-        name: '③ 街角の大図書館',
-        shortName: '③ 大図書館',
-        icon: '🏛️',
-        reqMinutes: 100,
-        defaultMinutes: 0,
-        // 添付マップ右上のステンドグラス付き大図書館座標
-        mapX: 62.5,
-        mapY: 27.5,
-        boxW: 145,
-        boxH: 145,
-        coinRate: 6,
-        desc: '美しいステンドグラスから光が差し込む知の殿堂。あなたが学んだすべての知識が羊皮紙の書物として収蔵されていきます。',
-        color: '#2563EB'
-      },
-      {
-        id: 'fountain',
-        order: 4,
-        name: '④ 噴水広場',
-        shortName: '④ 噴水広場',
-        icon: '⛲',
-        reqMinutes: 100,
-        defaultMinutes: 100, // 初期100%完成済
-        // 添付マップ中央の石畳噴水広場
-        mapX: 50.0,
-        mapY: 50.5,
-        boxW: 120,
-        boxH: 105,
-        coinRate: 5,
-        desc: 'はじまりの街の中心で澄んだ水を湛える噴水広場。最初から完成しており、開拓を始めたあなたをいつも歓迎してくれます。',
-        color: '#0284C7'
-      },
-      {
-        id: 'greenhouse',
-        order: 5,
-        name: '⑤ 陽だまりの温室',
-        shortName: '⑤ 温室',
-        icon: '🌿',
-        reqMinutes: 200,
-        defaultMinutes: 0,
-        // 添付マップ右中段のガラス温室座標
-        mapX: 72.5,
-        mapY: 44.5,
-        boxW: 125,
-        boxH: 105,
-        coinRate: 8,
-        desc: '色とりどりの草花と薬草が育つガラス張りの温室。中盤の粘り強い200分の学習によって、緑豊かな癒やしの空間が完成します。',
-        color: '#059669'
-      },
-      {
-        id: 'windmill',
-        order: 6,
-        name: '⑥ そよ風の風車',
-        shortName: '⑥ 風車',
-        icon: '🌾',
-        reqMinutes: 200,
-        defaultMinutes: 0,
-        // 添付マップ右下の風車座標
-        mapX: 74.0,
-        mapY: 61.5,
-        boxW: 130,
-        boxH: 115,
-        coinRate: 8,
-        desc: '黄金色の麦畑と花々に囲まれた大きな木製風車。爽やかな風を受けて羽根が回り、街の生産力を大きく引き上げます。',
-        color: '#D97706'
-      },
-      {
-        id: 'lighthouse',
-        order: 7,
-        name: '⑦ 星読みの天文灯台',
-        shortName: '⑦ 天文灯台',
-        icon: '🔭',
-        reqMinutes: 350,
-        defaultMinutes: 0,
-        // 添付マップ右上崖上の望遠鏡付き灯台座標
-        mapX: 88.0,
-        mapY: 18.5,
-        boxW: 135,
-        boxH: 130,
-        coinRate: 14,
-        desc: '高台の崖上から星空と遥かな海を照らす天文灯台。350分の大作建築を成し遂げたとき、街は最高の輝きに包まれます。',
-        color: '#7C3AED'
-      }
-    ];
-
-    /* Ver 1.5 予告スポット座標（添付マップの港・中央下の家・左上の遺跡に一致） */
-    const PREVIEW_SPOTS = [
-      {
-        id: 'harbor',
-        name: '外の大陸への港',
-        icon: '⛵',
-        mapX: 19.5,
-        mapY: 88.5,
-        desc: '街の南西に広がる船着き場。今後のアップデート（Ver 1.5）にて、開拓した街から外の大陸へ交易船を出したり、新しい地図を探索できる機能が解放予定です。'
-      },
-      {
-        id: 'myroom',
-        name: 'マイルーム',
-        icon: '🏠',
-        mapX: 50.0,
-        mapY: 71.5,
-        desc: '噴水広場のすぐ南にある温かい木造の自宅。今後のアップデートにて、集めたコインで家具や本棚、観葉植物を自由に配置できる模様替え機能が解放予定です。'
-      },
-      {
-        id: 'dungeon',
-        name: 'はじまりの遺跡（ダンジョン）',
-        icon: '🏛️',
-        mapX: 18.0,
-        mapY: 22.0,
-        desc: '北西の森の奥に眠る古代の石畳遺跡。今後のアップデートにて、蓄積した学習エネルギーと能力を活かして挑む「遺跡探索モード」が解放予定です。'
-      }
-    ];
-
-    /* 学習テーマ定義（6種類） */
-    const STUDY_THEMES = [
-      { id: 'english', name: '英語・語学', icon: '🌍' },
-      { id: 'qualification', name: '資格・試験', icon: '📚' },
-      { id: 'programming', name: 'プログラミング', icon: '💻' },
-      { id: 'reading', name: '読書・教養', icon: '📖' },
-      { id: 'work', name: '仕事・スキル', icon: '✏️' },
-      { id: 'free', name: '自由学習', icon: '🌱' }
-    ];
-
-    /* タイマー時間プリセット（2, 5, 15, 25, 50分） */
-    const TIMER_PRESETS = [
-      { min: 2, label: '2分', sub: '🔥 着火・準備' },
-      { min: 5, label: '5分', sub: '🌱 火付け集中' },
-      { min: 15, label: '15分', sub: '☕ スキマ時間' },
-      { min: 25, label: '25分', sub: '🍅 王道集中' },
-      { min: 50, label: '50分', sub: '🏛️ 深い没入' }
-    ];
-
-    /* 2分選択時限定の「準備・意識づけ」選択肢 */
-    const TWO_MIN_PREP_CHIPS = [
-      '🪑 まずは机に座る・姿勢を整える',
-      '📖 参考書・テキストを開いて置く',
-      '💻 PC・学習アプリを立ち上げる',
-      '☕ 飲み物を用意して机の上を整える',
-      '✍️ 今日やる範囲を1行だけ確認する'
-    ];
-
-    /* 通常のワンタップ宣言チップ */
-    const STANDARD_DECLARATION_CHIPS = [
-      'まずは1ページだけ進める',
-      '重要パートを集中して復習',
-      '音声・リスニングに集中する',
-      '演習問題を解き切る',
-      '自分のペースで楽しく学ぶ'
-    ];
-
-    /* 開拓パス（成長の軌跡）マイルストーン */
-    const PIONEER_PATH_MILESTONES = [
-      { min: 0, title: '🌱 はじまりの開拓者', reward: '噴水広場が解放済・開拓スタート' },
-      { min: 30, title: '🕯️ 灯りをともす者', reward: '放置コイン金庫の最大容量 +30🪙' },
-      { min: 100, title: '☕ 木漏れ日の建築家', reward: '初期施設1棟目完成目安・金庫効率UP' },
-      { min: 250, title: '🕰️ 時を紡ぐ探究者', reward: '街の朝陽エフェクト強化・金庫最大容量 +60🪙' },
-      { min: 400, title: '🌿 緑と風のマイスター', reward: '中盤施設の開拓熟練度ボーナス解放' },
-      { min: 600, title: '🏛️ 叡智の大図書館の守護者', reward: '街全体の長期計画達成！黄金の祝福オーラ解放' }
-    ];
-
-    /* === 7-2. セーブデータ初期化＆ロード === */
-    const STORAGE_KEY = 'lumina_ver1_save_v1';
-    const CUSTOM_MAP_KEY = 'lumina_custom_map_dataurl';
-
-    function getDefaultState() {
-      const buildingProgress = {};
-      BUILDINGS_MASTER.forEach(b => {
-        buildingProgress[b.id] = b.defaultMinutes;
-      });
-      const themeMinutes = {};
-      const themeEval = {};
-      STUDY_THEMES.forEach(t => {
-        themeMinutes[t.id] = 0;
-        themeEval[t.id] = 1; // 1: 🌱基礎, 2: 🌿少し使える, 3: 🌳自信あり
-      });
-      return {
-        xp: 0,
-        coins: 50,
-        totalMinutes: 0,
-        activeBuildingId: 'cafe',
-        buildingMinutes: buildingProgress,
-        themeMinutes: themeMinutes,
-        themeEval: themeEval,
-        lastDailyBonusDate: '',
-        lastCoinUpdateAt: Date.now(),
-        vaultCoins: 15,
-        logs: []
-      };
-    }
-
-    let state = loadState();
-    let selectedDuration = 25;
-    let selectedThemeId = 'english';
-    let timerInterval = null;
-    let timerRemainingSec = 25 * 60;
-    let timerTotalSec = 25 * 60;
-    let timerPaused = false;
-    let isTimerRunning = false;
-    let currentModalBuildingId = null;
-    let logoTapCount = 0;
-    let logoTapTimer = null;
-    let mapLoadedSuccessfully = false;
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return getDefaultState();
-        const parsed = JSON.parse(raw);
-        const def = getDefaultState();
-        return {
-          ...def,
-          ...parsed,
-          buildingMinutes: { ...def.buildingMinutes, ...(parsed.buildingMinutes || {}) },
-          themeMinutes: { ...def.themeMinutes, ...(parsed.themeMinutes || {}) },
-          themeEval: { ...def.themeEval, ...(parsed.themeEval || {}) },
-          logs: Array.isArray(parsed.logs) ? parsed.logs : []
+        // アプリ状態
+        let state = {
+            xp: 0,
+            totalMinutes: 0,
+            selectedFacilityId: 'cafe',
+            facilities: {},
+            logs: []
         };
-      } catch (e) {
-        return getDefaultState();
-      }
-    }
 
-    function saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        console.warn('Save failed:', e);
-      }
-    }
+        let selectedDuration = 25;
+        let remainingSeconds = 25 * 60;
+        let timerInterval = null;
+        let isRunning = false;
+        let logoTapCount = 0;
 
-    /* === 7-3. マップ画像（map.jpg / カスタムアップロード）処理 === */
-    function initMapImage() {
-      const customDataUrl = localStorage.getItem(CUSTOM_MAP_KEY);
-      const imgEl = document.getElementById('mapBackgroundImg');
-      if (customDataUrl) {
-        imgEl.src = customDataUrl;
-      } else {
-        imgEl.src = 'map.jpg';
-      }
-    }
+        // 初期化・データ読み込み
+        function initApp() {
+            const saved = localStorage.getItem('lumina_app_state_v1');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    state = { ...state, ...parsed };
+                } catch (e) { console.error(e); }
+            }
 
-    function handleMapImageLoaded() {
-      mapLoadedSuccessfully = true;
-      document.getElementById('mapBackgroundImg').classList.remove('opacity-0');
-      document.getElementById('mapSetupHelperBanner').classList.add('hidden');
-      updateAllUI();
-    }
+            FACILITIES.forEach(f => {
+                if (state.facilities[f.id] === undefined) {
+                    state.facilities[f.id] = f.progress;
+                }
+            });
 
-    function handleMapImageFallback() {
-      mapLoadedSuccessfully = false;
-      document.getElementById('mapBackgroundImg').classList.add('opacity-0');
-      document.getElementById('mapSetupHelperBanner').classList.remove('hidden');
-      updateAllUI();
-    }
-
-    function uploadCustomMapFile(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        const dataUrl = ev.target.result;
-        try {
-          localStorage.setItem(CUSTOM_MAP_KEY, dataUrl);
-        } catch (err) {
-          showToast('画像サイズが大きいためセッション中のみ適用します');
+            renderFacilitySelector();
+            renderMapNodes();
+            renderClouds();
+            spawnSparkles();
+            updateAllUI();
         }
-        const imgEl = document.getElementById('mapBackgroundImg');
-        imgEl.src = dataUrl;
-        mapLoadedSuccessfully = true;
-        document.getElementById('mapSetupHelperBanner').classList.add('hidden');
-        showToast('🖼️ 2.5Dマップ背景画像を適用しました！');
-        updateAllUI();
-      };
-      reader.readAsDataURL(file);
-    }
 
-    function clearCustomMapImage() {
-      localStorage.removeItem(CUSTOM_MAP_KEY);
-      const imgEl = document.getElementById('mapBackgroundImg');
-      imgEl.src = 'map.jpg';
-      showToast('標準の map.jpg 読み込みに戻しました');
-    }
-
-    /* === 7-4. 建物別の高精細ベクターアート生成（背景未配置時や拡大ビューの補強用） === */
-    function getBuildingDetailedSvg(buildingId) {
-      switch (buildingId) {
-        case 'cafe':
-          return `<svg viewBox="0 0 160 130" class="w-full h-full drop-shadow-md">
-            <ellipse cx="80" cy="112" rx="64" ry="14" fill="#D5C1A5" />
-            <rect x="34" y="56" width="92" height="52" rx="6" fill="#F5E6D3" stroke="#6B4423" stroke-width="3"/>
-            <path d="M22,60 L80,20 L138,60 Z" fill="#C87D3B" stroke="#5C3A1E" stroke-width="3"/>
-            <rect x="44" y="72" width="32" height="22" rx="3" fill="#FEF08A" stroke="#6B4423" stroke-width="2.5"/>
-            <path d="M40,70 L80,70 L76,80 L36,80 Z" fill="#2E7D32"/>
-            <rect x="92" y="70" width="22" height="38" rx="3" fill="#7C4D2B" stroke="#4A2C11" stroke-width="2"/>
-          </svg>`;
-        case 'clocktower':
-          return `<svg viewBox="0 0 160 150" class="w-full h-full drop-shadow-md">
-            <ellipse cx="80" cy="134" rx="54" ry="12" fill="#D5C1A5" />
-            <rect x="52" y="42" width="56" height="90" rx="4" fill="#D9A773" stroke="#5C3A1E" stroke-width="3"/>
-            <path d="M42,44 L80,8 L118,44 Z" fill="#3B6E52" stroke="#264A36" stroke-width="3"/>
-            <circle cx="80" cy="68" r="16" fill="#FFFBEB" stroke="#5C3A1E" stroke-width="3"/>
-            <line x1="80" y1="68" x2="80" y2="57" stroke="#4A3525" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="80" y1="68" x2="89" y2="68" stroke="#4A3525" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>`;
-        case 'library':
-          return `<svg viewBox="0 0 170 150" class="w-full h-full drop-shadow-md">
-            <ellipse cx="85" cy="134" rx="68" ry="13" fill="#D5C1A5" />
-            <rect x="30" y="54" width="110" height="76" rx="4" fill="#E6DEC8" stroke="#4A3B32" stroke-width="3"/>
-            <path d="M24,56 L85,14 L146,56 Z" fill="#46697A" stroke="#2B424F" stroke-width="3"/>
-            <path d="M68,94 A17,17 0 0,1 102,94 L102,130 L68,130 Z" fill="#7C4D2B" stroke="#4A2C11" stroke-width="2.5"/>
-            <circle cx="85" cy="62" r="13" fill="#93C5FD" stroke="#4A3B32" stroke-width="2.5"/>
-          </svg>`;
-        case 'fountain':
-          return `<svg viewBox="0 0 160 120" class="w-full h-full drop-shadow-md">
-            <ellipse cx="80" cy="88" rx="62" ry="22" fill="#D6CFC2" stroke="#8C7F70" stroke-width="3"/>
-            <ellipse cx="80" cy="85" rx="52" ry="16" fill="#60A5FA" />
-            <ellipse cx="80" cy="62" rx="28" ry="9" fill="#E5E0D5" stroke="#8C7F70" stroke-width="2.5"/>
-            <path d="M80,28 Q62,45 58,82 M80,28 Q98,45 102,82" stroke="#E0F2FE" stroke-width="3" fill="none"/>
-          </svg>`;
-        case 'greenhouse':
-          return `<svg viewBox="0 0 160 130" class="w-full h-full drop-shadow-md">
-            <ellipse cx="80" cy="112" rx="64" ry="14" fill="#C5D8B5" />
-            <path d="M32,108 L32,62 Q80,26 128,62 L128,108 Z" fill="#A7F3D0" fill-opacity="0.78" stroke="#2E6F4E" stroke-width="3"/>
-            <circle cx="64" cy="88" r="14" fill="#4ADE80" />
-            <circle cx="96" cy="86" r="16" fill="#F472B6" />
-          </svg>`;
-        case 'windmill':
-          return `<svg viewBox="0 0 160 145" class="w-full h-full drop-shadow-md">
-            <ellipse cx="80" cy="126" rx="60" ry="14" fill="#D5C1A5" />
-            <polygon points="56,122 66,48 94,48 104,122" fill="#E7C9A9" stroke="#6B4423" stroke-width="3"/>
-            <path d="M58,50 L80,26 L102,50 Z" fill="#C87D3B" stroke="#5C3A1E" stroke-width="3"/>
-            <g transform="translate(80,62)">
-              <line x1="-38" y1="-26" x2="38" y2="26" stroke="#5C3A1E" stroke-width="4"/>
-              <line x1="26" y1="-38" x2="-26" y2="38" stroke="#5C3A1E" stroke-width="4"/>
-              <circle cx="0" cy="0" r="6" fill="#F59E0B" stroke="#4A3525" stroke-width="2"/>
-            </g>
-          </svg>`;
-        case 'lighthouse':
-        default:
-          return `<svg viewBox="0 0 160 155" class="w-full h-full drop-shadow-md">
-            <ellipse cx="80" cy="136" rx="56" ry="14" fill="#C5B398" />
-            <polygon points="60,132 68,42 92,42 100,132" fill="#FAF5EB" stroke="#5C4033" stroke-width="3"/>
-            <rect x="64" y="26" width="32" height="18" rx="3" fill="#FDE68A" stroke="#5C4033" stroke-width="2.5"/>
-            <path d="M58,26 L80,8 L102,26 Z" fill="#3B82F6" stroke="#1E3A8A" stroke-width="3"/>
-          </svg>`;
-      }
-    }
-
-    /* === 7-5. 2.5Dマップ上の動的レイヤー＆段階的ビルドアップ描画 === */
-    function renderMapNodes() {
-      const container = document.getElementById('mapNodesContainer');
-      const ambientLayer = document.getElementById('mapAmbientLayer');
-
-      // 1. 水面のきらめき＆光の粒子を配置
-      ambientLayer.innerHTML = `
-        <div class="water-shimmer absolute left-[48%] top-[49%] w-16 h-16 rounded-full bg-sky-200/35 blur-md"></div>
-        <div class="water-shimmer absolute left-[24%] top-[36%] w-20 h-10 rounded-full bg-sky-200/30 blur-md" style="animation-delay:1.1s"></div>
-        <div class="water-shimmer absolute left-[58%] top-[16%] w-24 h-12 rounded-full bg-sky-200/30 blur-md" style="animation-delay:2.2s"></div>
-        <span class="sparkle-particle text-xs left-[49%] top-[47%]">✨</span>
-        <span class="sparkle-particle text-xs left-[31%] top-[45%]" style="animation-delay:0.9s">✨</span>
-        <span class="sparkle-particle text-xs left-[63%] top-[26%]" style="animation-delay:1.7s">✨</span>
-      `;
-
-      let html = '';
-
-      // 2. 7つの主要施設スポットを描画（更地カバー＋木組み足場＋光の設計図が0〜100%で下から上へ剥がれる）
-      BUILDINGS_MASTER.forEach(b => {
-        const curMin = Math.min(b.reqMinutes, state.buildingMinutes[b.id] || 0);
-        const pct = Math.min(100, Math.round((curMin / b.reqMinutes) * 100));
-        const unbuiltPct = 100 - pct;
-        const isCompleted = pct >= 100;
-        const isTarget = state.activeBuildingId === b.id;
-
-        html += `
-          <div class="spot-node cursor-pointer select-none"
-               style="left: ${b.mapX}%; top: ${b.mapY}%; width: ${b.boxW}px; height: ${b.boxH}px;"
-               onclick="openBuildingModal('${b.id}')">
-
-            <!-- Building Base Frame -->
-            <div class="relative w-full h-full rounded-2xl transition-all ${isTarget ? 'ring-3 ring-[#F59E0B] shadow-lg' : ''}">
-
-              <!-- Fallback SVG Building when map.jpg is not loaded -->
-              <div class="${mapLoadedSuccessfully ? 'opacity-0' : 'opacity-100'} absolute inset-0 p-1">
-                ${getBuildingDetailedSvg(b.id)}
-              </div>
-
-              <!-- Completed Golden Glow Aura -->
-              ${isCompleted ? `
-                <div class="absolute inset-2 rounded-full bg-amber-300/15 blur-md pointer-events-none"></div>
-              ` : ''}
-
-              <!-- Unbuilt Top Shroud (Covers top (100 - pct)% so building reveals from bottom to top!) -->
-              ${!isCompleted ? `
-                <div class="absolute top-0 left-0 right-0 rounded-t-2xl blueprint-shroud overflow-hidden pointer-events-none"
-                     style="height: ${unbuiltPct}%;">
-                  <!-- Isometric Wooden Timber Scaffolding SVG -->
-                  <svg viewBox="0 0 120 100" preserveAspectRatio="none" class="w-full h-full opacity-80">
-                    <line x1="14" y1="0" x2="14" y2="100" stroke="#7C4D2B" stroke-width="3.5"/>
-                    <line x1="60" y1="0" x2="60" y2="100" stroke="#7C4D2B" stroke-width="3"/>
-                    <line x1="106" y1="0" x2="106" y2="100" stroke="#7C4D2B" stroke-width="3.5"/>
-                    <line x1="6" y1="28" x2="114" y2="28" stroke="#9A653A" stroke-width="3.5"/>
-                    <line x1="6" y1="62" x2="114" y2="62" stroke="#9A653A" stroke-width="3.5"/>
-                    <line x1="6" y1="94" x2="114" y2="94" stroke="#9A653A" stroke-width="4"/>
-                    <line x1="14" y1="94" x2="60" y2="62" stroke="#B88354" stroke-width="2" stroke-dasharray="3 2"/>
-                    <line x1="60" y1="94" x2="106" y2="62" stroke="#B88354" stroke-width="2" stroke-dasharray="3 2"/>
-                    <line x1="14" y1="62" x2="60" y2="28" stroke="#B88354" stroke-width="2" stroke-dasharray="3 2"/>
-                  </svg>
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="work-badge-anim bg-[#FFFDF9]/90 border border-[#C89F78] text-[#4A3525] text-[10px] font-bold px-1.5 py-0.5 rounded-md shadow-xs">
-                      🔨 建築中
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Glowing Creation Laser Line at exact reveal height -->
-                <div class="absolute left-1 right-1 creation-laser-line pointer-events-none"
-                     style="bottom: ${pct}%;"></div>
-              ` : ''}
-
-              <!-- Floating Name & Progress Label Pill -->
-              <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap z-20">
-                <div class="px-2 py-0.5 rounded-full text-[10px] font-bold shadow-md border flex items-center gap-1 ${
-                  isCompleted
-                    ? 'bg-[#FFFBEB] text-[#B45309] border-[#F59E0B]'
-                    : isTarget
-                      ? 'bg-[#4A3525] text-[#FFFDF9] border-[#F59E0B]'
-                      : 'bg-[#FFFDF9]/95 text-[#4A3525] border-[#C89F78]'
-                }">
-                  <span>${b.icon}</span>
-                  <span>${b.shortName}</span>
-                  <span class="${isCompleted ? 'text-[#059669]' : 'text-[#D97706]'}">${pct}%</span>
-                </div>
-              </div>
-
-              ${isTarget && !isCompleted ? `
-                <div class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap z-20">
-                  <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#F59E0B] text-white shadow-sm">
-                    🎯 優先建築中
-                  </span>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-        `;
-      });
-
-      // 3. Ver 1.5 予告スポット（港・マイルーム・遺跡）を描画
-      PREVIEW_SPOTS.forEach(s => {
-        html += `
-          <div class="spot-node cursor-pointer select-none"
-               style="left: ${s.mapX}%; top: ${s.mapY}%;"
-               onclick="openComingSoonModal('${s.id}')">
-            <div class="bg-[#FFFDF9]/90 hover:bg-[#FEF3C7] backdrop-blur-xs border-2 border-[#C89F78] px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 text-[10px] font-bold text-[#5C4033] transition">
-              <span>${s.icon}</span>
-              <span>${s.name}</span>
-              <span class="text-[9px] px-1 rounded bg-[#EFE6D5] text-[#8A6D53]">予告</span>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    /* === 7-6. 集中タブのライブ建築ステージ＆上部創生ビジョンの同期 === */
-    function updateLiveVisionAndFocusStage(extraPendingMinutes = 0) {
-      const activeB = BUILDINGS_MASTER.find(b => b.id === state.activeBuildingId) || BUILDINGS_MASTER[0];
-      const baseMin = Math.min(activeB.reqMinutes, state.buildingMinutes[activeB.id] || 0);
-      const effectiveMin = Math.min(activeB.reqMinutes, baseMin + extraPendingMinutes);
-      const exactPct = Math.min(100, (effectiveMin / activeB.reqMinutes) * 100);
-      const displayPct = Math.round(exactPct * 10) / 10;
-      const unbuiltPct = Math.max(0, 100 - exactPct);
-
-      // 1. 上部「街の創生ビジョン（ライブ）」更新
-      document.getElementById('liveTargetBadge').textContent = `${activeB.icon} ${activeB.name}`;
-      document.getElementById('liveTargetPctText').textContent = `${displayPct}%`;
-      document.getElementById('liveTargetMinText').textContent = `${Math.floor(effectiveMin)} / ${activeB.reqMinutes}分`;
-
-      const miniArt = document.getElementById('miniLiveArtwork');
-      const customDataUrl = localStorage.getItem(CUSTOM_MAP_KEY);
-      const bgUrl = customDataUrl ? customDataUrl : 'map.jpg';
-      if (mapLoadedSuccessfully) {
-        miniArt.style.backgroundImage = `url('${bgUrl}')`;
-        miniArt.style.backgroundPosition = `${activeB.mapX}% ${activeB.mapY}%`;
-        miniArt.style.backgroundSize = '420%';
-        miniArt.innerHTML = '';
-      } else {
-        miniArt.style.backgroundImage = 'none';
-        miniArt.innerHTML = `<div class="w-full h-full flex items-center justify-center p-2">${getBuildingDetailedSvg(activeB.id)}</div>`;
-      }
-      document.getElementById('miniLiveShroud').style.height = `${unbuiltPct}%`;
-      document.getElementById('miniLiveLaser').style.bottom = `${exactPct}%`;
-      document.getElementById('miniLiveLaser').style.display = exactPct >= 100 ? 'none' : 'block';
-
-      // 2. 集中タブの大型「ライブ建築連動ビュー」更新
-      document.getElementById('focusBuildingTitle').textContent = `${activeB.icon} ${activeB.name}`;
-      document.getElementById('focusBuildingProgressBadge').textContent = `進捗 ${displayPct.toFixed(1)}%`;
-      document.getElementById('focusStageMinInfo').textContent = `${effectiveMin.toFixed(1)} / ${activeB.reqMinutes}分`;
-
-      const stageMap = document.getElementById('focusStageZoomedMap');
-      const stageCustomSvg = document.getElementById('focusStageCustomIllustration');
-      if (mapLoadedSuccessfully) {
-        stageMap.style.backgroundImage = `url('${bgUrl}')`;
-        stageMap.style.backgroundPosition = `${activeB.mapX}% ${activeB.mapY}%`;
-        stageMap.style.backgroundSize = isTimerRunning ? '330%' : '300%';
-        stageCustomSvg.innerHTML = '';
-      } else {
-        stageMap.style.backgroundImage = 'radial-gradient(circle at 50% 60%, #E7F3E4 0%, #C6DEC1 100%)';
-        stageCustomSvg.innerHTML = `<div class="w-48 h-44">${getBuildingDetailedSvg(activeB.id)}</div>`;
-      }
-
-      document.getElementById('focusStageShroud').style.height = `${unbuiltPct}%`;
-      const focusLaser = document.getElementById('focusStageLaser');
-      focusLaser.style.bottom = `${exactPct}%`;
-      focusLaser.style.display = exactPct >= 100 ? 'none' : 'block';
-
-      const stageFrame = document.getElementById('focusLiveStageFrame');
-      const gainPreview = document.getElementById('focusLiveGainPreview');
-      const particlesBox = document.getElementById('focusStageParticles');
-
-      if (isTimerRunning) {
-        stageFrame.classList.add('live-focus-frame');
-        document.getElementById('focusStageStatusLabel').textContent = '🔨 ライブ建築稼働中';
-        gainPreview.textContent = `リアルタイム建設中 (+${extraPendingMinutes.toFixed(2)}分 反映中 ✨)`;
-        particlesBox.innerHTML = `
-          <span class="sparkle-particle text-sm left-[25%]" style="bottom:${exactPct}%; animation-delay:0s;">✨</span>
-          <span class="sparkle-particle text-base left-[50%]" style="bottom:${exactPct}%; animation-delay:0.7s;">✨</span>
-          <span class="sparkle-particle text-sm left-[75%]" style="bottom:${exactPct}%; animation-delay:1.4s;">✨</span>
-        `;
-      } else {
-        stageFrame.classList.remove('live-focus-frame');
-        document.getElementById('focusStageStatusLabel').textContent = 'ライブ建築連動ビュー';
-        const estGainPct = Math.min(100 - exactPct, Math.round((selectedDuration / activeB.reqMinutes) * 1000) / 10);
-        gainPreview.textContent = exactPct >= 100
-          ? '🎉 この施設は100%完成しています！'
-          : `${selectedDuration}分完了で +${estGainPct}% 立ち上がります`;
-        particlesBox.innerHTML = '';
-      }
-    }
-
-    /* === 7-7. 集中タイマー設定UI（2分選択時限定の「準備・意識づけ」連動） === */
-    function renderFocusSetupControls() {
-      // 1. タイマー時間ボタン（2, 5, 15, 25, 50分）
-      const durContainer = document.getElementById('durationButtonsContainer');
-      durContainer.innerHTML = TIMER_PRESETS.map(p => {
-        const active = p.min === selectedDuration;
-        return `
-          <button onclick="selectTimerDuration(${p.min})"
-                  class="py-2.5 px-1 rounded-xl border-2 text-center transition flex flex-col items-center justify-center ${
-                    active
-                      ? 'bg-[#4A3525] text-[#FFFDF9] border-[#F59E0B] shadow-md scale-[1.02]'
-                      : 'bg-[#FFFDF9] text-[#4A3525] border-[#DECBB3] hover:bg-[#F5EDE0]'
-                  }">
-            <span class="text-sm font-bold">${p.label}</span>
-            <span class="text-[9px] mt-0.5 ${active ? 'text-[#FDE68A]' : 'text-[#8A6D53]'}">${p.sub}</span>
-          </button>
-        `;
-      }).join('');
-
-      const presetObj = TIMER_PRESETS.find(p => p.min === selectedDuration) || TIMER_PRESETS[3];
-      document.getElementById('selectedDurationHint').textContent = `${presetObj.label}（${presetObj.sub}）`;
-      document.getElementById('startFocusBtnLabel').textContent = `${selectedDuration}分の開拓セッションを開始する`;
-
-      // 2. 「2分」を選んだときだけ「準備する・意識づけ」専用パネルを展開！
-      const twoMinBox = document.getElementById('twoMinPrepBox');
-      const twoMinChipsEl = document.getElementById('twoMinPrepChips');
-      if (selectedDuration === 2) {
-        twoMinBox.classList.remove('hidden');
-        twoMinChipsEl.innerHTML = TWO_MIN_PREP_CHIPS.map(chip => `
-          <button onclick="setDeclarationChip('${chip}')"
-                  class="text-[11px] bg-[#FFFDF9] hover:bg-[#FEF3C7] text-[#5C4033] font-bold px-2.5 py-1.5 rounded-xl border border-[#F59E0B] shadow-2xs transition">
-            ${chip}
-          </button>
-        `).join('');
-      } else {
-        twoMinBox.classList.add('hidden');
-      }
-
-      // 3. テーマ選択ボタン（6種類）
-      const themeGrid = document.getElementById('themeButtonsGrid');
-      themeGrid.innerHTML = STUDY_THEMES.map(t => {
-        const active = t.id === selectedThemeId;
-        return `
-          <button onclick="selectStudyTheme('${t.id}')"
-                  class="py-2 px-3 rounded-xl border-2 text-xs font-bold flex items-center gap-2 transition ${
-                    active
-                      ? 'bg-[#FEF3C7] text-[#92400E] border-[#F59E0B] shadow-xs'
-                      : 'bg-[#FFFDF9] text-[#4A3525] border-[#DECBB3] hover:bg-[#F5EDE0]'
-                  }">
-            <span class="text-base">${t.icon}</span>
-            <span>${t.name}</span>
-          </button>
-        `;
-      }).join('');
-
-      // 4. 通常ワンタップ宣言チップ
-      const stdChipsEl = document.getElementById('standardDeclarationChips');
-      stdChipsEl.innerHTML = STANDARD_DECLARATION_CHIPS.map(chip => `
-        <button onclick="setDeclarationChip('${chip}')"
-                class="text-[11px] bg-[#F3ECE0] hover:bg-[#E5D7C3] text-[#5C4033] px-2.5 py-1 rounded-lg border border-[#D4BFA4] transition">
-          ＋ ${chip}
-        </button>
-      `).join('');
-    }
-
-    function selectTimerDuration(min) {
-      selectedDuration = min;
-      // 2分を選択した際、宣言が未入力なら初動アクションをスマートにセット可能にする
-      renderFocusSetupControls();
-      updateLiveVisionAndFocusStage(0);
-    }
-
-    function selectStudyTheme(themeId) {
-      selectedThemeId = themeId;
-      renderFocusSetupControls();
-    }
-
-    function setDeclarationChip(text) {
-      document.getElementById('declarationInput').value = text;
-    }
-
-    /* === 7-8. タイマー実行＆リアルタイム建築進行ロジック === */
-    function startFocusSession() {
-      if (timerInterval) clearInterval(timerInterval);
-      isTimerRunning = true;
-      timerPaused = false;
-      timerTotalSec = selectedDuration * 60;
-      timerRemainingSec = timerTotalSec;
-
-      const themeObj = STUDY_THEMES.find(t => t.id === selectedThemeId) || STUDY_THEMES[0];
-      const decl = document.getElementById('declarationInput').value.trim() || (selectedDuration === 2 ? 'まずは準備して学習スイッチを入れる' : '集中して開拓を進める');
-
-      document.getElementById('runningThemeBadge').textContent = `${themeObj.icon} ${themeObj.name}`;
-      document.getElementById('runningDeclarationText').textContent = decl;
-      document.getElementById('focusSetupPanel').classList.add('hidden');
-      document.getElementById('focusCompletePanel').classList.add('hidden');
-      document.getElementById('focusRunningPanel').classList.remove('hidden');
-
-      updateTimerDisplayUI();
-      timerInterval = setInterval(tickTimer, 1000);
-    }
-
-    function tickTimer() {
-      if (timerPaused) return;
-      if (timerRemainingSec > 0) {
-        timerRemainingSec--;
-        updateTimerDisplayUI();
-      } else {
-        finishFocusEarlyToComplete();
-      }
-    }
-
-    function updateTimerDisplayUI() {
-      const m = Math.floor(timerRemainingSec / 60);
-      const s = timerRemainingSec % 60;
-      document.getElementById('timerDisplay').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-
-      const elapsedSec = timerTotalSec - timerRemainingSec;
-      const sessionPct = Math.min(100, (elapsedSec / timerTotalSec) * 100);
-      document.getElementById('sessionTimerBar').style.width = `${sessionPct}%`;
-
-      // 経過秒数に応じてリアルタイムに建物の足場カバーが下から上へ剥がれる！
-      const elapsedMinutesLive = (elapsedSec / 60);
-      updateLiveVisionAndFocusStage(elapsedMinutesLive);
-    }
-
-    function togglePauseTimer() {
-      timerPaused = !timerPaused;
-      document.getElementById('pauseResumeBtn').textContent = timerPaused ? '▶️ 再開する' : '⏸️ 一時停止';
-    }
-
-    function finishFocusEarlyToComplete() {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
-      isTimerRunning = false;
-
-      document.getElementById('focusRunningPanel').classList.add('hidden');
-      document.getElementById('focusCompletePanel').classList.remove('hidden');
-
-      const activeB = BUILDINGS_MASTER.find(b => b.id === state.activeBuildingId) || BUILDINGS_MASTER[0];
-      document.getElementById('completeSummaryText').textContent = `今回の学習時間: ${selectedDuration}分（${activeB.name} の建設が進行します）`;
-
-      const bonusMin = Math.ceil(selectedDuration * 1.5);
-      document.getElementById('normalRewardPreview').textContent = `+${selectedDuration}分 / +${selectedDuration}✨ / +${selectedDuration}🪙`;
-      document.getElementById('bonusRewardPreview').textContent = `+${bonusMin}分 / +${bonusMin}✨ / +${bonusMin}🪙`;
-
-      const todayStr = new Date().toISOString().slice(0, 10);
-      const bonusUsedToday = state.lastDailyBonusDate === todayStr;
-      const bonusBtn = document.getElementById('dailyBonusBtn');
-      if (bonusUsedToday) {
-        bonusBtn.disabled = true;
-        bonusBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        document.getElementById('dailyBonusBtnTitle').textContent = '② 1日1回ボーナス（本日受取済）';
-      } else {
-        bonusBtn.disabled = false;
-        bonusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        document.getElementById('dailyBonusBtnTitle').textContent = '② 1日1回ボーナス(+50%)で刻印';
-      }
-
-      updateLiveVisionAndFocusStage(selectedDuration);
-    }
-
-    /* === 7-9. 完了時の3択処理（通常刻印 / 1日1回+50%ボーナス / 学習できなかった） === */
-    function submitSessionResult(mode) {
-      if (mode === 'cancel') {
-        document.getElementById('focusCompletePanel').classList.add('hidden');
-        document.getElementById('focusSetupPanel').classList.remove('hidden');
-        document.getElementById('completeMemoInput').value = '';
-        updateLiveVisionAndFocusStage(0);
-        showToast('🍃 今回は報酬・進捗を受け取らず終了しました。またいつでも始めましょう！');
-        return;
-      }
-
-      const todayStr = new Date().toISOString().slice(0, 10);
-      const isBonus = mode === 'bonus' && state.lastDailyBonusDate !== todayStr;
-      const earnedMin = isBonus ? Math.ceil(selectedDuration * 1.5) : selectedDuration;
-
-      if (isBonus) {
-        state.lastDailyBonusDate = todayStr;
-      }
-
-      // 累計・XP・コイン加算
-      state.totalMinutes += earnedMin;
-      state.xp += earnedMin;
-      state.coins += earnedMin;
-      state.themeMinutes[selectedThemeId] = (state.themeMinutes[selectedThemeId] || 0) + earnedMin;
-
-      // 建物への進捗反映（完成したら余剰分は次の未完成施設へ自動キャリーオーバー）
-      let remainingToAllocate = earnedMin;
-      let targetB = BUILDINGS_MASTER.find(b => b.id === state.activeBuildingId);
-      if (targetB) {
-        const cur = state.buildingMinutes[targetB.id] || 0;
-        const needed = Math.max(0, targetB.reqMinutes - cur);
-        const add = Math.min(needed, remainingToAllocate);
-        state.buildingMinutes[targetB.id] = cur + add;
-        remainingToAllocate -= add;
-      }
-      if (remainingToAllocate > 0) {
-        for (const b of BUILDINGS_MASTER) {
-          if (remainingToAllocate <= 0) break;
-          const cur = state.buildingMinutes[b.id] || 0;
-          const needed = Math.max(0, b.reqMinutes - cur);
-          if (needed > 0) {
-            const add = Math.min(needed, remainingToAllocate);
-            state.buildingMinutes[b.id] = cur + add;
-            remainingToAllocate -= add;
-            state.activeBuildingId = b.id;
-          }
+        function saveState() {
+            localStorage.setItem('lumina_app_state_v1', JSON.stringify(state));
         }
-      }
 
-      // 現在ターゲットが100%に達していたら次の未完成施設を自動選択
-      const currentActiveObj = BUILDINGS_MASTER.find(b => b.id === state.activeBuildingId);
-      if (currentActiveObj && (state.buildingMinutes[currentActiveObj.id] || 0) >= currentActiveObj.reqMinutes) {
-        const nextIncomplete = BUILDINGS_MASTER.find(b => (state.buildingMinutes[b.id] || 0) < b.reqMinutes);
-        if (nextIncomplete) {
-          state.activeBuildingId = nextIncomplete.id;
+        // 施設プルダウン生成
+        function renderFacilitySelector() {
+            const sel = document.getElementById('facilitySelector');
+            sel.innerHTML = '';
+            FACILITIES.forEach(f => {
+                const opt = document.createElement('option');
+                opt.value = f.id;
+                const pct = state.facilities[f.id];
+                opt.textContent = `${f.name} (${pct}%)`;
+                if (f.id === state.selectedFacilityId) opt.selected = true;
+                sel.appendChild(opt);
+            });
         }
-      }
 
-      // 年代記ログ保存
-      const memo = document.getElementById('completeMemoInput').value.trim();
-      const decl = document.getElementById('declarationInput').value.trim();
-      state.logs.unshift({
-        id: Date.now(),
-        date: todayStr,
-        timestamp: Date.now(),
-        themeId: selectedThemeId,
-        minutes: earnedMin,
-        memo: memo || decl || '集中セッションを刻印',
-        bonus: isBonus
-      });
-      if (state.logs.length > 60) state.logs.pop();
-
-      // 入力リセット＆画面復帰
-      document.getElementById('completeMemoInput').value = '';
-      document.getElementById('declarationInput').value = '';
-      document.getElementById('focusCompletePanel').classList.add('hidden');
-      document.getElementById('focusSetupPanel').classList.remove('hidden');
-
-      saveState();
-      updateAllUI();
-      showToast(isBonus ? `🌟 ボーナス刻印完了！ +${earnedMin}分 街が発展しました！` : `✨ 刻印完了！ +${earnedMin}分 街が発展しました！`);
-    }
-
-    /* === 7-10. 放置コイン金庫の計算と回収 === */
-    function updateIdleVault() {
-      const now = Date.now();
-      const elapsedHours = Math.max(0, (now - (state.lastCoinUpdateAt || now)) / (1000 * 60 * 60));
-
-      let hourlyRate = 5;
-      BUILDINGS_MASTER.forEach(b => {
-        if ((state.buildingMinutes[b.id] || 0) >= b.reqMinutes) {
-          hourlyRate += b.coinRate;
+        function selectFacility(id) {
+            state.selectedFacilityId = id;
+            saveState();
+            updateAllUI();
+            renderMapNodes();
         }
-      });
 
-      let maxVault = 120;
-      if (state.totalMinutes >= 30) maxVault += 30;
-      if (state.totalMinutes >= 250) maxVault += 60;
+        // マップ上の施設ピン＆足場アニメーション描画
+        function renderMapNodes() {
+            const container = document.getElementById('mapNodesContainer');
+            container.innerHTML = '';
 
-      if (elapsedHours >= 0.01) {
-        const gained = Math.floor(elapsedHours * hourlyRate);
-        if (gained > 0) {
-          state.vaultCoins = Math.min(maxVault, (state.vaultCoins || 0) + gained);
-          state.lastCoinUpdateAt = now;
-          saveState();
+            FACILITIES.forEach(f => {
+                const pct = state.facilities[f.id];
+                const node = document.createElement('div');
+                node.className = 'map-node';
+                node.style.left = f.x + '%';
+                node.style.top = f.y + '%';
+                node.onclick = () => selectFacility(f.id);
+
+                let iconHtml = '';
+                if (pct === 0) {
+                    iconHtml = `<div class="node-scaffold" title="着工前（整地済み）">🪧</div>`;
+                } else if (pct < 100) {
+                    iconHtml = `<div class="node-scaffold" title="建築中 (${pct}%)">🔨</div>`;
+                } else {
+                    iconHtml = `<div style="font-size:20px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4));">✨</div>`;
+                }
+
+                const isSelected = (f.id === state.selectedFacilityId) ? 'selected' : '';
+                node.innerHTML = `
+                    ${iconHtml}
+                    <div class="node-label ${isSelected}">${f.name.replace(/^④\s|^①\s|^②\s|^③\s|^⑤\s|^⑥\s|^⑦\s/, '')} ${pct}%</div>
+                `;
+                container.appendChild(node);
+            });
         }
-      }
 
-      document.getElementById('vaultRateBadge').textContent = `+${hourlyRate} 🪙 / 時間`;
-      document.getElementById('vaultAccumulatedText').textContent = state.vaultCoins || 0;
-      document.getElementById('vaultMaxText').textContent = maxVault;
+        // 未開拓の雲（霧）描画とXP連動解放
+        function renderClouds() {
+            const fogLayer = document.getElementById('fogLayer');
+            fogLayer.innerHTML = '';
 
-      const dot = document.getElementById('vaultFullDot');
-      if ((state.vaultCoins || 0) > 0) {
-        dot.classList.remove('hidden');
-      } else {
-        dot.classList.add('hidden');
-      }
-    }
+            // XPに応じて雲の濃さ・数が減っていく（600XPで外周の霧が完全に晴れる）
+            const clearRatio = Math.min(state.xp / 600, 1);
+            const cloudConfigs = [
+                { top: '-12%', left: '-8%', w: '36%', h: '42%', threshold: 0.15 },
+                { top: '-10%', right: '-8%', w: '38%', h: '40%', threshold: 0.30 },
+                { bottom: '-14%', left: '-6%', w: '35%', h: '40%', threshold: 0.50 },
+                { bottom: '-14%', right: '-6%', w: '38%', h: '42%', threshold: 0.70 },
+                { top: '32%', left: '-12%', w: '28%', h: '36%', threshold: 0.85 },
+                { top: '30%', right: '-12%', w: '28%', h: '36%', threshold: 0.95 }
+            ];
 
-    function collectIdleCoins() {
-      const amount = state.vaultCoins || 0;
-      if (amount <= 0) {
-        showToast('🪙 まだ金庫にコインが貯まっていません');
-        return;
-      }
-      state.coins += amount;
-      state.vaultCoins = 0;
-      state.lastCoinUpdateAt = Date.now();
-      saveState();
-      updateAllUI();
-      showToast(`🪙 金庫から +${amount} コインを回収しました！`);
-    }
+            cloudConfigs.forEach((c, idx) => {
+                if (clearRatio >= c.threshold) return; // 解放済みエリアの雲は消える
+                const div = document.createElement('div');
+                div.className = 'cloud-bank';
+                div.style.width = c.w;
+                div.style.height = c.h;
+                if (c.top) div.style.top = c.top;
+                if (c.bottom) div.style.bottom = c.bottom;
+                if (c.left) div.style.left = c.left;
+                if (c.right) div.style.right = c.right;
+                div.style.animationDelay = (idx * 1.5) + 's';
+                fogLayer.appendChild(div);
+            });
 
-    /* === 7-11. 開拓パス（成長の軌跡）＆ 記録タブ描画 === */
-    function renderPioneerPath() {
-      document.getElementById('pathTotalMinText').textContent = `${state.totalMinutes}分`;
-      const container = document.getElementById('pioneerPathContainer');
-      container.innerHTML = PIONEER_PATH_MILESTONES.map(m => {
-        const unlocked = state.totalMinutes >= m.min;
-        return `
-          <div class="p-3 rounded-xl border-2 flex items-center justify-between gap-3 transition ${
-            unlocked
-              ? 'bg-[#FFFDF9] border-[#F59E0B] shadow-xs'
-              : 'bg-[#F3ECE0]/70 border-[#DECBB3] opacity-75'
-          }">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base font-bold ${
-                unlocked ? 'bg-[#FEF3C7] text-[#B45309] border border-[#F59E0B]' : 'bg-[#E5D7C3] text-[#8A6D53]'
-              }">
-                ${unlocked ? '✨' : '🔒'}
-              </div>
-              <div>
-                <div class="text-xs font-bold text-[#4A3525]">${m.title}</div>
-                <div class="text-[11px] text-[#7C583E]">${m.reward}</div>
-              </div>
-            </div>
-            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 ${
-              unlocked ? 'bg-[#ECFDF5] text-[#047857]' : 'bg-[#E5D7C3] text-[#7C583E]'
-            }">
-              ${unlocked ? '解放済' : `累計 ${m.min}分`}
-            </span>
-          </div>
-        `;
-      }).join('');
-    }
+            const fogBadge = document.getElementById('fogStatusText');
+            if (clearRatio >= 1) {
+                fogBadge.textContent = '✨ はじまりの街の霧がすべて晴れました！（外の世界へ続く道が解放）';
+            } else {
+                const remainXp = Math.max(0, 600 - state.xp);
+                fogBadge.textContent = `☁️ 未開拓の雲：外周エリアを覆っています（完全解放まであと ${remainXp} XP）`;
+            }
+        }
 
-    function renderRecordsTab() {
-      // 1. 曜日別グラフ（直近7日間）
-      const daysJP = ['日', '月', '火', '水', '木', '金', '土'];
-      const last7 = [];
-      let weeklySum = 0;
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const dateStr = d.toISOString().slice(0, 10);
-        const dayMin = state.logs
-          .filter(l => l.date === dateStr)
-          .reduce((acc, cur) => acc + (cur.minutes || 0), 0);
-        weeklySum += dayMin;
-        last7.push({
-          label: daysJP[d.getDay()],
-          min: dayMin,
-          isToday: i === 0
+        // 光の粒子エフェクト
+        function spawnSparkles() {
+            const container = document.getElementById('sparkleContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const sp = document.createElement('div');
+                sp.className = 'magic-sparkle';
+                sp.style.left = (15 + Math.random() * 70) + '%';
+                sp.style.top = (25 + Math.random() * 55) + '%';
+                sp.style.animationDelay = (Math.random() * 2.5) + 's';
+                container.appendChild(sp);
+            }
+        }
+
+        // 全体UI更新
+        function updateAllUI() {
+            document.getElementById('headerXp').textContent = state.xp;
+            document.getElementById('headerMins').textContent = state.totalMinutes;
+
+            // 街全体の平均開拓度
+            const totalPct = FACILITIES.reduce((acc, f) => acc + state.facilities[f.id], 0);
+            const avgPct = Math.round(totalPct / FACILITIES.length);
+            document.getElementById('headerTownPct').textContent = avgPct;
+
+            // 完成マップの開示割合を街全体の開拓度に連動
+            const mask = document.getElementById('mapCompleteMask');
+            mask.style.opacity = (avgPct / 100).toFixed(2);
+
+            // 選択中施設の詳細更新
+            const currentFac = FACILITIES.find(f => f.id === state.selectedFacilityId);
+            const pct = state.facilities[currentFac.id];
+
+            document.getElementById('facilityDesc').textContent = currentFac.desc;
+            document.getElementById('facilityPctText').textContent = pct + '%';
+            document.getElementById('facilityProgressBar').style.width = pct + '%';
+
+            let stageLabel = 'Stage 1：着工・整地済み (0%)';
+            if (pct > 0 && pct < 50) stageLabel = `Stage 2：骨組み・足場建築中 (${pct}%)`;
+            else if (pct >= 50 && pct < 100) stageLabel = `Stage 3：屋根・外装仕上げ中 (${pct}%)`;
+            else if (pct >= 100) stageLabel = 'Stage 4：祝・建築完了 (100%)';
+            document.getElementById('stageTitle').textContent = stageLabel;
+
+            document.getElementById('step-1').className = 'stage-pill ' + (pct >= 0 ? 'done' : '');
+            document.getElementById('step-2').className = 'stage-pill ' + (pct >= 25 ? 'done' : '');
+            document.getElementById('step-3').className = 'stage-pill ' + (pct >= 65 ? 'done' : '');
+            document.getElementById('step-4').className = 'stage-pill ' + (pct >= 100 ? 'done' : '');
+
+            renderFacilitySelector();
+            renderClouds();
+            renderLogs();
+        }
+
+        // タイマー操作
+        function selectDuration(mins, btnEl) {
+            if (isRunning) return;
+            selectedDuration = mins;
+            remainingSeconds = mins * 60;
+            updateTimerDisplay();
+
+            document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('selected'));
+            btnEl.classList.add('selected');
+
+            const ignitionBox = document.getElementById('ignitionOption');
+            if (mins === 2) {
+                ignitionBox.style.display = 'block';
+            } else {
+                ignitionBox.style.display = 'none';
+                document.getElementById('prepModeCheck').checked = false;
+            }
+        }
+
+        function togglePrepText() {
+            const checked = document.getElementById('prepModeCheck').checked;
+            const goalInput = document.getElementById('taskGoalInput');
+            if (checked && !goalInput.value) {
+                goalInput.value = '机の片付け・テキストを開く準備をする（着火ステップ）';
+            }
+        }
+
+        function updateTimerDisplay() {
+            const m = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+            const s = String(remainingSeconds % 60).padStart(2, '0');
+            document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('startPauseBtn');
+            const earlyBtn = document.getElementById('finishEarlyBtn');
+
+            if (!isRunning) {
+                isRunning = true;
+                btn.textContent = '⏸ 一時停止';
+                earlyBtn.style.display = 'inline-block';
+
+                timerInterval = setInterval(() => {
+                    remainingSeconds--;
+                    updateTimerDisplay();
+                    if (remainingSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        openReflectionModal();
+                    }
+                }, 1000);
+            } else {
+                clearInterval(timerInterval);
+                isRunning = false;
+                btn.textContent = '▶ 再開する';
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            remainingSeconds = selectedDuration * 60;
+            updateTimerDisplay();
+            document.getElementById('startPauseBtn').textContent = '▶ 学習を開始して建築を進める';
+            document.getElementById('finishEarlyBtn').style.display = 'none';
+        }
+
+        // 完了＆振り返りモーダル
+        function openReflectionModal() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            const goal = document.getElementById('taskGoalInput').value.trim() || '自由学習・集中セッション';
+            const fac = FACILITIES.find(f => f.id === state.selectedFacilityId);
+            document.getElementById('modalSummaryText').textContent =
+                `「${goal}」（${selectedDuration}分）を完了しました！報酬として +${selectedDuration * 2} XP と「${fac.name}」の建築進捗を獲得します。`;
+            document.getElementById('reflectionInput').value = '';
+            document.getElementById('reflectionModal').classList.add('open');
+        }
+
+        function confirmSessionComplete() {
+            const goal = document.getElementById('taskGoalInput').value.trim() || '集中セッション';
+            const reflection = document.getElementById('reflectionInput').value.trim() || '予定通り集中して取り組めた！';
+            const fac = FACILITIES.find(f => f.id === state.selectedFacilityId);
+
+            // XP＆時間＆建築進捗加算
+            const earnedXp = selectedDuration * 2;
+            const buildGain = Math.max(5, Math.round(selectedDuration * 0.8));
+
+            state.xp += earnedXp;
+            state.totalMinutes += selectedDuration;
+            if (!fac.fixed) {
+                state.facilities[fac.id] = Math.min(100, state.facilities[fac.id] + buildGain);
+            }
+
+            // 年代記に記録
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            state.logs.unshift({
+                date: dateStr,
+                duration: selectedDuration,
+                goal: goal,
+                reflection: reflection,
+                facilityName: fac.name,
+                xp: earnedXp
+            });
+
+            saveState();
+            document.getElementById('reflectionModal').classList.remove('open');
+            document.getElementById('taskGoalInput').value = '';
+            resetTimer();
+            renderMapNodes();
+            updateAllUI();
+        }
+
+        // 年代記レンダリング
+        function renderLogs() {
+            const container = document.getElementById('logListContainer');
+            document.getElementById('logCountBadge').textContent = `全 ${state.logs.length} 件`;
+
+            if (state.logs.length === 0) return;
+
+            container.innerHTML = '';
+            state.logs.forEach(log => {
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `
+                    <div class="log-meta">
+                        <span>📅 ${log.date} ・ ⏱️ ${log.duration}分 (+${log.xp} XP)</span>
+                        <span>🔨 ${log.facilityName}</span>
+                    </div>
+                    <div class="log-goal">🎯 目標：${escapeHtml(log.goal)}</div>
+                    <div class="log-result">📝 振り返り：${escapeHtml(log.reflection)}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+        }
+
+        // タブ・テーマ切替
+        function switchTab(tabId, btnEl) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            btnEl.classList.add('active');
+            document.getElementById('pane-' + tabId).classList.add('active');
+        }
+
+        function setTheme(theme, btnEl) {
+            document.body.classList.remove('theme-sunset', 'theme-night');
+            if (theme === 'sunset') document.body.classList.add('theme-sunset');
+            if (theme === 'night') document.body.classList.add('theme-night');
+
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+        }
+
+        // ロゴ5回タップで管理者スタジオ起動
+        document.getElementById('logoTrigger').addEventListener('click', () => {
+            logoTapCount++;
+            if (logoTapCount >= 5) {
+                document.getElementById('adminStudio').classList.toggle('open');
+                logoTapCount = 0;
+            }
         });
-      }
-      document.getElementById('weeklyTotalBadge').textContent = `今週合計: ${weeklySum}分`;
-      const maxMin = Math.max(60, ...last7.map(d => d.min));
 
-      document.getElementById('weeklyChartGrid').innerHTML = last7.map(d => {
-        const hPct = Math.max(8, Math.round((d.min / maxMin) * 100));
-        return `
-          <div class="flex flex-col items-center justify-end h-full gap-1">
-            <span class="text-[10px] font-bold text-[#7C583E]">${d.min > 0 ? d.min + 'm' : ''}</span>
-            <div class="w-full max-w-[26px] rounded-t-lg transition-all ${
-              d.isToday ? 'bg-gradient-to-t from-[#D97706] to-[#FBBF24]' : 'bg-[#C89F78]'
-            }" style="height: ${hPct}%;"></div>
-            <span class="text-[11px] font-bold ${d.isToday ? 'text-[#B45309]' : 'text-[#5C4033]'}">${d.label}</span>
-          </div>
-        `;
-      }).join('');
-
-      // 2. 年代記ログ一覧
-      const logList = document.getElementById('chronicleLogList');
-      if (state.logs.length === 0) {
-        logList.innerHTML = `<div class="text-xs text-[#8A6D53] py-3 text-center">まだ刻印ログがありません。集中タイマーから最初の1歩を刻みましょう🌱</div>`;
-      } else {
-        logList.innerHTML = state.logs.slice(0, 15).map(l => {
-          const tObj = STUDY_THEMES.find(t => t.id === l.themeId) || STUDY_THEMES[0];
-          return `
-            <div class="bg-[#FFFDF9] border border-[#E5D7C3] rounded-xl px-3 py-2 flex items-center justify-between gap-2 text-xs">
-              <div class="flex items-center gap-2 truncate">
-                <span>${tObj.icon}</span>
-                <div class="truncate">
-                  <div class="font-bold text-[#4A3525] truncate">${escapeHtml(l.memo)}</div>
-                  <div class="text-[10px] text-[#8A6D53]">${l.date} ・ ${tObj.name}</div>
-                </div>
-              </div>
-              <span class="shrink-0 font-bold text-[#D97706] bg-[#FEF3C7] px-2 py-0.5 rounded-md">
-                +${l.minutes}分
-              </span>
-            </div>
-          `;
-        }).join('');
-      }
-
-      // 3. テーマ別の自動蓄積時間＋マイルストーン ＆ 任意の3段階自己評価（🌱基礎 / 🌿少し使える / 🌳自信あり）
-      const evalOptions = [
-        { lv: 1, label: '🌱 基礎' },
-        { lv: 2, label: '🌿 少し使える' },
-        { lv: 3, label: '🌳 自信あり' }
-      ];
-      document.getElementById('themeRecordsList').innerHTML = STUDY_THEMES.map(t => {
-        const mins = state.themeMinutes[t.id] || 0;
-        const curEval = state.themeEval[t.id] || 1;
-        const nextMilestone = mins < 60 ? 60 : mins < 180 ? 180 : mins < 360 ? 360 : 600;
-        return `
-          <div class="bg-[#FFFDF9] border border-[#E5D7C3] rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="text-base">${t.icon}</span>
-                <span class="text-xs font-bold text-[#4A3525]">${t.name}</span>
-                <span class="text-xs font-bold text-[#D97706] ml-1">${mins}分 蓄積</span>
-              </div>
-              <div class="text-[10px] text-[#8A6D53] mt-0.5">
-                次のテーマ節目: ${nextMilestone}分まで あと${Math.max(0, nextMilestone - mins)}分
-              </div>
-            </div>
-            <div class="flex items-center gap-1">
-              ${evalOptions.map(ev => `
-                <button onclick="setThemeSelfEval('${t.id}', ${ev.lv})"
-                        class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${
-                          curEval === ev.lv
-                            ? 'bg-[#ECFDF5] text-[#047857] border-[#10B981] shadow-2xs'
-                            : 'bg-[#F7F1E5] text-[#7C583E] border-[#DECBB3] hover:bg-[#EFE6D5]'
-                        }">
-                  ${ev.label}
-                </button>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // 4. SNSシェアプレビュー更新
-      const completedCount = BUILDINGS_MASTER.filter(b => (state.buildingMinutes[b.id] || 0) >= b.reqMinutes).length;
-      const shareText = `🌱✨ 箱庭開拓RPG『Lumina』で学習を刻印しました！\n・街の累計学習：${state.totalMinutes}分（完成施設：${completedCount} / ${BUILDINGS_MASTER.length}棟）\n・叡智の大図書館計画：進捗 ${Math.min(100, Math.round((state.totalMinutes / 600) * 100))}%\n#Lumina #学習習慣化 #コツコツ開拓`;
-      document.getElementById('snsSharePreviewBox').textContent = shareText;
-    }
-
-    function setThemeSelfEval(themeId, level) {
-      state.themeEval[themeId] = level;
-      saveState();
-      renderRecordsTab();
-      showToast('🌿 自己評価を更新しました');
-    }
-
-    function copyShareText() {
-      const txt = document.getElementById('snsSharePreviewBox').textContent;
-      navigator.clipboard.writeText(txt).then(() => {
-        showToast('📋 シェア用テキストをコピーしました！');
-      });
-    }
-
-    function shareOnX() {
-      const txt = encodeURIComponent(document.getElementById('snsSharePreviewBox').textContent);
-      window.open(`https://twitter.com/intent/tweet?text=${txt}`, '_blank');
-    }
-
-    /* === 7-12. モーダル制御・管理者パネル（ロゴ5回連続タップ または ?admin=1） === */
-    function openBuildingModal(buildingId) {
-      currentModalBuildingId = buildingId;
-      const b = BUILDINGS_MASTER.find(item => item.id === buildingId);
-      if (!b) return;
-      const curMin = Math.min(b.reqMinutes, state.buildingMinutes[b.id] || 0);
-      const pct = Math.min(100, Math.round((curMin / b.reqMinutes) * 100));
-
-      document.getElementById('modalBuildingIcon').textContent = b.icon;
-      document.getElementById('modalBuildingName').textContent = b.name;
-      document.getElementById('modalBuildingDesc').textContent = b.desc;
-      document.getElementById('modalBuildingProgressText').textContent = `${curMin} / ${b.reqMinutes}分 (${pct}%)`;
-      document.getElementById('modalBuildingBar').style.width = `${pct}%`;
-
-      const statusBadge = document.getElementById('modalBuildingStatusBadge');
-      if (pct >= 100) {
-        statusBadge.textContent = '✨ 完成済';
-        statusBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#047857]';
-      } else {
-        statusBadge.textContent = `🔨 段階的ビルドアップ中 (${pct}%)`;
-        statusBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]';
-      }
-
-      document.getElementById('buildingDetailModal').classList.remove('hidden');
-    }
-
-    function closeBuildingModal() {
-      document.getElementById('buildingDetailModal').classList.add('hidden');
-    }
-
-    function selectBuildingFromModalAndFocus() {
-      if (currentModalBuildingId) {
-        state.activeBuildingId = currentModalBuildingId;
-        saveState();
-        updateAllUI();
-      }
-      closeBuildingModal();
-      switchTab('focus');
-    }
-
-    function openComingSoonModal(spotType) {
-      const infoMap = {
-        harbor: PREVIEW_SPOTS[0],
-        myroom: PREVIEW_SPOTS[1],
-        dungeon: PREVIEW_SPOTS[2],
-        ambient: {
-          icon: '🎧',
-          name: '環境音サウンドスケープ',
-          desc: '木漏れ日のさざめき、カフェの穏やかなBGM、焚き火や雨の音などを重ねて再生できる環境音ミキサー機能は、今後のアップデートにて公開予定です。Ver 1.0ではコア体験である「学習と街の開拓」をお楽しみください。'
+        // 管理者スタジオ操作
+        function adminBoostProgress(amount) {
+            const fac = FACILITIES.find(f => f.id === state.selectedFacilityId);
+            if (!fac.fixed) {
+                state.facilities[fac.id] = Math.min(100, state.facilities[fac.id] + amount);
+                saveState();
+                renderMapNodes();
+                updateAllUI();
+            }
         }
-      };
-      const item = infoMap[spotType] || infoMap.harbor;
-      document.getElementById('comingSoonIcon').textContent = item.icon;
-      document.getElementById('comingSoonTitle').textContent = item.name;
-      document.getElementById('comingSoonDesc').textContent = item.desc;
-      document.getElementById('comingSoonModal').classList.remove('hidden');
-    }
 
-    function closeComingSoonModal() {
-      document.getElementById('comingSoonModal').classList.add('hidden');
-    }
-
-    function openSettingsModal() {
-      document.getElementById('backupExportArea').value = JSON.stringify(state);
-      document.getElementById('settingsModal').classList.remove('hidden');
-    }
-
-    function closeSettingsModal() {
-      document.getElementById('settingsModal').classList.add('hidden');
-    }
-
-    function copyBackupCode() {
-      const val = document.getElementById('backupExportArea').value;
-      navigator.clipboard.writeText(val).then(() => {
-        showToast('📋 バックアップコードをコピーしました');
-      });
-    }
-
-    function downloadBackupJson() {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `lumina-backup-${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function importBackupData() {
-      const raw = document.getElementById('backupImportArea').value.trim();
-      if (!raw) {
-        showToast('⚠️ 復元するデータが空です');
-        return;
-      }
-      try {
-        const parsed = JSON.parse(raw);
-        state = { ...getDefaultState(), ...parsed };
-        saveState();
-        updateAllUI();
-        closeSettingsModal();
-        showToast('🔄 バックアップデータを復元しました！');
-      } catch (e) {
-        showToast('⚠️ JSONの形式が正しくありません');
-      }
-    }
-
-    /* 管理者パネル起動（ロゴ5回連続タップ または ?admin=1） */
-    function handleLogoTap() {
-      logoTapCount++;
-      if (logoTapTimer) clearTimeout(logoTapTimer);
-      if (logoTapCount >= 5) {
-        logoTapCount = 0;
-        openAdminModal();
-        showToast('🔓 管理者専用パネルを解放しました');
-      } else {
-        logoTapTimer = setTimeout(() => {
-          logoTapCount = 0;
-        }, 1800);
-      }
-    }
-
-    function openAdminModal() {
-      renderAdminSliders();
-      document.getElementById('adminModal').classList.remove('hidden');
-    }
-
-    function closeAdminModal() {
-      document.getElementById('adminModal').classList.add('hidden');
-    }
-
-    function renderAdminSliders() {
-      const container = document.getElementById('adminSlidersContainer');
-      container.innerHTML = BUILDINGS_MASTER.map(b => {
-        const curMin = Math.min(b.reqMinutes, state.buildingMinutes[b.id] || 0);
-        const pct = Math.round((curMin / b.reqMinutes) * 100);
-        return `
-          <div class="bg-[#FFFDF9] p-2.5 rounded-lg border border-[#DECBB3] space-y-1">
-            <div class="flex justify-between font-bold text-[#4A3525]">
-              <span>${b.icon} ${b.name}</span>
-              <span id="adminLabel_${b.id}" class="text-[#D97706]">${pct}% (${curMin}/${b.reqMinutes}分)</span>
-            </div>
-            <input type="range" min="0" max="${b.reqMinutes}" value="${curMin}"
-                   oninput="adminSetBuildingMinutes('${b.id}', this.value)"
-                   class="w-full accent-[#D97706] cursor-pointer" />
-          </div>
-        `;
-      }).join('');
-    }
-
-    function adminSetBuildingMinutes(buildingId, val) {
-      const b = BUILDINGS_MASTER.find(item => item.id === buildingId);
-      if (!b) return;
-      const num = parseInt(val, 10) || 0;
-      state.buildingMinutes[buildingId] = num;
-      const pct = Math.round((num / b.reqMinutes) * 100);
-      const lbl = document.getElementById(`adminLabel_${buildingId}`);
-      if (lbl) lbl.textContent = `${pct}% (${num}/${b.reqMinutes}分)`;
-      saveState();
-      updateAllUI();
-    }
-
-    function adminAddTestResources() {
-      state.totalMinutes += 50;
-      state.xp += 50;
-      state.coins += 100;
-      saveState();
-      updateAllUI();
-      showToast('➕ テスト資源（+50分 / +100🪙）を追加しました');
-    }
-
-    function adminResetDailyBonus() {
-      state.lastDailyBonusDate = '';
-      saveState();
-      updateAllUI();
-      showToast('🌟 1日1回ボーナスを再度利用可能にしました');
-    }
-
-    function adminCompleteAllBuildings() {
-      BUILDINGS_MASTER.forEach(b => {
-        state.buildingMinutes[b.id] = b.reqMinutes;
-      });
-      state.totalMinutes = Math.max(state.totalMinutes, 600);
-      saveState();
-      renderAdminSliders();
-      updateAllUI();
-      showToast('✨ 全7施設を100%完成状態にしました');
-    }
-
-    function adminResetAllData() {
-      if (!confirm('すべての開拓データを初期状態にリセットしますか？')) return;
-      state = getDefaultState();
-      saveState();
-      renderAdminSliders();
-      updateAllUI();
-      showToast('🗑️ 初期状態にリセットしました');
-    }
-
-    /* === 7-13. タブ切替・全体UI同期・マップドラッグスクロール === */
-    function switchTab(tabName) {
-      ['map', 'focus', 'path', 'records'].forEach(t => {
-        const content = document.getElementById(`tab-${t}`);
-        const navBtn = document.getElementById(`nav-${t}`);
-        if (t === tabName) {
-          content.classList.remove('hidden');
-          navBtn.className = 'flex flex-col items-center py-1.5 rounded-xl transition bg-[#EFE6D5] text-[#4A3525] font-bold shadow-2xs';
-        } else {
-          content.classList.add('hidden');
-          navBtn.className = 'flex flex-col items-center py-1.5 rounded-xl transition text-[#8A6D53] hover:bg-[#F5EDE0]';
+        function adminAddXp(amount) {
+            state.xp += amount;
+            saveState();
+            updateAllUI();
         }
-      });
-      updateAllUI();
-    }
 
-    function changeActiveBuilding(buildingId) {
-      state.activeBuildingId = buildingId;
-      saveState();
-      updateAllUI();
-    }
+        function adminCompleteAll() {
+            FACILITIES.forEach(f => { state.facilities[f.id] = 100; });
+            state.xp = Math.max(state.xp, 600);
+            saveState();
+            renderMapNodes();
+            updateAllUI();
+        }
 
-    function centerMapOnActive() {
-      const viewport = document.getElementById('mapViewport');
-      const activeB = BUILDINGS_MASTER.find(b => b.id === state.activeBuildingId) || BUILDINGS_MASTER[0];
-      const targetX = (activeB.mapX / 100) * 1120 - viewport.clientWidth / 2;
-      const targetY = (activeB.mapY / 100) * 630 - viewport.clientHeight / 2;
-      viewport.scrollTo({
-        left: Math.max(0, targetX),
-        top: Math.max(0, targetY),
-        behavior: 'smooth'
-      });
-    }
+        function adminImmediateFinish() {
+            openReflectionModal();
+        }
 
-    function updateAllUI() {
-      // ヘッダー更新
-      document.getElementById('headerXpText').textContent = state.xp;
-      document.getElementById('headerCoinText').textContent = state.coins;
+        function adminResetAll() {
+            if (confirm('すべての学習記録・建築進捗を初期状態に戻しますか？')) {
+                localStorage.removeItem('lumina_app_state_v1');
+                location.reload();
+            }
+        }
 
-      // 長期計画：叡智の大図書館（累計600分）
-      const goalPct = Math.min(100, Math.round((state.totalMinutes / 600) * 100));
-      document.getElementById('longTermGoalPct').textContent = `${goalPct}%`;
-      document.getElementById('longTermGoalBar').style.width = `${goalPct}%`;
-      document.getElementById('totalStudyMinLabel').textContent = `${state.totalMinutes}分`;
-
-      let rankName = '🌱 芽吹きの村';
-      if (state.totalMinutes >= 600) rankName = '🏛️ 叡智の光の都';
-      else if (state.totalMinutes >= 300) rankName = '🌿 風と緑の街';
-      else if (state.totalMinutes >= 100) rankName = '☕ 灯りの宿場町';
-      document.getElementById('townRankLabel').textContent = `開拓ランク: ${rankName}`;
-
-      // 優先建築セレクトボックス更新
-      const sel = document.getElementById('activeBuildingSelect');
-      sel.innerHTML = BUILDINGS_MASTER.map(b => {
-        const cur = Math.min(b.reqMinutes, state.buildingMinutes[b.id] || 0);
-        const pct = Math.round((cur / b.reqMinutes) * 100);
-        return `<option value="${b.id}" ${b.id === state.activeBuildingId ? 'selected' : ''}>
-          ${b.name}（${pct}%${pct >= 100 ? '・完成' : ''}）
-        </option>`;
-      }).join('');
-
-      updateIdleVault();
-      renderMapNodes();
-      renderFocusSetupControls();
-      if (!isTimerRunning) {
-        updateLiveVisionAndFocusStage(0);
-      }
-      renderPioneerPath();
-      renderRecordsTab();
-    }
-
-    function showToast(msg) {
-      const box = document.getElementById('toastBox');
-      document.getElementById('toastMessage').innerHTML = `<span>✨</span><span>${msg}</span>`;
-      box.classList.remove('opacity-0');
-      box.classList.add('opacity-100');
-      setTimeout(() => {
-        box.classList.remove('opacity-100');
-        box.classList.add('opacity-0');
-      }, 2600);
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, s => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-      }[s]));
-    }
-
-    /* PCマウスでのマップドラッグスクロール対応（スマホは指でそのままスクロール可） */
-    function initMapDragScroll() {
-      const vp = document.getElementById('mapViewport');
-      let isDown = false;
-      let startX, startY, scrollLeft, scrollTop;
-      vp.addEventListener('mousedown', e => {
-        isDown = true;
-        startX = e.pageX - vp.offsetLeft;
-        startY = e.pageY - vp.offsetTop;
-        scrollLeft = vp.scrollLeft;
-        scrollTop = vp.scrollTop;
-      });
-      vp.addEventListener('mouseleave', () => { isDown = false; });
-      vp.addEventListener('mouseup', () => { isDown = false; });
-      vp.addEventListener('mousemove', e => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - vp.offsetLeft;
-        const y = e.pageY - vp.offsetTop;
-        vp.scrollLeft = scrollLeft - (x - startX);
-        vp.scrollTop = scrollTop - (y - startY);
-      });
-    }
-
-    /* 初期起動 */
-    window.addEventListener('DOMContentLoaded', () => {
-      initMapImage();
-      initMapDragScroll();
-      updateAllUI();
-      setTimeout(centerMapOnActive, 200);
-
-      // URL末尾に ?admin=1 がある場合は管理者パネルを即解放
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === '1') {
-        openAdminModal();
-      }
-    });
-  </script>
+        window.onload = initApp;
+    </script>
 </body>
 </html>
