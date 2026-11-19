@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="Lumina">
 <meta name="description" content="Lumina - 勉強した時間が自分だけの街と歴史を作る、学習習慣化×2.5D箱庭開拓RPG">
 <title>Lumina - はじまりの街 Greenhaven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg-main: #f8f5ee;
@@ -45,38 +48,51 @@
   button:active:not(:disabled) { transform: scale(0.96); }
   button:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  /* Header */
+  /* Header (Clean Single Row) */
   .app-header {
     position: sticky; top: 0; z-index: 100;
     background: rgba(253, 251, 247, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
-    padding: 10px 14px;
+    padding: 9px 14px;
     display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    flex-wrap: nowrap;
   }
-  .brand-wrap { display: flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; }
+  .brand-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; flex-shrink: 0; }
   .brand-emblem {
-    width: 36px; height: 36px; border-radius: 11px;
+    width: 32px; height: 32px; border-radius: 10px;
     background: linear-gradient(135deg, #10b981, #047857);
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
     border: 1.5px solid #a7f3d0;
   }
-  .brand-title { font-weight: 900; font-size: 18px; letter-spacing: 0.5px; color: var(--wood-dark); }
-  .brand-sub { font-size: 10px; color: var(--text-sub); display: block; margin-top: -3px; }
+  .brand-title {
+    font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
+    font-weight: 900;
+    font-size: 21px;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    color: var(--wood-dark);
+    background: linear-gradient(135deg, #3e2b1d 0%, #8a5624 55%, #d97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 1px 1px rgba(74, 55, 40, 0.12));
+  }
 
-  .resource-bar { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+  .resource-bar { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; justify-content: flex-end; flex-shrink: 0; }
   .res-pill {
     background: var(--bg-soft);
     border: 1px solid var(--border);
-    padding: 4px 9px; border-radius: 999px;
-    font-size: 12px; font-weight: 800; color: var(--wood-dark);
+    padding: 4px 8px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 800; color: var(--wood-dark);
     display: flex; align-items: center; gap: 3px; cursor: pointer;
+    white-space: nowrap;
   }
   .btn-sm {
     background: var(--bg-soft); color: var(--wood-dark);
     border: 1px solid var(--border);
-    padding: 5px 9px; border-radius: 8px; font-size: 11px; font-weight: 700;
+    padding: 5px 8px; border-radius: 8px; font-size: 11px; font-weight: 700;
+    white-space: nowrap;
   }
   .btn-gold {
     background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -200,6 +216,7 @@
     position: absolute; inset: 0;
     width: 880px; height: 495px;
     object-fit: cover; pointer-events: none;
+    image-rendering: -webkit-optimize-contrast;
   }
   .map-stage-clip {
     position: absolute; overflow: hidden; pointer-events: none;
@@ -211,13 +228,14 @@
   .map-stage-inner-img {
     position: absolute; width: 880px; height: 495px;
     object-fit: cover; pointer-events: none;
+    image-rendering: -webkit-optimize-contrast;
   }
   @keyframes stageBrightPop {
     0% { filter: brightness(1.55); transform: scale(1.015); }
     100% { filter: brightness(1); transform: scale(1); }
   }
 
-  /* Ambient + Carpenter + Crane + Sawdust Particle Canvas */
+  /* Retina-Ready Ambient + Carpenter + Crane + Sawdust Particle Canvas */
   .map-fx-canvas {
     position: absolute; inset: 0;
     width: 880px; height: 495px;
@@ -257,6 +275,10 @@
   .spot-lv-chip {
     background: var(--wood-dark); color: #fef08a;
     font-size: 9px; padding: 0 5px; border-radius: 5px;
+  }
+  .spot-plaque-chip {
+    background: var(--gold-pale); color: #92400e;
+    font-size: 9px; padding: 0 4px; border-radius: 5px;
   }
   .spot-prog-bar {
     width: 58px; height: 4px; background: rgba(45, 35, 26, 0.35);
@@ -504,15 +526,8 @@
     color: #ecfdf5;
     animation: nodePulse 2.1s infinite ease-in-out;
   }
-  .star-node.core-node {
-    width: 82px;
-    height: 82px;
-    border-width: 3px;
-  }
-  .star-node.special-node {
-    width: 74px;
-    height: 74px;
-  }
+  .star-node.core-node { width: 82px; height: 82px; border-width: 3px; }
+  .star-node.special-node { width: 74px; height: 74px; }
   .star-node.future-node {
     border-style: dashed;
     border-color: #64748b;
@@ -540,7 +555,7 @@
     white-space: nowrap;
   }
 
-  /* Guild PR Card (Subtle, Non-intrusive, Records Tab only) */
+  /* Guild PR Card */
   .guild-pr-card {
     background: linear-gradient(135deg, #fffdf8 0%, #f5efe2 100%);
     border: 1px solid var(--border);
@@ -549,24 +564,14 @@
     margin-bottom: 14px;
   }
   .pr-badge {
-    font-size: 9.5px;
-    font-weight: 800;
-    color: var(--text-sub);
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    padding: 1px 6px;
-    border-radius: 4px;
+    font-size: 9.5px; font-weight: 800; color: var(--text-sub);
+    background: var(--bg-soft); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 4px;
   }
   .pr-item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 10px;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-top: 8px;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 9px 10px; background: #fff; border: 1px solid var(--border);
+    border-radius: 10px; margin-top: 8px;
   }
 
   /* Bar Chart */
@@ -625,19 +630,14 @@
   }
   .lucky-box {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border: 1.5px solid #f59e0b;
-    border-radius: 10px;
-    padding: 9px 11px;
-    margin-bottom: 10px;
-    font-size: 12px;
-    font-weight: 800;
-    color: #92400e;
-    display: none;
+    border: 1.5px solid #f59e0b; border-radius: 10px;
+    padding: 9px 11px; margin-bottom: 10px;
+    font-size: 12px; font-weight: 800; color: #92400e; display: none;
   }
 
   /* Custom Cozy Toast */
   .cozy-toast {
-    position: fixed; top: 66px; left: 50%;
+    position: fixed; top: 62px; left: 50%;
     transform: translateX(-50%) translateY(-14px);
     background: var(--wood-dark); color: #fffdf8;
     border: 1.5px solid #f59e0b; padding: 9px 18px;
@@ -652,19 +652,16 @@
 </head>
 <body>
 
-<!-- Header (Tap Lumina Logo 5 times for Admin Studio) -->
+<!-- Clean Single-Row Header (Tap Lumina Logo 5 times for Admin Studio) -->
 <header class="app-header">
-  <div class="brand-wrap" onclick="onBrandLogoTap()" title="Lumina - 光と芽吹きの箱庭">
+  <div class="brand-wrap" onclick="onBrandLogoTap()" title="Lumina">
     <div class="brand-emblem">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
         <path d="M12 22V12M12 12C12 7 16 4 20 4C20 8 17 12 12 12ZM12 14C12 10 8 7 4 7C4 11 7 14 12 14Z" stroke="#fef08a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <circle cx="12" cy="4" r="2" fill="#fef08a"/>
       </svg>
     </div>
-    <div>
-      <span class="brand-title">Lumina</span>
-      <span class="brand-sub">はじまりの街 Greenhaven</span>
-    </div>
+    <span class="brand-title">Lumina</span>
   </div>
 
   <div class="resource-bar">
@@ -675,8 +672,7 @@
       <span>🪙</span><span id="hdr-coins">0</span>
     </div>
     <button class="btn-sm" id="btn-se-toggle" onclick="toggleSeEnabled()" title="効果音のON/OFF">🔊</button>
-    <button class="btn-sm" onclick="openModal('modal-backup')">💾引継</button>
-    <button class="btn-sm" id="btn-admin-entry" style="display:none; background:#fef3c7; border-color:#f59e0b;" onclick="openModal('modal-admin')">🔧管理</button>
+    <button class="btn-sm" id="btn-admin-entry" style="display:none; background:#fef3c7; border-color:#f59e0b;" onclick="openModal('modal-admin')">🔧</button>
   </div>
 </header>
 
@@ -728,19 +724,11 @@
 
           <div class="map-scroll-outer" id="map-scroll-outer">
             <div class="map-canvas-inner" id="map-canvas-inner">
-              <!-- Stage 0 Base Map -->
               <img src="map_base.jpg" alt="更地マップ" class="map-base-img" id="base-map-img" />
-
-              <!-- Soft-Feathered Stage 1..4 Masked Layers per Facility -->
               <div id="map-masked-stages"></div>
-
-              <!-- Live Carpenter Sprite, Crane Cargo, Sawdust & Ambient Canvas -->
               <canvas class="map-fx-canvas" id="map-fx-canvas"></canvas>
-
-              <!-- Interactive Hotspots & Natural Cloud Covers -->
               <div id="map-spots-layer"></div>
 
-              <!-- Harbor Pier -->
               <div class="harbor-btn" onclick="openInfoModal('⛵ 外の大陸への港', '現在はまだ霧の向こう側です。今後のアップデートにて、新たな大陸や学術都市への航路が開かれます。どうぞお楽しみに！')">
                 ⛵ 外の大陸への港
               </div>
@@ -748,7 +736,6 @@
           </div>
         </div>
 
-        <!-- Vault Bar Below Map -->
         <div class="vault-bar-below">
           <div style="font-size:12px;">
             <b>🪙 街の収益金庫：</b> <span id="vault-cur-txt" style="font-weight:900; color:var(--gold);">0</span> / <span id="vault-max-txt">100</span>枚
@@ -760,7 +747,6 @@
           </div>
         </div>
 
-        <!-- Long-Term Grand Library Project -->
         <div style="background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:11px 13px; margin-top:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
             <span style="font-size:12px; font-weight:900; color:var(--wood-dark);">🏛️ 街全体の長期計画：『叡智の大図書館』再建</span>
@@ -810,7 +796,7 @@
     </div>
   </section>
 
-  <!-- ================= TAB 2: FOCUS (TIMER -> LIVE BUILD VIEW -> COLLAPSIBLE SETUP) ================= -->
+  <!-- ================= TAB 2: FOCUS (2-TAP QUICK START + LIVE BUILD VIEW) ================= -->
   <section id="tab-focus" class="tab-section">
     <div class="card">
       <div class="card-hd" style="margin-bottom:8px;">
@@ -818,13 +804,11 @@
         <span class="badge" id="timer-state-badge">待機中</span>
       </div>
 
-      <!-- Previous Session "Next Memo" Handoff Banner -->
       <div class="next-memo-banner" id="next-memo-banner">
         <span>📝 <b>前回の引き継ぎメモ：</b><span id="next-memo-text"></span></span>
         <button class="btn-sm" style="background:#fff;" onclick="applyNextMemoToDecl()">今回の取り組みに使う</button>
       </div>
 
-      <!-- Preset Buttons -->
       <div class="preset-group" id="preset-group">
         <button class="preset-pill ignite" id="preset-2" onclick="selectTimerPreset(2, true, this)">🔥 2分着火</button>
         <button class="preset-pill" id="preset-15" onclick="selectTimerPreset(15, false, this)">15分</button>
@@ -836,7 +820,6 @@
         🔥 <b>2分着火モード：</b> 目標入力は不要です！机に座って教材を開くだけでOK。2分完走で <b>+5 XP確定</b> ＆ そのまま本集中へ進むと <b>+10 XPボーナス</b> がつきます。
       </div>
 
-      <!-- Timer Digits -->
       <div class="timer-digits" id="timer-digits">25:00</div>
 
       <!-- LIVE CONSTRUCTION VIEW DIRECTLY UNDER TIMER -->
@@ -850,7 +833,6 @@
           <div class="live-vision-zoom" id="live-vision-zoom">
             <img src="map_base.jpg" alt="建築プレビュー" style="width:100%; height:100%; object-fit:cover;" id="live-vision-img" />
           </div>
-          <!-- Dedicated Live Carpenter & Sparkle Canvas inside Focus View -->
           <canvas class="live-vision-fx-canvas" id="live-vision-fx-canvas"></canvas>
         </div>
 
@@ -863,21 +845,20 @@
         </div>
       </div>
 
-      <!-- Primary Timer Action Buttons -->
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
         <button class="btn-gold" id="btn-timer-main" style="flex:2;" onclick="toggleFocusTimer()">▶️ 集中を始める</button>
         <button class="btn-emerald" id="btn-timer-early" style="flex:1; display:none;" onclick="completeFocusSession(true)">✅ ここまでで完了</button>
         <button class="btn-outline" onclick="resetFocusTimer()">リセット</button>
       </div>
 
-      <!-- Collapsible Setup Area (Auto-collapses while Timer is running) -->
+      <!-- Default Collapsed Setup Area for 2-Tap Quick Start -->
       <div class="setup-collapsible">
         <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleSetupCollapse()">
           <span style="font-size:12px; font-weight:800; color:var(--text-sub);" id="setup-summary-label">⚙️ テーマ・取り組み・建築先の変更</span>
-          <span style="font-size:11px; font-weight:800; color:var(--gold);" id="setup-toggle-arrow">▲ 閉じる</span>
+          <span style="font-size:11px; font-weight:800; color:var(--gold);" id="setup-toggle-arrow">▼ 変更する</span>
         </div>
 
-        <div id="focus-setup-body" style="margin-top:10px;">
+        <div id="focus-setup-body" style="margin-top:10px; display:none;">
           <div id="focus-theme-and-decl">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <label style="font-size:12px; font-weight:800; color:var(--wood-dark);">1. 学習テーマを選ぶ（任意）</label>
@@ -915,7 +896,6 @@
         集中で得た「✨ XP」を星に注ぎ、未開拓エリアの雲を晴らしたり街の能力を開花させましょう。外側の星域は今後のアップデートでさらに広がります。
       </p>
 
-      <!-- Scrollable Constellation Canvas -->
       <div class="constellation-outer" id="constellation-outer">
         <div class="constellation-stage" id="constellation-stage">
           <canvas class="star-bg-canvas" id="star-bg-canvas"></canvas>
@@ -927,7 +907,6 @@
         </div>
       </div>
 
-      <!-- Selected Star Detail Panel -->
       <div style="background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:12px; margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
         <div style="flex:1; min-width:200px;">
           <div style="font-size:13px; font-weight:900; color:var(--wood-dark);" id="sk-detail-title">星を選択してください</div>
@@ -938,7 +917,7 @@
     </div>
   </section>
 
-  <!-- ================= TAB 4: RECORDS & CHRONICLE ================= -->
+  <!-- ================= TAB 4: RECORDS, CHRONICLE & SETTINGS ================= -->
   <section id="tab-records" class="tab-section">
     <div class="card">
       <div class="card-hd">
@@ -969,7 +948,7 @@
       <div id="records-theme-cards"></div>
     </div>
 
-    <!-- Context-Matched Guild Recommended Gear (PR / Affiliate Slot - Zero ads during focus) -->
+    <!-- Context-Matched Guild Recommended Gear (PR / Affiliate Slot) -->
     <div class="guild-pr-card">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
         <span style="font-size:13px; font-weight:900; color:var(--wood-dark);">🎒 開拓者ギルド おすすめ道具</span>
@@ -981,14 +960,16 @@
       <div id="guild-pr-list"></div>
     </div>
 
+    <!-- Share, Support & Settings (Includes Data Backup / Transfer) -->
     <div class="card">
-      <div class="card-title" style="margin-bottom:8px;">📸 シェア ＆ サポート</div>
+      <div class="card-title" style="margin-bottom:8px;">⚙️ シェア・サポート・データ管理</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <button class="btn-outline" onclick="openShareCardModal()">📸 SNSシェアカード作成</button>
-        <button class="btn-outline" onclick="openFeedbackModal()">📮 詳しいご意見・感想を送る</button>
-        <button class="btn-outline" onclick="showPwaInstallGuide()">📱 ホーム画面に追加する方法</button>
+        <button class="btn-outline" onclick="openShareCardModal()">📸 SNSシェアカード</button>
+        <button class="btn-outline" onclick="openModal('modal-backup')">💾 データ引き継ぎ・保存</button>
+        <button class="btn-outline" onclick="openFeedbackModal()">📮 ご意見・感想を送る</button>
+        <button class="btn-outline" onclick="showPwaInstallGuide()">📱 ホーム画面に追加</button>
         <button class="btn-outline" onclick="openSupportModal()">☕ 開発者を応援する</button>
-        <button class="btn-outline" style="grid-column:span 2;" onclick="openModal('modal-privacy')">🛡️ プライバシーポリシー・免責事項</button>
+        <button class="btn-outline" onclick="openModal('modal-privacy')">🛡️ プライバシーポリシー</button>
       </div>
     </div>
   </section>
@@ -1052,20 +1033,19 @@
   </div>
 </div>
 
-<!-- ================= MODAL 2: FOCUS COMPLETE (WITH VARIABLE REWARD & NEXT MEMO) ================= -->
+<!-- ================= MODAL 2: FOCUS COMPLETE ================= -->
 <div class="modal-mask" id="modal-complete">
   <div class="modal-box">
     <div class="card-hd">
       <div class="card-title">🎉 タイマー終了！今回の記録と刻印</div>
     </div>
 
-    <!-- Surprise Variable Reward Box -->
     <div class="lucky-box" id="comp-lucky-box"></div>
 
     <div style="background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:12px; font-size:12px;">
       <div>⏱️ 時間: <b id="comp-mins-txt" style="color:var(--gold);">25分</b> （獲得予定: <b id="comp-reward-preview">✨+50 XP / 🪙+25</b>）</div>
       <div style="margin-top:4px;">📚 テーマ: <b id="comp-theme-txt"></b></div>
-      <div style="margin-top:6px;">✏️ 今回の取り組み（記念プレートに刻まれます）:</div>
+      <div style="margin-top:6px;">✏️ 今回の取り組み（建物の記念プレートに刻まれます）:</div>
       <input type="text" class="input-el" id="comp-decl-edit" placeholder="例：英単語20個 / 過去問10問">
 
       <div style="margin-top:2px;">📝 次回のひとことメモ（任意・次回開いたときに表示）:</div>
@@ -1073,7 +1053,7 @@
     </div>
 
     <div style="display:flex; flex-direction:column; gap:8px;">
-      <button class="btn-gold" onclick="confirmSessionResult(1)">✨ 学習完了！記念プレートに刻んで報酬を受け取る</button>
+      <button class="btn-gold" onclick="confirmSessionResult(1)">📜 記念プレートに刻んで報酬を受け取る</button>
       <button class="btn-emerald" id="btn-comp-daily-boost" onclick="confirmSessionResult(1.5)">🌟 1日1回ボーナスで受け取る（報酬＆建設進捗1.5倍）</button>
       <button class="btn-outline" style="color:var(--text-sub);" onclick="discardSessionNoReward()">🍃 今回は学習できなかった（報酬・進捗を受け取らず終了）</button>
     </div>
@@ -1266,7 +1246,7 @@
     <div style="font-size:11px; color:var(--text-sub); line-height:1.7;">
       <p><b>1. 学習データの保存：</b>記録された学習時間・履歴・進行データはブラウザ内（localStorage）に保存され、外部へ無断送信されることはありません。</p>
       <p style="margin-top:6px;"><b>2. アクセス解析とPR：</b>品質向上のための匿名解析や、記録画面等における学習教材・ツール等の紹介リンク（アフィリエイトPR）を掲載する場合があります。集中タイマー稼働中に学習を妨げる広告は一切表示しません。</p>
-      <p style="margin-top:6px;"><b>3. 免責事項：</b>ブラウザのキャッシュ削除等によるデータ消失を防ぐため、「💾引継」より定期的なバックアップ保存を推奨いたします。</p>
+      <p style="margin-top:6px;"><b>3. 免責事項：</b>ブラウザのキャッシュ削除等によるデータ消失を防ぐため、記録タブ内の「💾 データ引き継ぎ・保存」より定期的なバックアップ保存を推奨いたします。</p>
     </div>
   </div>
 </div>
@@ -1286,7 +1266,7 @@ const STAGE_IMAGES = [
 ];
 
 // ============================================================================
-// Auto White-Background Removal Sprite Loader (carpenter_sprite.jpg & cargo_sprite.jpg)
+// Auto White-Background Removal Sprite Loader
 // ============================================================================
 const SPRITES = {
   carpenterReady: false,
@@ -1307,7 +1287,6 @@ function loadChromaKeySprite(src, onReady) {
       g.drawImage(img, 0, 0);
       const imgData = g.getImageData(0, 0, c.width, c.height);
       const d = imgData.data;
-      // Remove pure/near-white background smoothly
       for (let i = 0; i < d.length; i += 4) {
         const r = d[i], gr = d[i + 1], b = d[i + 2];
         const minC = Math.min(r, gr, b);
@@ -1321,7 +1300,6 @@ function loadChromaKeySprite(src, onReady) {
       g.putImageData(imgData, 0, 0);
       onReady(c);
     } catch (e) {
-      // Fallback if tainted canvas on file:// protocol: use raw image with multiply blend
       onReady(img);
     }
   };
@@ -1339,7 +1317,6 @@ function getMondayKey(d = new Date()) {
   return date.toISOString().slice(0, 10);
 }
 
-// 7 Facilities (Cafe lowered to 50 mins for fast initial success experience!)
 const MASTER_FACILITIES = [
   { id: 'cafe', name: '①木漏れ日のカフェ', box: { left: 20.5, top: 34.0, width: 17.5, height: 25.5 },
     unlocked: true, progress: 0, reqMinutes: 50, level: 1, baseIncome: 6, cloudSkill: null,
@@ -1364,16 +1341,10 @@ const MASTER_FACILITIES = [
     desc: '北嶺の断崖から星空と外洋を照らす白亜の天文灯台（完成目安：300分）。', plaques: [] }
 ];
 
-// ============================================================================
-// Infinite-Layer Constellation Skill Tree (860 x 680 Star Chart)
-// Ring 0: Core | Ring 1: Foundation (6) | Ring 2: Mastery (12) | Ring 3: Future Expansion Slots (4)
-// ============================================================================
 const CONSTELLATION_NODES = [
-  // Ring 0 (Center)
   { id: 'p_core', ring: 0, x: 430, y: 340, name: '開拓CORE', icon: '🌟', cost: 0, req: [], special: true,
     desc: 'Greenhaven開拓の起点となる星。ここからすべての星環へと道が広がります。' },
 
-  // Ring 1 (Radius ~125)
   { id: 'p_build1', ring: 1, x: 430, y: 210, name: '建築の工夫', icon: '🔨', cost: 25, req: ['p_core'], special: false,
     desc: '集中時の建物建設進捗スピードが+15%上昇します。' },
   { id: 'p_cloud_east', ring: 1, x: 545, y: 275, name: '東の開拓星', icon: '☁️', cost: 35, req: ['p_core'], special: true,
@@ -1387,7 +1358,6 @@ const CONSTELLATION_NODES = [
   { id: 'p_xp1', ring: 1, x: 315, y: 275, name: '集中の導き', icon: '✨', cost: 30, req: ['p_core'], special: false,
     desc: '集中完了時の獲得XPが常時+15%増加します。' },
 
-  // Ring 2 (Radius ~235)
   { id: 'p_build2', ring: 2, x: 430, y: 100, name: '熟練の建築術', icon: '🏗️', cost: 60, req: ['p_build1'], special: false,
     desc: '集中時の建物建設スピードがさらに+25%上昇します。' },
   { id: 'p_cloud_north', ring: 2, x: 560, y: 145, name: '北嶺の開拓星', icon: '🔭', cost: 70, req: ['p_build1', 'p_cloud_east'], special: true,
@@ -1409,7 +1379,6 @@ const CONSTELLATION_NODES = [
   { id: 'p_master', ring: 2, x: 300, y: 145, name: '大開拓者の証', icon: '🏆', cost: 110, req: ['p_build1', 'p_xp1'], special: true,
     desc: '【固有】全施設の金庫生産と獲得報酬が底上げされる伝説の称号。' },
 
-  // Ring 3 (Future Expansion Anchors for Ver 1.1+ Infinite Scaling)
   { id: 'f_room_star', ring: 3, x: 755, y: 155, name: '書斎の星(予定)', icon: '🛋️', cost: 999, req: ['p_cloud_north'], future: true,
     desc: '【Ver 1.1 拡張予定】マイルームの家具枠と環境音を拡張する第3星環の星です。' },
   { id: 'f_ruins_star', ring: 3, x: 105, y: 155, name: '遺跡の星(予定)', icon: '⚔️', cost: 999, req: ['p_master'], future: true,
@@ -1418,7 +1387,6 @@ const CONSTELLATION_NODES = [
     desc: '【Ver 2.0 拡張予定】外の大陸へ渡るための第3星環の星です。' }
 ];
 
-// Context-Matched Recommended Gear (PR / Affiliate placeholder links)
 const GUILD_PR_BY_THEME = {
   eng: [
     { icon: '🎧', title: '英語シャドーイング向け ノイズキャンセリングイヤホン', desc: '雑音を遮断し、25分の英語リスニング・音読の集中力を高めます。', url: 'https://www.amazon.co.jp/s?k=ノイズキャンセリング+イヤホン' },
@@ -1483,9 +1451,9 @@ let brandTapCount = 0;
 let justUpgradedFacId = null;
 let showDebugBoxes = false;
 let toastTimer = null;
-let isSetupCollapsed = false;
+// Default collapsed for 2-tap instant study start
+let isSetupCollapsed = true;
 
-// Pending Variable Reward for current completed session
 let pendingLuckyEvent = null;
 
 // Timer Runtime
@@ -1499,7 +1467,6 @@ let timerAccumSec = 0;
 let timerTickInterval = null;
 let activeSessionId = null;
 
-// Audio Runtime
 let audioCtx = null;
 
 function getStageIndex(progress) {
@@ -1511,7 +1478,7 @@ function getStageIndex(progress) {
 }
 
 /* ============================================================================
-   Custom Toast, Info & Confirm Modals (Zero browser alert/confirm)
+   Custom Toast, Info & Confirm Modals
    ============================================================================ */
 function showToast(msg) {
   const el = document.getElementById('cozy-toast');
@@ -1646,7 +1613,6 @@ function setupDynamicPwaIcon() {
 function initApp() {
   setupDynamicPwaIcon();
 
-  // Load Carpenter & Cargo Sprites with Auto-Transparency
   loadChromaKeySprite('carpenter_sprite.jpg', c => {
     SPRITES.carpenterCanvas = c;
     SPRITES.carpenterReady = true;
@@ -1689,7 +1655,6 @@ function initApp() {
     document.getElementById('onboarding-card').style.display = 'block';
   }
 
-  // Vault Return Trigger Check
   const addedVault = updateVaultByElapsed();
   if (addedVault >= 5 && state.totalSessions > 0) {
     const rb = document.getElementById('return-banner');
@@ -1909,12 +1874,16 @@ function renderTownMap() {
       spot.onclick = () => openFacilityModal(fac.id);
 
       const chipTxt = fac.progress >= 100 ? `Lv.${fac.level}` : `${fac.progress}%`;
+      const plaqueChip = (fac.plaques && fac.plaques.length > 0)
+        ? `<span class="spot-plaque-chip">📜${fac.plaques.length}</span>`
+        : '';
       spot.innerHTML = `
         ${showDebugBoxes ? `<span class="debug-coord-tag">${fac.id} L:${left} T:${top}</span>` : ''}
         <div class="spot-footer-tag">
           <div class="spot-label">
             <span>${escapeHtml(fac.name)}</span>
             <span class="spot-lv-chip">${chipTxt}</span>
+            ${plaqueChip}
           </div>
           ${fac.progress < 100 ? `<div class="spot-prog-bar"><div class="spot-prog-fill" style="width:${fac.progress}%"></div></div>` : ''}
         </div>
@@ -1979,13 +1948,12 @@ function renderTownMap() {
 }
 
 /* ============================================================================
-   Shared Sprite Drawing Helpers (Hand-drawn Watercolor Sprites + Fallback)
+   Shared Sprite Drawing Helpers (Crisp High-DPI Rendering)
    ============================================================================ */
 function drawCarpenterSprite(ctx, x, y, sizePx, facing, frameIdx, walkBob) {
   ctx.save();
   ctx.translate(x, y + walkBob);
 
-  // Soft ground shadow
   ctx.fillStyle = 'rgba(45, 35, 26, 0.30)';
   ctx.beginPath();
   ctx.ellipse(0, 2, sizePx * 0.32, sizePx * 0.12, 0, 0, Math.PI * 2);
@@ -1997,12 +1965,10 @@ function drawCarpenterSprite(ctx, x, y, sizePx, facing, frameIdx, walkBob) {
     const sh = src.height || src.naturalHeight;
     const sx = frameIdx === 0 ? 0 : sw;
     ctx.scale(facing, 1);
-    // Draw centered vertically above feet
     const drawW = sizePx * 1.15;
     const drawH = sizePx * 1.15 * (sh / sw);
     ctx.drawImage(src, sx, 0, sw, sh, -drawW / 2, -drawH + 4, drawW, drawH);
   } else {
-    // Fallback minimal carpenter if sprite file not yet uploaded
     ctx.fillStyle = '#3b82f6';
     ctx.fillRect(-3, -7, 6, 7);
     ctx.fillStyle = '#fde68a';
@@ -2015,7 +1981,6 @@ function drawCarpenterSprite(ctx, x, y, sizePx, facing, frameIdx, walkBob) {
 
 function drawCraneWithSpriteCargo(ctx, baseX, baseY, heightPx, liftRatio, isStone, cargoSize) {
   ctx.save();
-  // Timber crane mast & jib
   ctx.strokeStyle = '#6b4e38';
   ctx.lineWidth = 2.6;
   ctx.lineCap = 'round';
@@ -2035,7 +2000,6 @@ function drawCraneWithSpriteCargo(ctx, baseX, baseY, heightPx, liftRatio, isSton
   const tipY = baseY - heightPx - 6;
   const dropLen = 8 + (1 - liftRatio) * (heightPx * 0.62);
 
-  // Hemp rope
   ctx.strokeStyle = '#d6c7b2';
   ctx.lineWidth = 1.3;
   ctx.beginPath();
@@ -2060,14 +2024,18 @@ function drawCraneWithSpriteCargo(ctx, baseX, baseY, heightPx, liftRatio, isSton
 }
 
 /* ============================================================================
-   Main Map Animation Engine
+   Main Map Animation Engine (Retina / High-DPI Supported)
    ============================================================================ */
 function startMapAnimationEngine() {
   const canvas = document.getElementById('map-fx-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  canvas.width = MAP_W;
-  canvas.height = MAP_H;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  canvas.width = Math.round(MAP_W * dpr);
+  canvas.height = Math.round(MAP_H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
 
   const ambientDots = Array.from({ length: 22 }, () => ({
     x: Math.random() * MAP_W, y: Math.random() * MAP_H,
@@ -2099,7 +2067,6 @@ function startMapAnimationEngine() {
     const now = performance.now();
     const t = now * 0.0025;
 
-    // 1. Fountain shimmer
     for (let i = 0; i < 6; i++) {
       const fx = 440 + Math.cos(t + i * 1.05) * 16;
       const fy = 258 + Math.sin(t * 1.4 + i) * 8;
@@ -2108,7 +2075,6 @@ function startMapAnimationEngine() {
       ctx.beginPath(); ctx.arc(fx, fy, 2.2, 0, Math.PI * 2); ctx.fill();
     }
 
-    // 2. Ambient particles
     ambientDots.forEach(d => {
       d.x += d.vx; d.y += d.vy;
       if (d.y < 0) { d.y = MAP_H; d.x = Math.random() * MAP_W; }
@@ -2119,7 +2085,6 @@ function startMapAnimationEngine() {
       ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
     });
 
-    // 3. Carpenters & Cranes on active / in-progress facilities
     state.facilities.forEach(fac => {
       if (!fac.unlocked || fac.progress >= 100) return;
       const isSelected = fac.id === state.selectedFocusFacId;
@@ -2134,7 +2099,6 @@ function startMapAnimationEngine() {
       const speed = (isSelected && timerRunning) ? 2.1 : 0.85;
       const cycle = now * 0.004 * speed;
 
-      // Carpenter 1 (Bottom-left edge)
       const c1X = bx + bw * 0.16 + Math.sin(cycle * 0.35) * 4;
       const c1Y = by + bh * 0.82;
       const frame1 = Math.sin(cycle * 2.6) > 0 ? 1 : 0;
@@ -2148,7 +2112,6 @@ function startMapAnimationEngine() {
       lastFrameState[k1] = frame1;
 
       if (isSelected) {
-        // Carpenter 2 (Bottom-right edge patrolling)
         const patrol = Math.sin(cycle * 0.55);
         const c2X = bx + bw * 0.78 + patrol * 10;
         const c2Y = by + bh * 0.80;
@@ -2156,14 +2119,12 @@ function startMapAnimationEngine() {
         const frame2 = Math.sin(cycle * 2.1 + 1.4) > 0.2 ? 1 : 0;
         drawCarpenterSprite(ctx, c2X, c2Y, 24, facing2, frame2, Math.abs(Math.sin(cycle * 2.1)) * -1.5);
 
-        // Crane hoisting timber/stone sprite
         const liftRatio = (Math.sin(cycle * 0.55) + 1) / 2;
         const craneH = stageIdx >= 2 ? Math.min(54, bh * 0.54) : 28;
         drawCraneWithSpriteCargo(ctx, bx + bw * 0.93, by + bh * 0.77, craneH, liftRatio, stageIdx === 1 || stageIdx === 3, 22);
       }
     });
 
-    // 4. Sawdust & Dust Puffs
     for (let i = impactParticles.length - 1; i >= 0; i--) {
       const p = impactParticles[i];
       p.x += p.vx; p.y += p.vy;
@@ -2188,7 +2149,7 @@ function startMapAnimationEngine() {
 }
 
 /* ============================================================================
-   Focus Tab Live Construction Canvas (Animated Carpenters + Crane right under Timer!)
+   Focus Tab Live Construction Canvas (Retina / High-DPI Supported)
    ============================================================================ */
 function startLiveVisionCanvasLoop() {
   const cvs = document.getElementById('live-vision-fx-canvas');
@@ -2199,31 +2160,36 @@ function startLiveVisionCanvasLoop() {
 
   function loop() {
     const rect = cvs.parentElement.getBoundingClientRect();
-    if (rect.width > 0 && (cvs.width !== Math.round(rect.width) || cvs.height !== Math.round(rect.height))) {
-      cvs.width = Math.round(rect.width);
-      cvs.height = Math.round(rect.height);
-    }
-    if (cvs.width === 0) { requestAnimationFrame(loop); return; }
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const cssW = Math.round(rect.width);
+    const cssH = Math.round(rect.height);
 
-    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    if (cssW > 0 && (cvs.width !== Math.round(cssW * dpr) || cvs.height !== Math.round(cssH * dpr))) {
+      cvs.width = Math.round(cssW * dpr);
+      cvs.height = Math.round(cssH * dpr);
+    }
+    if (cssW === 0) { requestAnimationFrame(loop); return; }
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.clearRect(0, 0, cssW, cssH);
 
     const fac = state.facilities.find(f => f.id === state.selectedFocusFacId) || state.facilities[0];
     if (fac && fac.progress < 100) {
       const now = performance.now();
       const speed = timerRunning ? 2.2 : 0.75;
       const cycle = now * 0.004 * speed;
-      const w = cvs.width, h = cvs.height;
 
-      // Left carpenter (larger for zoomed live view)
       const frame1 = Math.sin(cycle * 2.6) > 0 ? 1 : 0;
-      const c1X = w * 0.28 + Math.sin(cycle * 0.4) * 8;
-      const c1Y = h * 0.86;
-      drawCarpenterSprite(ctx, c1X, c1Y, 44, 1, frame1, Math.abs(Math.sin(cycle * 1.4)) * -2);
+      const c1X = cssW * 0.28 + Math.sin(cycle * 0.4) * 8;
+      const c1Y = cssH * 0.86;
+      drawCarpenterSprite(ctx, c1X, c1Y, 42, 1, frame1, Math.abs(Math.sin(cycle * 1.4)) * -2);
 
       if (frame1 === 1 && prevF === 0) {
         for (let i = 0; i < (timerRunning ? 5 : 2); i++) {
           sparks.push({
-            x: c1X + 16, y: c1Y - 12,
+            x: c1X + 15, y: c1Y - 12,
             vx: (Math.random() - 0.3) * 2.4, vy: -1.6 - Math.random() * 1.6,
             life: 1, isChip: i % 2 === 0
           });
@@ -2231,14 +2197,13 @@ function startLiveVisionCanvasLoop() {
       }
       prevF = frame1;
 
-      // Right carpenter & crane
-      const c2X = w * 0.72 + Math.sin(cycle * 0.55) * 14;
+      const c2X = cssW * 0.72 + Math.sin(cycle * 0.55) * 14;
       const facing2 = Math.cos(cycle * 0.55) >= 0 ? 1 : -1;
-      drawCarpenterSprite(ctx, c2X, h * 0.84, 40, facing2, Math.sin(cycle * 2.1) > 0.2 ? 1 : 0, Math.abs(Math.sin(cycle * 2.1)) * -2);
+      drawCarpenterSprite(ctx, c2X, cssH * 0.84, 38, facing2, Math.sin(cycle * 2.1) > 0.2 ? 1 : 0, Math.abs(Math.sin(cycle * 2.1)) * -2);
 
       const liftRatio = (Math.sin(cycle * 0.55) + 1) / 2;
       const stageIdx = getStageIndex(fac.progress);
-      drawCraneWithSpriteCargo(ctx, w * 0.86, h * 0.82, h * 0.55, liftRatio, stageIdx === 1 || stageIdx === 3, 30);
+      drawCraneWithSpriteCargo(ctx, cssW * 0.86, cssH * 0.82, cssH * 0.54, liftRatio, stageIdx === 1 || stageIdx === 3, 28);
 
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i];
@@ -2257,12 +2222,12 @@ function startLiveVisionCanvasLoop() {
 }
 
 /* ============================================================================
-   Focus Tab, Collapsible Setup, 2-Min Ignition & Variable Rewards
+   Focus Tab, Collapsible Setup (Default Collapsed), 2-Min Ignition & Variable Rewards
    ============================================================================ */
 function setSetupCollapsed(collapsed) {
   isSetupCollapsed = collapsed;
   document.getElementById('focus-setup-body').style.display = collapsed ? 'none' : 'block';
-  document.getElementById('setup-toggle-arrow').textContent = collapsed ? '▼ 開く' : '▲ 閉じる';
+  document.getElementById('setup-toggle-arrow').textContent = collapsed ? '▼ 変更する' : '▲ 閉じる';
   const th = state.themes.find(t => t.id === state.selectedThemeId) || state.themes[0];
   const fac = state.facilities.find(f => f.id === state.selectedFocusFacId) || state.facilities[0];
   document.getElementById('setup-summary-label').textContent = collapsed
@@ -2279,12 +2244,12 @@ function applyNextMemoToDecl() {
   document.getElementById('focus-decl-input').value = state.nextSessionMemo;
   state.nextSessionMemo = '';
   saveState();
+  setSetupCollapsed(false);
   renderFocusTab();
   showToast('📝 取り組み欄にセットしました');
 }
 
 function renderFocusTab() {
-  // Next Memo Handoff Banner
   const nmBanner = document.getElementById('next-memo-banner');
   if (state.nextSessionMemo && !timerRunning) {
     document.getElementById('next-memo-text').textContent = state.nextSessionMemo;
@@ -2321,14 +2286,15 @@ function setDeclChip(txt) {
   document.getElementById('focus-decl-input').value = txt;
 }
 
+// Reduced zoom scale (1.9x) for crisp, sharp image quality on mobile
 function applyZoomToBox(zoomEl, imgEl, fac) {
   const stageIdx = getStageIndex(fac.progress);
   imgEl.src = STAGE_IMAGES[stageIdx];
   const cx = fac.box.left + fac.box.width / 2;
   const cy = fac.box.top + fac.box.height / 2;
-  const scale = 2.6;
-  const tx = Math.max(-62, Math.min(0, 50 - cx * scale));
-  const ty = Math.max(-62, Math.min(0, 50 - cy * scale));
+  const scale = 1.9;
+  const tx = Math.max(-47, Math.min(0, 50 - cx * scale));
+  const ty = Math.max(-47, Math.min(0, 44 - cy * scale));
   zoomEl.style.transform = `translate(${tx}%, ${ty}%) scale(${scale})`;
 }
 
@@ -2341,7 +2307,6 @@ function renderVisionStage(liveElapsedSec = 0) {
   document.getElementById('vision-bldg-title').textContent = `🏗️ ${fac.name}`;
   document.getElementById('vision-bldg-req').textContent = `完成目安: ${fac.reqMinutes}分`;
 
-  // Real-time progress gauge growth while timer runs
   let liveAddPct = 0;
   if (timerRunning && !isIgniteMode && fac.progress < 100 && liveElapsedSec > 0) {
     liveAddPct = Math.min(100 - fac.progress, (liveElapsedSec / 60 / fac.reqMinutes) * 100);
@@ -2381,7 +2346,6 @@ function toggleFocusTimer() {
     timerStartMs = Date.now();
     btn.textContent = '⏸️ 一時停止';
     document.getElementById('timer-state-badge').textContent = isIgniteMode ? '🔥 2分着火中' : '🔥 集中・建築中';
-    // Auto-collapse setup area so user focuses cleanly on Timer + Live View
     setSetupCollapsed(true);
     playSe('start');
     showToast(isIgniteMode ? '🔥 2分着火スタート！まずは机に向かおう' : '🔨 建築スタート！大工たちが作業を始めました');
@@ -2463,7 +2427,6 @@ function resetFocusTimer() {
   document.getElementById('btn-timer-early').style.display = 'none';
   document.getElementById('timer-state-badge').textContent = '待機中';
   document.title = 'Lumina - はじまりの街 Greenhaven';
-  setSetupCollapsed(false);
   updateTimerDigits(timerTargetSec);
   renderVisionStage(0);
 }
@@ -2475,7 +2438,6 @@ function completeFocusSession(isEarly) {
   document.title = 'Lumina - はじまりの街 Greenhaven';
   playSe('chime');
 
-  // Dedicated 2-Min Ignition Flow (Counts as an active day in weekly stats!)
   if (isIgniteMode) {
     if (activeSessionId && !state.completedSessionIds.includes(activeSessionId)) {
       state.completedSessionIds.push(activeSessionId);
@@ -2498,7 +2460,6 @@ function completeFocusSession(isEarly) {
   const doneMins = isEarly ? Math.max(5, Math.floor(totalSec / 60)) : timerPresetMins;
   window._pendingMins = doneMins;
 
-  // Roll Surprise Variable Reward (20% base, 35% with p_lucky1 skill)
   const luckyChance = hasSkill('pioneer', 'p_lucky1') ? 0.35 : 0.20;
   pendingLuckyEvent = null;
   const luckyBox = document.getElementById('comp-lucky-box');
@@ -2597,10 +2558,10 @@ function confirmSessionResult(mult) {
   if (getStageIndex(fac.progress) > prevStage) {
     justUpgradedFacId = fac.id;
     playSe('stageup');
-    showToast(fac.progress >= 100 ? `🎊 祝・完成！${fac.name} が竣工しました！` : `🎉 ${fac.name} が次の建築段階へ進化！`);
+    showToast(fac.progress >= 100 ? `🎊 祝・完成！${fac.name} が竣工＆プレート刻印！` : `🎉 ${fac.name} が進化＆記念プレートに刻印！`);
     setTimeout(() => { justUpgradedFacId = null; }, 1250);
   } else {
-    showToast(`✨ 記録完了！ ✨+${xpGain}XP / 🪙+${coinGain}`);
+    showToast(`📜 記念プレートに刻印！ ✨+${xpGain}XP / 🪙+${coinGain}`);
   }
 
   fac.plaques.unshift({
@@ -2618,15 +2579,17 @@ function confirmSessionResult(mult) {
 }
 
 /* ============================================================================
-   RPG Constellation Skill Tree Renderer
+   RPG Constellation Skill Tree Renderer (Retina / High-DPI Supported)
    ============================================================================ */
 function drawStarfieldBackground() {
   const cvs = document.getElementById('star-bg-canvas');
   if (!cvs) return;
-  cvs.width = 860; cvs.height = 680;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  cvs.width = Math.round(860 * dpr);
+  cvs.height = Math.round(680 * dpr);
   const ctx = cvs.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  // Subtle concentric constellation rings
   ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)';
   ctx.lineWidth = 1.5;
   ctx.setLineDash([5, 7]);
@@ -2637,11 +2600,10 @@ function drawStarfieldBackground() {
   });
   ctx.setLineDash([]);
 
-  // Background twinkling stars
   for (let i = 0; i < 110; i++) {
     const x = Math.random() * 860;
     const y = Math.random() * 680;
-    const rad = Math.random() * 1.6 + 0.4;
+    const rad = Math.random() * 1.5 + 0.4;
     const alpha = Math.random() * 0.65 + 0.2;
     ctx.fillStyle = `rgba(254, 249, 195, ${alpha})`;
     ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill();
@@ -2658,7 +2620,6 @@ function renderConstellationTree() {
   const nodeMap = {};
   CONSTELLATION_NODES.forEach(n => { nodeMap[n.id] = n; });
 
-  // Draw glowing star connections
   CONSTELLATION_NODES.forEach(node => {
     node.req.forEach(reqId => {
       const parent = nodeMap[reqId];
@@ -2690,7 +2651,6 @@ function renderConstellationTree() {
     });
   });
 
-  // Draw Star Nodes
   CONSTELLATION_NODES.forEach(node => {
     const isUnl = unlocked.includes(node.id);
     const isAvail = !node.future && !isUnl && node.req.some(r => unlocked.includes(r));
@@ -2715,7 +2675,6 @@ function renderConstellationTree() {
     layer.appendChild(el);
   });
 
-  // Update Detail Footer
   const sel = nodeMap[selectedStarId] || CONSTELLATION_NODES[0];
   const isUnl = unlocked.includes(sel.id);
   const isAvail = !sel.future && !isUnl && sel.req.some(r => unlocked.includes(r));
