@@ -11,7 +11,7 @@
 <title>Lumina - はじまりの街 Greenhaven</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg-main: #f8f5ee;
@@ -48,7 +48,7 @@
   button:active:not(:disabled) { transform: scale(0.96); }
   button:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  /* Header (Clean Single Row) */
+  /* Header (Clean Single Row + Cozy Storybook Logo) */
   .app-header {
     position: sticky; top: 0; z-index: 100;
     background: rgba(253, 251, 247, 0.95);
@@ -66,17 +66,25 @@
     box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
     border: 1.5px solid #a7f3d0;
   }
+  .brand-title-wrap {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 1px;
+  }
   .brand-title {
-    font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
-    font-weight: 900;
-    font-size: 21px;
-    letter-spacing: 0.08em;
+    font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 0.02em;
     line-height: 1;
-    color: var(--wood-dark);
-    background: linear-gradient(135deg, #3e2b1d 0%, #8a5624 55%, #d97706 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 1px 1px rgba(74, 55, 40, 0.12));
+    color: #3f2b1d;
+  }
+  .brand-sparkle {
+    color: #f59e0b;
+    font-size: 11px;
+    line-height: 1;
+    margin-top: -1px;
+    text-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
   }
 
   .resource-bar { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; justify-content: flex-end; flex-shrink: 0; }
@@ -93,6 +101,11 @@
     border: 1px solid var(--border);
     padding: 5px 8px; border-radius: 8px; font-size: 11px; font-weight: 700;
     white-space: nowrap;
+  }
+  .btn-sm.active-toggle {
+    background: var(--gold-pale);
+    border-color: var(--gold);
+    color: #92400e;
   }
   .btn-gold {
     background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -172,44 +185,78 @@
     border: 1px solid var(--border);
   }
   .subtab-soon {
-    font-size: 9px;
-    background: var(--wood-light);
-    color: var(--wood-mid);
-    padding: 1px 5px;
-    border-radius: 999px;
-    margin-left: 3px;
-    vertical-align: middle;
+    font-size: 9px; background: var(--wood-light); color: var(--wood-mid);
+    padding: 1px 5px; border-radius: 999px; margin-left: 3px; vertical-align: middle;
   }
 
-  /* Scrollable 2.5D Map Viewport (Mobile Touch + PC Mouse Drag) */
+  /* Scrollable & Zoomable 2.5D Map Viewport */
   .map-viewport-wrap { position: relative; }
   .map-scroll-outer {
-    position: relative; width: 100%; height: 420px;
+    position: relative; width: 100%; height: 400px;
     border-radius: 14px; overflow: auto;
     border: 2px solid #d6c7b2;
     background: #cbe7c8;
     box-shadow: inset 0 0 24px rgba(0,0,0,0.12);
     -webkit-overflow-scrolling: touch;
     cursor: grab;
+    touch-action: pan-x pan-y;
   }
   .map-scroll-outer.dragging { cursor: grabbing; user-select: none; }
-  .map-canvas-inner {
+  .map-scale-sizer {
     position: relative;
-    width: 880px; height: 495px;
+    width: 880px;
+    height: 495px;
+    margin: 0 auto;
+  }
+  .map-canvas-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 880px;
+    height: 495px;
+    transform-origin: 0 0;
     background: #d5e3cd;
     transition: filter 0.6s ease;
   }
   .map-canvas-inner.evening { filter: sepia(0.28) saturate(1.15) brightness(0.92); }
   .map-canvas-inner.night { filter: brightness(0.68) contrast(1.12); }
 
-  .map-jump-btn {
+  /* Floating Map Controls (Zoom + Fit + Label Toggle + Jump) */
+  .map-ctrl-top-right {
     position: absolute; top: 10px; right: 10px; z-index: 35;
-    background: rgba(255, 253, 248, 0.94);
-    border: 1.5px solid var(--gold); color: var(--wood-dark);
-    font-size: 11px; font-weight: 900; padding: 6px 10px;
-    border-radius: 999px; box-shadow: 0 4px 12px rgba(74, 55, 40, 0.22);
-    display: flex; align-items: center; gap: 4px;
+    display: flex; gap: 5px; align-items: center;
   }
+  .map-ctrl-bottom-right {
+    position: absolute; bottom: 10px; right: 10px; z-index: 35;
+    display: flex; gap: 4px; align-items: center;
+    background: rgba(255, 253, 248, 0.92);
+    border: 1px solid var(--border);
+    padding: 3px 5px;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(74, 55, 40, 0.2);
+  }
+  .map-pill-btn {
+    background: rgba(255, 253, 248, 0.94);
+    border: 1.5px solid var(--border);
+    color: var(--wood-dark);
+    font-size: 11px; font-weight: 800; padding: 5px 9px;
+    border-radius: 999px; box-shadow: 0 3px 10px rgba(74, 55, 40, 0.18);
+    display: flex; align-items: center; gap: 3px;
+  }
+  .map-pill-btn.active {
+    background: var(--gold-pale);
+    border-color: var(--gold);
+    color: #92400e;
+  }
+  .zoom-mini-btn {
+    background: transparent;
+    color: var(--wood-dark);
+    font-size: 12px;
+    font-weight: 900;
+    padding: 3px 7px;
+    border-radius: 999px;
+  }
+  .zoom-mini-btn:hover { background: var(--bg-soft); }
 
   /* Soft-Feathered 5-Stage Masked Map Layers */
   .map-base-img {
@@ -242,15 +289,12 @@
     pointer-events: none; z-index: 15;
   }
 
-  /* Facility Hotspot (Non-Obstructive) */
+  /* Facility Hotspot (Higher z-index than clouds so adjacent clouds never overlap unlocked spots) */
   .map-spot {
-    position: absolute; cursor: pointer; z-index: 20;
+    position: absolute; cursor: pointer; z-index: 24;
     border-radius: 14px; transition: transform 0.18s ease;
   }
-  .map-spot:hover { transform: scale(1.02); z-index: 28; }
-  .map-spot.is-focus-target {
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.85), 0 0 18px rgba(251, 191, 36, 0.42);
-  }
+  .map-spot:hover { transform: scale(1.02); z-index: 29; }
   .map-spot.debug-outline {
     outline: 2px dashed #ef4444; background: rgba(239, 68, 68, 0.08);
   }
@@ -261,57 +305,101 @@
     border-radius: 4px; pointer-events: none;
   }
 
+  /* Floating Overhead Target Marker (Replaces orange box border) */
+  .target-overhead-marker {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    animation: markerBob 1.6s ease-in-out infinite;
+    z-index: 30;
+  }
+  .target-marker-pill {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 999px;
+    box-shadow: 0 3px 10px rgba(217, 119, 6, 0.45);
+    border: 1.5px solid #fef3c7;
+    white-space: nowrap;
+  }
+  .target-marker-arrow {
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #d97706;
+    margin-top: -1px;
+  }
+  @keyframes markerBob {
+    0%, 100% { transform: translate(-50%, 0px); }
+    50% { transform: translate(-50%, -5px); }
+  }
+
+  /* Hybrid Compact Icon Pin / Full Name Label */
   .spot-footer-tag {
-    position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
     display: flex; flex-direction: column; align-items: center; pointer-events: none;
   }
-  .spot-label {
-    background: rgba(255, 253, 248, 0.94); color: var(--wood-dark);
-    padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 900;
-    white-space: nowrap; border: 1px solid var(--border);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.16);
-    display: flex; align-items: center; gap: 4px;
+  .spot-icon-pin {
+    background: rgba(255, 253, 248, 0.92);
+    color: var(--wood-dark);
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    white-space: nowrap;
+    border: 1px solid rgba(214, 199, 178, 0.9);
+    box-shadow: 0 2px 6px rgba(45, 35, 26, 0.16);
+    display: flex;
+    align-items: center;
+    gap: 3px;
   }
   .spot-lv-chip {
     background: var(--wood-dark); color: #fef08a;
-    font-size: 9px; padding: 0 5px; border-radius: 5px;
+    font-size: 9px; padding: 0 4px; border-radius: 5px;
   }
   .spot-plaque-chip {
     background: var(--gold-pale); color: #92400e;
     font-size: 9px; padding: 0 4px; border-radius: 5px;
   }
   .spot-prog-bar {
-    width: 58px; height: 4px; background: rgba(45, 35, 26, 0.35);
+    width: 48px; height: 3.5px; background: rgba(45, 35, 26, 0.35);
     border-radius: 3px; overflow: hidden; margin-top: 2px;
   }
   .spot-prog-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #10b981); }
 
-  /* Natural Multi-Layer Fluffy Cloud Cover */
+  /* Natural Multi-Layer Fluffy Cloud Cover (Lower z-index & tighter bounds to prevent overlapping neighbors) */
   .cloud-spot {
-    position: absolute; cursor: pointer; z-index: 25;
+    position: absolute; cursor: pointer; z-index: 18;
     display: flex; align-items: center; justify-content: center;
     animation: floatCloud 4.5s infinite alternate ease-in-out;
   }
   @keyframes floatCloud {
     from { transform: translateY(0px) scale(1); }
-    to { transform: translateY(-5px) scale(1.02); }
+    to { transform: translateY(-4px) scale(1.015); }
   }
   .cloud-svg-art {
-    position: absolute; inset: -20%; width: 140%; height: 140%;
-    pointer-events: none; filter: drop-shadow(0 6px 12px rgba(74, 55, 40, 0.14));
+    position: absolute; inset: -8%; width: 116%; height: 116%;
+    pointer-events: none; filter: drop-shadow(0 4px 10px rgba(74, 55, 40, 0.12));
   }
   .cloud-tag {
     position: relative; z-index: 2;
     background: rgba(255, 253, 248, 0.92); color: var(--wood-dark);
-    border: 1px solid var(--gold); padding: 3px 9px; border-radius: 999px;
-    font-size: 10px; font-weight: 900; text-align: center;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12); white-space: nowrap;
+    border: 1px solid var(--gold); padding: 2px 8px; border-radius: 999px;
+    font-size: 9.5px; font-weight: 900; text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12); white-space: nowrap;
   }
 
   .harbor-btn {
-    position: absolute; bottom: 14px; left: 14px; z-index: 30;
+    position: absolute; bottom: 14px; left: 14px; z-index: 26;
     background: rgba(255, 255, 255, 0.94); border: 1.5px solid var(--sky);
-    color: var(--sky); padding: 6px 11px; border-radius: 9px;
+    color: var(--sky); padding: 5px 10px; border-radius: 9px;
     font-size: 11px; font-weight: 900; cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
@@ -333,28 +421,18 @@
     transition: width 0.35s ease;
   }
 
-  /* Teaser Panel (My Room / Dungeon Coming Soon) */
+  /* Teaser Panel */
   .teaser-panel {
     background: linear-gradient(135deg, #fffdf8 0%, #f5efe2 100%);
     border: 1.5px dashed var(--wood-mid);
-    border-radius: 16px;
-    padding: 28px 18px;
-    text-align: center;
+    border-radius: 16px; padding: 28px 18px; text-align: center;
   }
 
   /* Focus Tab UI */
   .next-memo-banner {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin-bottom: 10px;
-    font-size: 12px;
-    color: #1e40af;
-    display: none;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px;
+    padding: 8px 12px; margin-bottom: 10px; font-size: 12px; color: #1e40af;
+    display: none; justify-content: space-between; align-items: center; gap: 8px;
   }
   .ignite-guide {
     background: #fff1f2; border: 1px solid #fda4af; border-radius: 10px;
@@ -400,140 +478,81 @@
     color: var(--text-main); font-size: 13px; margin-top: 4px; margin-bottom: 8px;
   }
 
-  /* Live Zoomed Construction Preview directly under Timer */
+  /* Synchronized Live Zoomed Construction Preview */
   .live-vision-card {
-    background: var(--bg-soft);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 10px 12px;
-    margin: 6px 0 12px;
-    text-align: center;
+    background: var(--bg-soft); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 10px 12px; margin: 6px 0 12px; text-align: center;
   }
   .live-vision-viewport {
-    position: relative;
-    width: 100%;
-    height: 170px;
-    border-radius: 11px;
-    overflow: hidden;
-    border: 1.5px solid #d6c7b2;
-    background: #d5e3cd;
-    margin: 6px 0;
+    position: relative; width: 100%; height: 175px;
+    border-radius: 11px; overflow: hidden;
+    border: 1.5px solid #d6c7b2; background: #d5e3cd; margin: 6px 0;
   }
   .live-vision-zoom {
-    position: absolute;
-    width: 100%;
-    aspect-ratio: 16 / 9;
+    position: absolute; top: 0; left: 0;
+    width: 880px; height: 495px;
     transform-origin: 0 0;
-    transition: transform 0.5s ease;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .live-vision-zoom img {
+    width: 880px; height: 495px; object-fit: cover; display: block;
+    image-rendering: -webkit-optimize-contrast;
   }
   .live-vision-fx-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 4;
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 4;
   }
 
   .setup-collapsible {
-    margin-top: 12px;
-    border-top: 1px dashed var(--border);
-    padding-top: 10px;
+    margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 10px;
   }
 
-  /* =========================================================================
-     RPG Constellation Skill Tree (Scrollable Infinite-Layer Star Chart)
-     ========================================================================= */
+  /* RPG Constellation Skill Tree */
   .constellation-outer {
-    position: relative;
-    width: 100%;
-    height: 430px;
-    border-radius: 16px;
-    overflow: auto;
-    border: 2px solid #7c5c43;
-    background: #141928;
+    position: relative; width: 100%; height: 430px;
+    border-radius: 16px; overflow: auto;
+    border: 2px solid #7c5c43; background: #141928;
     box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7);
-    -webkit-overflow-scrolling: touch;
-    cursor: grab;
+    -webkit-overflow-scrolling: touch; cursor: grab;
   }
   .constellation-outer.dragging { cursor: grabbing; user-select: none; }
   .constellation-stage {
-    position: relative;
-    width: 860px;
-    height: 680px;
+    position: relative; width: 860px; height: 680px;
     background:
       radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.14) 0%, rgba(30, 41, 59, 0.5) 38%, rgba(15, 23, 42, 0.96) 78%),
       #0f172a;
   }
-  .star-bg-canvas {
-    position: absolute;
-    inset: 0;
-    width: 860px;
-    height: 680px;
-    pointer-events: none;
-  }
-  .star-lines-svg {
-    position: absolute;
-    inset: 0;
-    width: 860px;
-    height: 680px;
-    pointer-events: none;
-    z-index: 3;
-  }
-  .star-flow-line {
-    stroke-dasharray: 6 10;
-    animation: starFlow 1.8s linear infinite;
-  }
-  @keyframes starFlow {
-    from { stroke-dashoffset: 32; }
-    to { stroke-dashoffset: 0; }
-  }
+  .star-bg-canvas { position: absolute; inset: 0; width: 860px; height: 680px; pointer-events: none; }
+  .star-lines-svg { position: absolute; inset: 0; width: 860px; height: 680px; pointer-events: none; z-index: 3; }
+  .star-flow-line { stroke-dasharray: 6 10; animation: starFlow 1.8s linear infinite; }
+  @keyframes starFlow { from { stroke-dashoffset: 32; } to { stroke-dashoffset: 0; } }
 
   .star-node {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    text-align: center;
-    padding: 3px;
+    position: absolute; transform: translate(-50%, -50%);
+    width: 68px; height: 68px; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 10; text-align: center; padding: 3px;
     transition: transform 0.2s ease, box-shadow 0.25s ease;
     border: 2px solid #475569;
     background: radial-gradient(circle at 35% 30%, #334155, #1e293b);
-    color: #94a3b8;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    color: #94a3b8; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   }
   .star-node:hover { transform: translate(-50%, -50%) scale(1.1); z-index: 16; }
-  .star-node.selected {
-    box-shadow: 0 0 0 3px #ffffff, 0 0 22px rgba(255, 255, 255, 0.65);
-    z-index: 18;
-  }
+  .star-node.selected { box-shadow: 0 0 0 3px #ffffff, 0 0 22px rgba(255, 255, 255, 0.65); z-index: 18; }
   .star-node.unlocked {
-    border-color: #fde68a;
-    background: radial-gradient(circle at 35% 30%, #fbbf24, #b45309);
-    color: #fffbeb;
-    box-shadow: 0 0 18px rgba(245, 158, 11, 0.65);
+    border-color: #fde68a; background: radial-gradient(circle at 35% 30%, #fbbf24, #b45309);
+    color: #fffbeb; box-shadow: 0 0 18px rgba(245, 158, 11, 0.65);
   }
   .star-node.available {
-    border-color: #6ee7b7;
-    background: radial-gradient(circle at 35% 30%, #10b981, #047857);
-    color: #ecfdf5;
-    animation: nodePulse 2.1s infinite ease-in-out;
+    border-color: #6ee7b7; background: radial-gradient(circle at 35% 30%, #10b981, #047857);
+    color: #ecfdf5; animation: nodePulse 2.1s infinite ease-in-out;
   }
   .star-node.core-node { width: 82px; height: 82px; border-width: 3px; }
   .star-node.special-node { width: 74px; height: 74px; }
   .star-node.future-node {
-    border-style: dashed;
-    border-color: #64748b;
-    background: rgba(30, 41, 59, 0.55);
-    color: #64748b;
-    opacity: 0.72;
+    border-style: dashed; border-color: #64748b;
+    background: rgba(30, 41, 59, 0.55); color: #64748b; opacity: 0.72;
   }
   @keyframes nodePulse {
     0%, 100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.55); }
@@ -543,25 +562,33 @@
   .star-node-name { font-size: 9px; font-weight: 800; line-height: 1.15; margin-top: 2px; max-width: 60px; }
 
   .layer-ring-label {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 10px;
-    font-weight: 800;
-    color: rgba(148, 163, 184, 0.68);
-    letter-spacing: 0.08em;
-    pointer-events: none;
-    z-index: 2;
-    white-space: nowrap;
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-size: 10px; font-weight: 800; color: rgba(148, 163, 184, 0.68);
+    letter-spacing: 0.08em; pointer-events: none; z-index: 2; white-space: nowrap;
   }
 
-  /* Guild PR Card */
+  /* Records Summary KPI Grid */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .kpi-box {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .kpi-label { font-size: 10px; font-weight: 800; color: var(--text-sub); }
+  .kpi-val { font-size: 15px; font-weight: 900; color: var(--wood-dark); margin-top: 2px; }
+
+  /* Recommended Materials PR Card */
   .guild-pr-card {
     background: linear-gradient(135deg, #fffdf8 0%, #f5efe2 100%);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 13px 14px;
-    margin-bottom: 14px;
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 13px 14px; margin-bottom: 14px;
   }
   .pr-badge {
     font-size: 9.5px; font-weight: 800; color: var(--text-sub);
@@ -606,27 +633,20 @@
   /* Modals */
   .modal-mask {
     position: fixed; inset: 0; z-index: 200;
-    background: rgba(45, 35, 26, 0.65);
-    backdrop-filter: blur(4px);
+    background: rgba(45, 35, 26, 0.65); backdrop-filter: blur(4px);
     display: none; align-items: center; justify-content: center; padding: 14px;
   }
   .modal-mask.open { display: flex; }
   .modal-box {
-    background: var(--bg-card);
-    border: 1.5px solid var(--border);
+    background: var(--bg-card); border: 1.5px solid var(--border);
     border-radius: 18px; width: 100%; max-width: 490px;
     max-height: 90vh; overflow-y: auto; padding: 18px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.28);
-    animation: popIn 0.18s ease-out;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.28); animation: popIn 0.18s ease-out;
   }
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
   .plaque-card {
-    background: var(--bg-soft);
-    border-left: 4px solid var(--gold); border-radius: 8px;
-    padding: 9px 11px; margin-bottom: 7px; font-size: 12px;
+    background: var(--bg-soft); border-left: 4px solid var(--gold);
+    border-radius: 8px; padding: 9px 11px; margin-bottom: 7px; font-size: 12px;
   }
   .lucky-box {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
@@ -652,7 +672,7 @@
 </head>
 <body>
 
-<!-- Clean Single-Row Header (Tap Lumina Logo 5 times for Admin Studio) -->
+<!-- Clean Single-Row Header (Cozy Storybook Fraunces Logo + Sparkle) -->
 <header class="app-header">
   <div class="brand-wrap" onclick="onBrandLogoTap()" title="Lumina">
     <div class="brand-emblem">
@@ -661,7 +681,10 @@
         <circle cx="12" cy="4" r="2" fill="#fef08a"/>
       </svg>
     </div>
-    <span class="brand-title">Lumina</span>
+    <span class="brand-title-wrap">
+      <span class="brand-title">Lumina</span>
+      <span class="brand-sparkle">✦</span>
+    </span>
   </div>
 
   <div class="resource-bar">
@@ -708,11 +731,11 @@
       <button class="subtab-btn" id="subbtn-dungeon" onclick="switchWorldSub('dungeon')">⚔️ 遺跡<span class="subtab-soon">予定</span></button>
     </div>
 
-    <!-- SUB-VIEW 1: SCROLLABLE 5-STAGE 2.5D TOWN MAP -->
+    <!-- SUB-VIEW 1: SCROLLABLE & ZOOMABLE 5-STAGE 2.5D TOWN MAP -->
     <div id="world-sub-map">
       <div class="card" style="padding:12px;">
         <div class="card-hd" style="margin-bottom:8px;">
-          <div class="card-title">🏰 Greenhaven 開拓マップ <span style="font-size:10px; font-weight:600; color:var(--text-sub);">（ドラッグでスクロール）</span></div>
+          <div class="card-title">🏰 Greenhaven</div>
           <div style="display:flex; gap:6px; align-items:center;">
             <button class="btn-sm" id="btn-time-of-day" onclick="cycleTimeOfDay()">☀️ 昼</button>
             <span class="badge" id="badge-town-dev">開拓 4/7</span>
@@ -720,17 +743,30 @@
         </div>
 
         <div class="map-viewport-wrap">
-          <button class="map-jump-btn" onclick="scrollToSelectedFacility()">🎯 建築中へ移動</button>
+          <!-- Top-right floating buttons: Label ON/OFF + Focus Jump -->
+          <div class="map-ctrl-top-right">
+            <button class="map-pill-btn" id="btn-toggle-labels" onclick="toggleMapLabels()">🏷️ 名前</button>
+            <button class="map-pill-btn" onclick="scrollToSelectedFacility()">🎯 建築中</button>
+          </div>
+
+          <!-- Bottom-right zoom controls: - / Fit / + -->
+          <div class="map-ctrl-bottom-right">
+            <button class="zoom-mini-btn" onclick="stepMapZoom(-0.2)" title="縮小">－</button>
+            <button class="zoom-mini-btn" id="btn-zoom-fit" onclick="toggleMapFitZoom()" title="全体表示と拡大を切替">全体</button>
+            <button class="zoom-mini-btn" onclick="stepMapZoom(0.2)" title="拡大">＋</button>
+          </div>
 
           <div class="map-scroll-outer" id="map-scroll-outer">
-            <div class="map-canvas-inner" id="map-canvas-inner">
-              <img src="map_base.jpg" alt="更地マップ" class="map-base-img" id="base-map-img" />
-              <div id="map-masked-stages"></div>
-              <canvas class="map-fx-canvas" id="map-fx-canvas"></canvas>
-              <div id="map-spots-layer"></div>
+            <div class="map-scale-sizer" id="map-scale-sizer">
+              <div class="map-canvas-inner" id="map-canvas-inner">
+                <img src="map_base.jpg" alt="更地マップ" class="map-base-img" id="base-map-img" />
+                <div id="map-masked-stages"></div>
+                <canvas class="map-fx-canvas" id="map-fx-canvas"></canvas>
+                <div id="map-spots-layer"></div>
 
-              <div class="harbor-btn" onclick="openInfoModal('⛵ 外の大陸への港', '現在はまだ霧の向こう側です。今後のアップデートにて、新たな大陸や学術都市への航路が開かれます。どうぞお楽しみに！')">
-                ⛵ 外の大陸への港
+                <div class="harbor-btn" onclick="openInfoModal('⛵ 外の大陸への港', '現在はまだ霧の向こう側です。今後のアップデートにて、新たな大陸や学術都市への航路が開かれます。どうぞお楽しみに！')">
+                  ⛵ 外の大陸への港
+                </div>
               </div>
             </div>
           </div>
@@ -765,7 +801,7 @@
       </div>
     </div>
 
-    <!-- SUB-VIEW 2: MY ROOM (COMING SOON TEASER) -->
+    <!-- SUB-VIEW 2: MY ROOM (COMING SOON) -->
     <div id="world-sub-room" style="display:none;">
       <div class="card">
         <div class="teaser-panel">
@@ -780,7 +816,7 @@
       </div>
     </div>
 
-    <!-- SUB-VIEW 3: RUINS DUNGEON (COMING SOON TEASER) -->
+    <!-- SUB-VIEW 3: RUINS DUNGEON (COMING SOON) -->
     <div id="world-sub-dungeon" style="display:none;">
       <div class="card">
         <div class="teaser-panel">
@@ -796,7 +832,7 @@
     </div>
   </section>
 
-  <!-- ================= TAB 2: FOCUS (2-TAP QUICK START + LIVE BUILD VIEW) ================= -->
+  <!-- ================= TAB 2: FOCUS ================= -->
   <section id="tab-focus" class="tab-section">
     <div class="card">
       <div class="card-hd" style="margin-bottom:8px;">
@@ -825,13 +861,13 @@
       <!-- LIVE CONSTRUCTION VIEW DIRECTLY UNDER TIMER -->
       <div class="live-vision-card">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-          <span style="font-size:12px; font-weight:900; color:var(--wood-dark);" id="vision-bldg-title">🏗️ ①木漏れ日のカフェ</span>
+          <span style="font-size:12px; font-weight:900; color:var(--wood-dark);" id="vision-bldg-title">☕ 木漏れ日のカフェ</span>
           <span class="badge" id="vision-bldg-req">完成目安: 50分</span>
         </div>
 
-        <div class="live-vision-viewport">
+        <div class="live-vision-viewport" id="live-vision-viewport">
           <div class="live-vision-zoom" id="live-vision-zoom">
-            <img src="map_base.jpg" alt="建築プレビュー" style="width:100%; height:100%; object-fit:cover;" id="live-vision-img" />
+            <img src="map_base.jpg" alt="建築プレビュー" id="live-vision-img" />
           </div>
           <canvas class="live-vision-fx-canvas" id="live-vision-fx-canvas"></canvas>
         </div>
@@ -920,14 +956,30 @@
   <!-- ================= TAB 4: RECORDS, CHRONICLE & SETTINGS ================= -->
   <section id="tab-records" class="tab-section">
     <div class="card">
-      <div class="card-hd">
-        <div class="card-title">📖 Greenhaven 週間年代記・実績</div>
-        <span class="badge" id="rec-total-badge">累計 0時間0分</span>
+      <div class="card-hd" style="margin-bottom:8px;">
+        <div class="card-title">📖 今週の開拓実績</div>
       </div>
-      <div style="background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:12px; font-size:12px;" id="chronicle-story-box"></div>
+
+      <!-- 3 Clear KPI Summary Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-box">
+          <div class="kpi-label">今週の学習</div>
+          <div class="kpi-val" id="kpi-weekly-time">0分</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">累計の学習</div>
+          <div class="kpi-val" id="kpi-total-time">0分</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">完成した施設</div>
+          <div class="kpi-val" id="kpi-completed-fac">1 / 7棟</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-soft); border:1px solid var(--border); border-radius:10px; padding:9px 12px; font-size:12px; color:var(--text-sub);" id="chronicle-story-box"></div>
 
       <div style="margin-top:12px;">
-        <div style="font-size:12px; font-weight:800; color:var(--emerald); margin-bottom:4px;">🌱 今週の小さな街づくり目標（月曜リセット・ペナルティなし）</div>
+        <div style="font-size:12px; font-weight:800; color:var(--emerald); margin-bottom:4px;">🌱 今週の街づくり目標</div>
         <div id="weekly-goals-box"></div>
       </div>
     </div>
@@ -948,19 +1000,19 @@
       <div id="records-theme-cards"></div>
     </div>
 
-    <!-- Context-Matched Guild Recommended Gear (PR / Affiliate Slot) -->
+    <!-- Context-Matched Recommended Learning Materials (PR) -->
     <div class="guild-pr-card">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-        <span style="font-size:13px; font-weight:900; color:var(--wood-dark);">🎒 開拓者ギルド おすすめ道具</span>
+        <span style="font-size:13px; font-weight:900; color:var(--wood-dark);">📚 おすすめの教材・学習サービス</span>
         <span class="pr-badge">PR</span>
       </div>
       <p style="font-size:11px; color:var(--text-sub); margin-top:3px;" id="guild-pr-subtitle">
-        選択中の学習テーマに合わせて、集中と定着を助けるアイテムをピックアップしています。
+        選択中の学習テーマに合わせて、おすすめの教材・サービスをピックアップしています。
       </p>
       <div id="guild-pr-list"></div>
     </div>
 
-    <!-- Share, Support & Settings (Includes Data Backup / Transfer) -->
+    <!-- Share, Support & Settings -->
     <div class="card">
       <div class="card-title" style="margin-bottom:8px;">⚙️ シェア・サポート・データ管理</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
@@ -1002,9 +1054,9 @@
       <button class="btn-sm" onclick="closeModal('modal-facility')">✕</button>
     </div>
 
-    <div class="live-vision-viewport" style="height:130px;">
+    <div class="live-vision-viewport" id="m-fac-viewport" style="height:140px;">
       <div class="live-vision-zoom" id="m-fac-zoom">
-        <img src="map_base.jpg" alt="施設プレビュー" style="width:100%; height:100%; object-fit:cover;" id="m-fac-img" />
+        <img src="map_base.jpg" alt="施設プレビュー" id="m-fac-img" />
       </div>
     </div>
 
@@ -1317,26 +1369,27 @@ function getMondayKey(d = new Date()) {
   return date.toISOString().slice(0, 10);
 }
 
+// Clean Facility Names (No circled numbers) + Icons
 const MASTER_FACILITIES = [
-  { id: 'cafe', name: '①木漏れ日のカフェ', box: { left: 20.5, top: 34.0, width: 17.5, height: 25.5 },
+  { id: 'cafe', icon: '☕', name: '木漏れ日のカフェ', box: { left: 20.5, top: 34.0, width: 17.5, height: 25.5 },
     unlocked: true, progress: 0, reqMinutes: 50, level: 1, baseIncome: 6, cloudSkill: null,
     desc: '香り高い珈琲と焼きたてパンで開拓者を癒やす緑屋根のカフェ（最初の建築・完成目安：50分）。', plaques: [] },
-  { id: 'clock', name: '②暁の時計塔', box: { left: 33.5, top: 7.5, width: 14.0, height: 38.0 },
+  { id: 'clock', icon: '🕰️', name: '暁の時計塔', box: { left: 33.5, top: 7.5, width: 14.0, height: 38.0 },
     unlocked: true, progress: 0, reqMinutes: 100, level: 1, baseIncome: 8, cloudSkill: null,
     desc: '街の中心に正確な時を告げる、真鍮の歯車とレンガ造りの時計塔（完成目安：100分）。', plaques: [] },
-  { id: 'library', name: '③叡智の大図書館', box: { left: 53.5, top: 10.5, width: 19.5, height: 37.5 },
+  { id: 'library', icon: '🏛️', name: '叡智の大図書館', box: { left: 53.5, top: 10.5, width: 19.5, height: 37.5 },
     unlocked: true, progress: 0, reqMinutes: 120, level: 1, baseIncome: 14, cloudSkill: null,
     desc: '知の殿堂。本館は120分で完成し、さらに累計600分の長期計画とも連動します。', plaques: [] },
-  { id: 'fountain', name: '④星雫の噴水広場', box: { left: 41.5, top: 41.0, width: 17.0, height: 22.0 },
+  { id: 'fountain', icon: '⛲', name: '星雫の噴水広場', box: { left: 41.5, top: 41.0, width: 17.0, height: 22.0 },
     unlocked: true, progress: 100, reqMinutes: 100, level: 1, baseIncome: 5, cloudSkill: null,
     desc: '透き通った湧き水がきらめく中央広場。最初から完成しており、いつでも記念プレートを刻めます。', plaques: [] },
-  { id: 'greenhouse', name: '⑤錬金術師の硝子温室', box: { left: 66.5, top: 33.0, width: 15.5, height: 21.5 },
+  { id: 'greenhouse', icon: '🌿', name: '錬金術師の硝子温室', box: { left: 66.5, top: 33.0, width: 15.5, height: 21.5 },
     unlocked: false, progress: 0, reqMinutes: 180, level: 1, baseIncome: 16, cloudSkill: 'p_cloud_east',
     desc: '東の雲を晴らすと現れる、光る薬草と花々を育てる大温室（完成目安：180分）。', plaques: [] },
-  { id: 'bakery', name: '⑥そよ風の風車ベーカリー', box: { left: 69.0, top: 47.5, width: 17.5, height: 29.5 },
+  { id: 'bakery', icon: '🌾', name: 'そよ風の風車ベーカリー', box: { left: 69.0, top: 47.5, width: 17.5, height: 29.5 },
     unlocked: false, progress: 0, reqMinutes: 200, level: 1, baseIncome: 18, cloudSkill: 'p_cloud_south',
     desc: '南の雲を晴らすと現れる、大きな風車が回る黄金麦のベーカリー（完成目安：200分）。', plaques: [] },
-  { id: 'lighthouse', name: '⑦星見の天文灯台', box: { left: 75.5, top: 1.5, width: 19.5, height: 29.0 },
+  { id: 'lighthouse', icon: '🔭', name: '星見の天文灯台', box: { left: 75.5, top: 1.5, width: 19.5, height: 29.0 },
     unlocked: false, progress: 0, reqMinutes: 300, level: 1, baseIncome: 28, cloudSkill: 'p_cloud_north',
     desc: '北嶺の断崖から星空と外洋を照らす白亜の天文灯台（完成目安：300分）。', plaques: [] }
 ];
@@ -1348,11 +1401,11 @@ const CONSTELLATION_NODES = [
   { id: 'p_build1', ring: 1, x: 430, y: 210, name: '建築の工夫', icon: '🔨', cost: 25, req: ['p_core'], special: false,
     desc: '集中時の建物建設進捗スピードが+15%上昇します。' },
   { id: 'p_cloud_east', ring: 1, x: 545, y: 275, name: '東の開拓星', icon: '☁️', cost: 35, req: ['p_core'], special: true,
-    desc: '【固有】東の雲を晴らし『⑤錬金術師の硝子温室』を解放します！' },
+    desc: '【固有】東の雲を晴らし『錬金術師の硝子温室』を解放します！' },
   { id: 'p_coin1', ring: 1, x: 545, y: 405, name: '街の活気 I', icon: '🪙', cost: 25, req: ['p_core'], special: false,
     desc: '全施設の放置コイン生産量が+15%上昇します。' },
   { id: 'p_cloud_south', ring: 1, x: 430, y: 470, name: '南の開拓星', icon: '🍃', cost: 45, req: ['p_core'], special: true,
-    desc: '【固有】南の雲を晴らし『⑥そよ風の風車ベーカリー』を解放します！' },
+    desc: '【固有】南の雲を晴らし『そよ風の風車ベーカリー』を解放します！' },
   { id: 'p_vault1', ring: 1, x: 315, y: 405, name: '金庫拡張 I', icon: '📦', cost: 25, req: ['p_core'], special: false,
     desc: '放置コイン金庫の最大蓄積量が+60枚増加します。' },
   { id: 'p_xp1', ring: 1, x: 315, y: 275, name: '集中の導き', icon: '✨', cost: 30, req: ['p_core'], special: false,
@@ -1361,7 +1414,7 @@ const CONSTELLATION_NODES = [
   { id: 'p_build2', ring: 2, x: 430, y: 100, name: '熟練の建築術', icon: '🏗️', cost: 60, req: ['p_build1'], special: false,
     desc: '集中時の建物建設スピードがさらに+25%上昇します。' },
   { id: 'p_cloud_north', ring: 2, x: 560, y: 145, name: '北嶺の開拓星', icon: '🔭', cost: 70, req: ['p_build1', 'p_cloud_east'], special: true,
-    desc: '【固有】北嶺の雲を晴らし、最難関『⑦星見の天文灯台』を解放します！' },
+    desc: '【固有】北嶺の雲を晴らし、最難関『星見の天文灯台』を解放します！' },
   { id: 'p_lucky1', ring: 2, x: 660, y: 245, name: '職人の閃き', icon: '🌠', cost: 55, req: ['p_cloud_east'], special: true,
     desc: '【固有】完了時の「大工の会心の出来（変動ボーナス）」発生率がアップします！' },
   { id: 'p_coin2', ring: 2, x: 675, y: 365, name: '街の活気 II', icon: '🪙', cost: 55, req: ['p_coin1'], special: false,
@@ -1387,24 +1440,40 @@ const CONSTELLATION_NODES = [
     desc: '【Ver 2.0 拡張予定】外の大陸へ渡るための第3星環の星です。' }
 ];
 
-const GUILD_PR_BY_THEME = {
+// Keyword-matched + Universal Recommended Learning Materials (PR)
+const RECOMMENDED_MATERIALS = {
   eng: [
-    { icon: '🎧', title: '英語シャドーイング向け ノイズキャンセリングイヤホン', desc: '雑音を遮断し、25分の英語リスニング・音読の集中力を高めます。', url: 'https://www.amazon.co.jp/s?k=ノイズキャンセリング+イヤホン' },
-    { icon: '📖', title: 'ビジネス英語・TOEIC 定番単語帳シリーズ', desc: 'スキマ時間の「2分着火」とも相性抜群のロングセラー教材。', url: 'https://www.amazon.co.jp/s?k=TOEIC+単語帳' }
+    { icon: '📘', title: 'TOEIC・ビジネス英語 定番単語帳シリーズ', desc: 'スキマ時間の「2分着火」とも相性が良いロングセラー教材。', url: 'https://www.amazon.co.jp/s?k=TOEIC+単語帳+定番' },
+    { icon: '🎧', title: 'Audible（オーディブル）英語リスニング聴き放題', desc: '通勤や休憩中にも洋書や英語ニュースを耳から学べます。', url: 'https://www.amazon.co.jp/b/ref=adbl_JP_as_0068?ie=UTF8&node=5816607051' }
   ],
   cert: [
-    { icon: '⏱️', title: '視覚的に残り時間がわかる 卓上タイムタイマー', desc: 'スマホを伏せて机に向かいたい時の定番集中ツール。', url: 'https://www.amazon.co.jp/s?k=タイムタイマー+学習' },
-    { icon: '✍️', title: '疲れにくい資格試験向け 定番シャープペン・ノート', desc: '長時間の演習でも手が疲れにくい書き心地の学習道具。', url: 'https://www.amazon.co.jp/s?k=ドクターグリップ+勉強+ノート' }
+    { icon: '📕', title: '資格試験・検定 定番テキスト＆過去問題集', desc: '最新の出題傾向に対応した人気シリーズの参考書を探す。', url: 'https://www.amazon.co.jp/s?k=資格+問題集+ベストセラー' },
+    { icon: '📖', title: 'Kindle Unlimited（資格・ビジネス書読み放題）', desc: '参考書や関連書籍をスマホ・タブレットで手軽に持ち歩けます。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' }
   ],
   prog: [
-    { icon: '⌨️', title: '長時間のコーディングを支える 人間工学キーボード', desc: '打鍵感と姿勢改善で、開発の没入感を底上げします。', url: 'https://www.amazon.co.jp/s?k=メカニカルキーボード+コンパクト' },
-    { icon: '📘', title: 'システム設計・プログラミング定番技術書', desc: '基礎から実務設計まで体系的に学べるおすすめ書籍。', url: 'https://www.amazon.co.jp/s?k=プログラミング+入門+技術書' }
+    { icon: '💻', title: 'プログラミング・IT設計 定番技術書', desc: '基礎文法から実務設計まで体系的に学べるおすすめ書籍。', url: 'https://www.amazon.co.jp/s?k=プログラミング+技術書+ベストセラー' },
+    { icon: '📖', title: 'Kindle Unlimited（IT・技術書読み放題）', desc: '気になる技術トレンドや入門書をまとめてチェックできます。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' }
   ],
-  default: [
-    { icon: '☕', title: '集中前のスイッチを入れる デカフェ・ドリップ珈琲', desc: '香り高い一杯で「今から机に向かう」行動トリガーを作ります。', url: 'https://www.amazon.co.jp/s?k=ドリップコーヒー+ギフト' },
-    { icon: '💡', title: '目に優しい調光式 デスクライト（学習用）', desc: '夜の学習でも目の疲れを抑え、書斎のような落ち着いた空間に。', url: 'https://www.amazon.co.jp/s?k=デスクライト+LED+学習' }
+  read: [
+    { icon: '📖', title: 'Kindle Unlimited（200万冊以上が読み放題）', desc: 'ビジネス書・教養書・小説まで毎日の読書習慣に。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' },
+    { icon: '🎧', title: 'Audible（聴く読書・オーディオブック）', desc: '目が疲れた夜や移動中でもプロの朗読でインプットできます。', url: 'https://www.amazon.co.jp/b/ref=adbl_JP_as_0068?ie=UTF8&node=5816607051' }
+  ],
+  universal: [
+    { icon: '📖', title: 'Kindle Unlimited（学習書・ビジネス書読み放題）', desc: '幅広いジャンルの参考書・教養書を手軽にインプット。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' },
+    { icon: '🎧', title: 'Audible（聴く読書・学習オーディオブック）', desc: 'スキマ時間の耳学習で、毎日の学びを無理なく継続。', url: 'https://www.amazon.co.jp/b/ref=adbl_JP_as_0068?ie=UTF8&node=5816607051' }
   ]
 };
+
+function detectMaterialCategory(theme) {
+  if (!theme) return 'universal';
+  if (RECOMMENDED_MATERIALS[theme.id]) return theme.id;
+  const n = (theme.name || '').toLowerCase();
+  if (/英語|英会話|toeic|toefl|英検|語学|english|単語/.test(n)) return 'eng';
+  if (/資格|試験|簿記|fp|宅建|検定|受験|テスト|行政書士|社労士/.test(n)) return 'cert';
+  if (/プログラム|プログラミング|python|java|js|html|it|開発|コード|aws/.test(n)) return 'prog';
+  if (/読書|本|教養|小説|論文/.test(n)) return 'read';
+  return 'universal';
+}
 
 function createCleanState() {
   return {
@@ -1450,11 +1519,16 @@ let activeDetailThemeId = 'eng';
 let brandTapCount = 0;
 let justUpgradedFacId = null;
 let showDebugBoxes = false;
+let showMapLabels = false;
 let toastTimer = null;
-// Default collapsed for 2-tap instant study start
 let isSetupCollapsed = true;
-
 let pendingLuckyEvent = null;
+
+// Map Zoom Runtime
+let mapZoom = 1.0;
+
+// Focus Live Vision Transform Cache (Synchronizes Background Image & Carpenter Canvas 100%)
+let liveVisionTransform = { scale: 1, tx: 0, ty: 0, vw: 340, vh: 175 };
 
 // Timer Runtime
 let timerPresetMins = 25;
@@ -1608,6 +1682,95 @@ function setupDynamicPwaIcon() {
 }
 
 /* ============================================================================
+   Map Zoom Engine (Fit / + / - / 2-Finger Pinch)
+   ============================================================================ */
+function getMapFitScale() {
+  const sc = document.getElementById('map-scroll-outer');
+  if (!sc || !sc.clientWidth) return 0.5;
+  const wRatio = sc.clientWidth / MAP_W;
+  const hRatio = sc.clientHeight / MAP_H;
+  return Math.max(0.36, Math.min(1.0, Math.min(wRatio, hRatio)));
+}
+
+function setMapZoom(newScale, keepCenter = true) {
+  const sc = document.getElementById('map-scroll-outer');
+  const sizer = document.getElementById('map-scale-sizer');
+  const inner = document.getElementById('map-canvas-inner');
+  if (!sc || !sizer || !inner) return;
+
+  const fitScale = getMapFitScale();
+  const clamped = Math.max(fitScale, Math.min(1.5, newScale));
+
+  const oldCenterX = (sc.scrollLeft + sc.clientWidth / 2) / mapZoom;
+  const oldCenterY = (sc.scrollTop + sc.clientHeight / 2) / mapZoom;
+
+  mapZoom = clamped;
+  sizer.style.width = Math.round(MAP_W * mapZoom) + 'px';
+  sizer.style.height = Math.round(MAP_H * mapZoom) + 'px';
+  inner.style.transform = `scale(${mapZoom})`;
+
+  if (keepCenter) {
+    sc.scrollLeft = Math.max(0, oldCenterX * mapZoom - sc.clientWidth / 2);
+    sc.scrollTop = Math.max(0, oldCenterY * mapZoom - sc.clientHeight / 2);
+  }
+
+  const fitBtn = document.getElementById('btn-zoom-fit');
+  if (fitBtn) {
+    fitBtn.textContent = (mapZoom <= fitScale + 0.04) ? '拡大' : '全体';
+  }
+}
+
+function stepMapZoom(delta) {
+  setMapZoom(mapZoom + delta, true);
+}
+
+function toggleMapFitZoom() {
+  const fitScale = getMapFitScale();
+  if (mapZoom <= fitScale + 0.04) {
+    setMapZoom(1.0, false);
+    scrollToSelectedFacility(true);
+  } else {
+    setMapZoom(fitScale, false);
+  }
+}
+
+function initMapPinchZoom() {
+  const sc = document.getElementById('map-scroll-outer');
+  if (!sc) return;
+  let initialDist = 0;
+  let initialZoom = 1.0;
+
+  sc.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      initialDist = Math.hypot(dx, dy);
+      initialZoom = mapZoom;
+    }
+  }, { passive: true });
+
+  sc.addEventListener('touchmove', e => {
+    if (e.touches.length === 2 && initialDist > 0) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      setMapZoom(initialZoom * (dist / initialDist), true);
+    }
+  }, { passive: false });
+
+  sc.addEventListener('touchend', () => {
+    initialDist = 0;
+  });
+}
+
+function toggleMapLabels() {
+  showMapLabels = !showMapLabels;
+  document.getElementById('btn-toggle-labels').classList.toggle('active', showMapLabels);
+  renderTownMap();
+}
+
+/* ============================================================================
    Initialization, Mouse Drag Scroll & Onboarding
    ============================================================================ */
 function initApp() {
@@ -1628,8 +1791,11 @@ function initApp() {
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.facilities)) {
         state = Object.assign(createCleanState(), parsed);
+        // Sync updated clean names, icons, boxes, and reqMinutes
         MASTER_FACILITIES.forEach((mf, idx) => {
           if (state.facilities[idx]) {
+            state.facilities[idx].name = mf.name;
+            state.facilities[idx].icon = mf.icon;
             state.facilities[idx].box = mf.box;
             state.facilities[idx].reqMinutes = mf.reqMinutes;
           }
@@ -1665,13 +1831,19 @@ function initApp() {
 
   initDragScroll('map-scroll-outer');
   initDragScroll('constellation-outer');
+  initMapPinchZoom();
   drawStarfieldBackground();
   restoreActiveTimerIfAny();
   renderAll();
   startMapAnimationEngine();
   startLiveVisionCanvasLoop();
 
+  window.addEventListener('resize', () => {
+    renderVisionStage();
+  });
+
   setTimeout(() => {
+    setMapZoom(1.0, false);
     scrollToSelectedFacility(false);
     centerConstellationView(false);
   }, 80);
@@ -1708,8 +1880,8 @@ function scrollToSelectedFacility(smooth = true) {
   const sc = document.getElementById('map-scroll-outer');
   const fac = state.facilities.find(f => f.id === state.selectedFocusFacId) || state.facilities[0];
   if (!sc || !fac) return;
-  const targetX = ((fac.box.left + fac.box.width / 2) / 100) * MAP_W - sc.clientWidth / 2;
-  const targetY = ((fac.box.top + fac.box.height / 2) / 100) * MAP_H - sc.clientHeight / 2;
+  const targetX = ((fac.box.left + fac.box.width / 2) / 100) * MAP_W * mapZoom - sc.clientWidth / 2;
+  const targetY = ((fac.box.top + fac.box.height / 2) / 100) * MAP_H * mapZoom - sc.clientHeight / 2;
   sc.scrollTo({ left: Math.max(0, targetX), top: Math.max(0, targetY), behavior: smooth ? 'smooth' : 'auto' });
 }
 
@@ -1865,8 +2037,9 @@ function renderTownMap() {
 
     if (fac.unlocked) {
       unlCount++;
+      const isSelected = state.selectedFocusFacId === fac.id;
       const spot = document.createElement('div');
-      spot.className = `map-spot ${state.selectedFocusFacId === fac.id ? 'is-focus-target' : ''} ${showDebugBoxes ? 'debug-outline' : ''}`;
+      spot.className = `map-spot ${showDebugBoxes ? 'debug-outline' : ''}`;
       spot.style.left = left + '%';
       spot.style.top = top + '%';
       spot.style.width = width + '%';
@@ -1877,14 +2050,22 @@ function renderTownMap() {
       const plaqueChip = (fac.plaques && fac.plaques.length > 0)
         ? `<span class="spot-plaque-chip">📜${fac.plaques.length}</span>`
         : '';
+
+      // Overhead floating marker instead of orange border
+      const overheadMarker = (isSelected && fac.progress < 100)
+        ? `<div class="target-overhead-marker"><div class="target-marker-pill">🔨 建築中</div><div class="target-marker-arrow"></div></div>`
+        : '';
+
+      // Hybrid label: compact icon pin by default, full name when showMapLabels is ON
+      const pinContent = showMapLabels
+        ? `<span>${fac.icon} ${escapeHtml(fac.name)}</span><span class="spot-lv-chip">${chipTxt}</span>${plaqueChip}`
+        : `<span>${fac.icon}</span><span class="spot-lv-chip">${chipTxt}</span>${plaqueChip}`;
+
       spot.innerHTML = `
         ${showDebugBoxes ? `<span class="debug-coord-tag">${fac.id} L:${left} T:${top}</span>` : ''}
+        ${overheadMarker}
         <div class="spot-footer-tag">
-          <div class="spot-label">
-            <span>${escapeHtml(fac.name)}</span>
-            <span class="spot-lv-chip">${chipTxt}</span>
-            ${plaqueChip}
-          </div>
+          <div class="spot-icon-pin">${pinContent}</div>
           ${fac.progress < 100 ? `<div class="spot-prog-bar"><div class="spot-prog-fill" style="width:${fac.progress}%"></div></div>` : ''}
         </div>
       `;
@@ -1908,24 +2089,24 @@ function renderTownMap() {
       cl.innerHTML = `
         <svg class="cloud-svg-art" viewBox="0 0 200 150" preserveAspectRatio="none">
           <defs>
-            <filter id="${uid}" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="5.5" />
+            <filter id="${uid}" x="-15%" y="-15%" width="130%" height="130%">
+              <feGaussianBlur stdDeviation="4.5" />
             </filter>
             <linearGradient id="${uid}_g" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.97"/>
-              <stop offset="70%" stop-color="#f1f5f9" stop-opacity="0.93"/>
-              <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.88"/>
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.96"/>
+              <stop offset="70%" stop-color="#f1f5f9" stop-opacity="0.92"/>
+              <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.86"/>
             </linearGradient>
           </defs>
           <g filter="url(#${uid})" fill="url(#${uid}_g)">
-            <ellipse cx="58" cy="82" rx="46" ry="29"/>
-            <ellipse cx="102" cy="62" rx="54" ry="35"/>
-            <ellipse cx="144" cy="84" rx="44" ry="28"/>
-            <ellipse cx="82" cy="98" rx="48" ry="25"/>
-            <ellipse cx="124" cy="96" rx="46" ry="25"/>
+            <ellipse cx="64" cy="82" rx="40" ry="26"/>
+            <ellipse cx="102" cy="64" rx="48" ry="32"/>
+            <ellipse cx="138" cy="84" rx="38" ry="25"/>
+            <ellipse cx="84" cy="96" rx="42" ry="22"/>
+            <ellipse cx="120" cy="95" rx="40" ry="22"/>
           </g>
         </svg>
-        <div class="cloud-tag">☁️ 未開拓エリア</div>
+        <div class="cloud-tag">☁️ 未開拓</div>
       `;
       spotsLayer.appendChild(cl);
     }
@@ -1982,26 +2163,26 @@ function drawCarpenterSprite(ctx, x, y, sizePx, facing, frameIdx, walkBob) {
 function drawCraneWithSpriteCargo(ctx, baseX, baseY, heightPx, liftRatio, isStone, cargoSize) {
   ctx.save();
   ctx.strokeStyle = '#6b4e38';
-  ctx.lineWidth = 2.6;
+  ctx.lineWidth = 2.4;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(baseX, baseY);
   ctx.lineTo(baseX, baseY - heightPx);
-  ctx.lineTo(baseX - 20, baseY - heightPx - 6);
+  ctx.lineTo(baseX - 18, baseY - heightPx - 5);
   ctx.stroke();
 
-  ctx.lineWidth = 1.6;
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(baseX, baseY - heightPx + 10);
-  ctx.lineTo(baseX - 10, baseY - heightPx - 3);
+  ctx.moveTo(baseX, baseY - heightPx + 9);
+  ctx.lineTo(baseX - 9, baseY - heightPx - 2);
   ctx.stroke();
 
-  const tipX = baseX - 20;
-  const tipY = baseY - heightPx - 6;
-  const dropLen = 8 + (1 - liftRatio) * (heightPx * 0.62);
+  const tipX = baseX - 18;
+  const tipY = baseY - heightPx - 5;
+  const dropLen = 7 + (1 - liftRatio) * (heightPx * 0.60);
 
   ctx.strokeStyle = '#d6c7b2';
-  ctx.lineWidth = 1.3;
+  ctx.lineWidth = 1.2;
   ctx.beginPath();
   ctx.moveTo(tipX, tipY);
   ctx.lineTo(tipX, tipY + dropLen);
@@ -2024,7 +2205,7 @@ function drawCraneWithSpriteCargo(ctx, baseX, baseY, heightPx, liftRatio, isSton
 }
 
 /* ============================================================================
-   Main Map Animation Engine (Retina / High-DPI Supported)
+   Main Map Animation Engine (Retina / High-DPI)
    ============================================================================ */
 function startMapAnimationEngine() {
   const canvas = document.getElementById('map-fx-canvas');
@@ -2149,8 +2330,46 @@ function startMapAnimationEngine() {
 }
 
 /* ============================================================================
-   Focus Tab Live Construction Canvas (Retina / High-DPI Supported)
+   Synchronized Zoom Transform & Focus Live Construction Canvas
+   (Fixes all edge facilities 5-7 and aligns carpenters 100% with background!)
    ============================================================================ */
+function computeExactZoomTransform(viewportEl, fac) {
+  const rect = viewportEl.getBoundingClientRect();
+  const vw = rect.width || 340;
+  const vh = rect.height || 175;
+
+  const bx = (fac.box.left / 100) * MAP_W;
+  const by = (fac.box.top / 100) * MAP_H;
+  const bw = (fac.box.width / 100) * MAP_W;
+  const bh = (fac.box.height / 100) * MAP_H;
+
+  // Choose scale so the facility nicely fills ~68% of viewport without over-zooming
+  const targetScaleW = (vw * 0.62) / bw;
+  const targetScaleH = (vh * 0.78) / bh;
+  const minCoverScale = Math.max(vw / MAP_W, vh / MAP_H);
+  const scale = Math.max(minCoverScale, Math.min(1.45, Math.min(targetScaleW, targetScaleH)));
+
+  const cx = bx + bw / 2;
+  const cy = by + bh / 2;
+
+  let tx = vw / 2 - cx * scale;
+  let ty = vh / 2 - cy * scale;
+
+  // Clamp cleanly to map edges so no empty background shows
+  tx = Math.min(0, Math.max(vw - MAP_W * scale, tx));
+  ty = Math.min(0, Math.max(vh - MAP_H * scale, ty));
+
+  return { scale, tx, ty, vw, vh };
+}
+
+function applyZoomToBox(viewportEl, zoomEl, imgEl, fac, saveToLiveCache = false) {
+  const stageIdx = getStageIndex(fac.progress);
+  imgEl.src = STAGE_IMAGES[stageIdx];
+  const tr = computeExactZoomTransform(viewportEl, fac);
+  zoomEl.style.transform = `translate(${tr.tx}px, ${tr.ty}px) scale(${tr.scale})`;
+  if (saveToLiveCache) liveVisionTransform = tr;
+}
+
 function startLiveVisionCanvasLoop() {
   const cvs = document.getElementById('live-vision-fx-canvas');
   if (!cvs) return;
@@ -2159,7 +2378,8 @@ function startLiveVisionCanvasLoop() {
   let prevF = 0;
 
   function loop() {
-    const rect = cvs.parentElement.getBoundingClientRect();
+    const vp = document.getElementById('live-vision-viewport');
+    const rect = vp.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     const cssW = Math.round(rect.width);
     const cssH = Math.round(rect.height);
@@ -2177,33 +2397,48 @@ function startLiveVisionCanvasLoop() {
 
     const fac = state.facilities.find(f => f.id === state.selectedFocusFacId) || state.facilities[0];
     if (fac && fac.progress < 100) {
+      // Map facility coordinates directly through the exact same transform as the zoomed background!
+      const { scale, tx, ty } = liveVisionTransform;
+      const bx = (fac.box.left / 100) * MAP_W;
+      const by = (fac.box.top / 100) * MAP_H;
+      const bw = (fac.box.width / 100) * MAP_W;
+      const bh = (fac.box.height / 100) * MAP_H;
+
+      const toVx = mx => tx + mx * scale;
+      const toVy = my => ty + my * scale;
+
       const now = performance.now();
-      const speed = timerRunning ? 2.2 : 0.75;
+      const speed = timerRunning ? 2.2 : 0.8;
       const cycle = now * 0.004 * speed;
 
+      // Carpenter 1 at facility's exact bottom-left edge
       const frame1 = Math.sin(cycle * 2.6) > 0 ? 1 : 0;
-      const c1X = cssW * 0.28 + Math.sin(cycle * 0.4) * 8;
-      const c1Y = cssH * 0.86;
-      drawCarpenterSprite(ctx, c1X, c1Y, 42, 1, frame1, Math.abs(Math.sin(cycle * 1.4)) * -2);
+      const c1X = toVx(bx + bw * 0.18 + Math.sin(cycle * 0.4) * 5);
+      const c1Y = toVy(by + bh * 0.82);
+      drawCarpenterSprite(ctx, c1X, c1Y, 28 * scale, 1, frame1, Math.abs(Math.sin(cycle * 1.4)) * -1.6);
 
       if (frame1 === 1 && prevF === 0) {
         for (let i = 0; i < (timerRunning ? 5 : 2); i++) {
           sparks.push({
-            x: c1X + 15, y: c1Y - 12,
-            vx: (Math.random() - 0.3) * 2.4, vy: -1.6 - Math.random() * 1.6,
+            x: c1X + 10 * scale, y: c1Y - 6 * scale,
+            vx: (Math.random() - 0.3) * 2.2, vy: -1.5 - Math.random() * 1.4,
             life: 1, isChip: i % 2 === 0
           });
         }
       }
       prevF = frame1;
 
-      const c2X = cssW * 0.72 + Math.sin(cycle * 0.55) * 14;
+      // Carpenter 2 at facility's exact bottom-right edge
+      const c2X = toVx(bx + bw * 0.78 + Math.sin(cycle * 0.55) * 10);
+      const c2Y = toVy(by + bh * 0.80);
       const facing2 = Math.cos(cycle * 0.55) >= 0 ? 1 : -1;
-      drawCarpenterSprite(ctx, c2X, cssH * 0.84, 38, facing2, Math.sin(cycle * 2.1) > 0.2 ? 1 : 0, Math.abs(Math.sin(cycle * 2.1)) * -2);
+      drawCarpenterSprite(ctx, c2X, c2Y, 26 * scale, facing2, Math.sin(cycle * 2.1) > 0.2 ? 1 : 0, Math.abs(Math.sin(cycle * 2.1)) * -1.6);
 
+      // Crane at facility's exact right edge
       const liftRatio = (Math.sin(cycle * 0.55) + 1) / 2;
       const stageIdx = getStageIndex(fac.progress);
-      drawCraneWithSpriteCargo(ctx, cssW * 0.86, cssH * 0.82, cssH * 0.54, liftRatio, stageIdx === 1 || stageIdx === 3, 28);
+      const craneH = (stageIdx >= 2 ? Math.min(54, bh * 0.54) : 28) * scale;
+      drawCraneWithSpriteCargo(ctx, toVx(bx + bw * 0.92), toVy(by + bh * 0.78), craneH, liftRatio, stageIdx === 1 || stageIdx === 3, 22 * scale);
 
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i];
@@ -2212,7 +2447,7 @@ function startLiveVisionCanvasLoop() {
         ctx.save();
         ctx.globalAlpha = Math.max(0, s.life);
         ctx.fillStyle = s.isChip ? '#d97706' : 'rgba(255,251,240,0.9)';
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.isChip ? 2.4 : 4.2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.isChip ? 2.2 : 3.8, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       }
     }
@@ -2222,7 +2457,7 @@ function startLiveVisionCanvasLoop() {
 }
 
 /* ============================================================================
-   Focus Tab, Collapsible Setup (Default Collapsed), 2-Min Ignition & Variable Rewards
+   Focus Tab, Collapsible Setup, 2-Min Ignition & Variable Rewards
    ============================================================================ */
 function setSetupCollapsed(collapsed) {
   isSetupCollapsed = collapsed;
@@ -2231,7 +2466,7 @@ function setSetupCollapsed(collapsed) {
   const th = state.themes.find(t => t.id === state.selectedThemeId) || state.themes[0];
   const fac = state.facilities.find(f => f.id === state.selectedFocusFacId) || state.facilities[0];
   document.getElementById('setup-summary-label').textContent = collapsed
-    ? `⚙️ ${th.icon}${th.name} ／ ${fac.name}`
+    ? `⚙️ ${th.icon}${th.name} ／ ${fac.icon}${fac.name}`
     : '⚙️ テーマ・取り組み・建築先の変更';
 }
 
@@ -2273,7 +2508,7 @@ function renderFocusTab() {
   state.facilities.filter(f => f.unlocked).forEach(f => {
     const opt = document.createElement('option');
     opt.value = f.id;
-    opt.textContent = `${f.name} (${f.progress >= 100 ? '完成・Lv.' + f.level : '建築 ' + f.progress + '%'})`;
+    opt.textContent = `${f.icon} ${f.name} (${f.progress >= 100 ? '完成・Lv.' + f.level : '建築 ' + f.progress + '%'})`;
     if (f.id === state.selectedFocusFacId) opt.selected = true;
     fSel.appendChild(opt);
   });
@@ -2286,25 +2521,13 @@ function setDeclChip(txt) {
   document.getElementById('focus-decl-input').value = txt;
 }
 
-// Reduced zoom scale (1.9x) for crisp, sharp image quality on mobile
-function applyZoomToBox(zoomEl, imgEl, fac) {
-  const stageIdx = getStageIndex(fac.progress);
-  imgEl.src = STAGE_IMAGES[stageIdx];
-  const cx = fac.box.left + fac.box.width / 2;
-  const cy = fac.box.top + fac.box.height / 2;
-  const scale = 1.9;
-  const tx = Math.max(-47, Math.min(0, 50 - cx * scale));
-  const ty = Math.max(-47, Math.min(0, 44 - cy * scale));
-  zoomEl.style.transform = `translate(${tx}%, ${ty}%) scale(${scale})`;
-}
-
 function renderVisionStage(liveElapsedSec = 0) {
   const fSel = document.getElementById('focus-fac-sel');
   const facId = fSel.value || state.selectedFocusFacId || 'cafe';
   state.selectedFocusFacId = facId;
   const fac = state.facilities.find(f => f.id === facId) || state.facilities[0];
 
-  document.getElementById('vision-bldg-title').textContent = `🏗️ ${fac.name}`;
+  document.getElementById('vision-bldg-title').textContent = `${fac.icon} ${fac.name}`;
   document.getElementById('vision-bldg-req').textContent = `完成目安: ${fac.reqMinutes}分`;
 
   let liveAddPct = 0;
@@ -2319,9 +2542,11 @@ function renderVisionStage(liveElapsedSec = 0) {
     liveAddPct >= 0.1 ? `🔨 +${liveAddPct.toFixed(1)}% 進行中` : '';
 
   applyZoomToBox(
+    document.getElementById('live-vision-viewport'),
     document.getElementById('live-vision-zoom'),
     document.getElementById('live-vision-img'),
-    fac
+    fac,
+    true
   );
 }
 
@@ -2579,7 +2804,7 @@ function confirmSessionResult(mult) {
 }
 
 /* ============================================================================
-   RPG Constellation Skill Tree Renderer (Retina / High-DPI Supported)
+   RPG Constellation Skill Tree Renderer (Retina)
    ============================================================================ */
 function drawStarfieldBackground() {
   const cvs = document.getElementById('star-bg-canvas');
@@ -2714,7 +2939,7 @@ function unlockSelectedStarSkill() {
 }
 
 /* ============================================================================
-   Records, Guild PR, Chronicle & Theme Management
+   Records, Recommended Materials (PR) & Theme Management
    ============================================================================ */
 function checkWeeklyGoals() {
   const wSum = state.weeklyMinutes.reduce((a, b) => a + b, 0);
@@ -2734,9 +2959,10 @@ function formatHrsMins(m) {
 
 function renderGuildPr() {
   const th = state.themes.find(t => t.id === state.selectedThemeId) || state.themes[0];
-  const items = GUILD_PR_BY_THEME[th.id] || GUILD_PR_BY_THEME.default;
+  const cat = detectMaterialCategory(th);
+  const items = RECOMMENDED_MATERIALS[cat] || RECOMMENDED_MATERIALS.universal;
   document.getElementById('guild-pr-subtitle').textContent =
-    `「${th.icon}${th.name}」の学習を進める開拓者へのおすすめアイテムです。`;
+    `「${th.icon}${th.name}」に取り組む方におすすめの教材・学習サービスです。`;
   document.getElementById('guild-pr-list').innerHTML = items.map(item => `
     <div class="pr-item-row">
       <div style="display:flex; gap:9px; align-items:center;">
@@ -2753,14 +2979,16 @@ function renderGuildPr() {
 
 function renderRecordsTab() {
   const wSum = state.weeklyMinutes.reduce((a, b) => a + b, 0);
-  document.getElementById('rec-total-badge').textContent = `累計 ${formatHrsMins(state.totalFocusMinutes)}`;
+  const completedFacs = state.facilities.filter(f => f.unlocked && f.progress >= 100);
+  const compNames = completedFacs.map(f => f.name).join('・');
+
+  document.getElementById('kpi-weekly-time').textContent = formatHrsMins(wSum);
+  document.getElementById('kpi-total-time').textContent = formatHrsMins(state.totalFocusMinutes);
+  document.getElementById('kpi-completed-fac').textContent = `${completedFacs.length} / 7棟`;
   document.getElementById('weekly-sum-badge').textContent = `今週 ${formatHrsMins(wSum)}`;
 
-  const compFacs = state.facilities.filter(f => f.unlocked && f.progress >= 100).map(f => f.name.replace(/^[①-⑦]/, '')).join('・');
-  document.getElementById('chronicle-story-box').innerHTML = `
-    📜 <b>今週の街の歩み：</b> 今週は計<b>${formatHrsMins(wSum)}</b>（${state.weeklySessions}回の開拓）が街に刻まれました。<br>
-    現在の完成施設：<b>${escapeHtml(compFacs)}</b>
-  `;
+  document.getElementById('chronicle-story-box').innerHTML =
+    `今週は <b>${state.weeklySessions}回</b> の開拓を記録しました。完成施設：<b>${escapeHtml(compNames)}</b>`;
 
   const goals = [
     { label: `① 週3回以上開拓する（2分着火もOK） (${state.weeklySessions}/3回)`, done: state.weeklySessions >= 3 },
@@ -2882,18 +3110,12 @@ function openFacilityModal(facId) {
   activeModalFacId = facId;
   const fac = state.facilities.find(f => f.id === facId);
   if (!fac) return;
-  document.getElementById('m-fac-title').textContent = fac.name;
+  document.getElementById('m-fac-title').textContent = `${fac.icon} ${fac.name}`;
   document.getElementById('m-fac-desc').textContent = fac.desc;
   document.getElementById('m-fac-prog').textContent = fac.progress >= 100 ? '100% (完成)' : `${fac.progress}% (建築中)`;
   document.getElementById('m-fac-lv').textContent = `Lv.${fac.level}`;
   document.getElementById('m-fac-req-time').textContent = `完成目安: ${fac.reqMinutes}分`;
   document.getElementById('m-fac-inc').textContent = fac.progress >= 100 ? `+${fac.baseIncome * fac.level}/時間` : '完成後に生産開始';
-
-  applyZoomToBox(
-    document.getElementById('m-fac-zoom'),
-    document.getElementById('m-fac-img'),
-    fac
-  );
 
   const upgBtn = document.getElementById('btn-m-fac-upgrade');
   const cost = fac.level * 50;
@@ -2917,7 +3139,18 @@ function openFacilityModal(facId) {
         <div style="margin-top:2px;">✏️ ${escapeHtml(p.note)}</div>
       </div>
     `).join('');
+
   openModal('modal-facility');
+  // Apply zoom after modal is visible so bounding rect is exact
+  requestAnimationFrame(() => {
+    applyZoomToBox(
+      document.getElementById('m-fac-viewport'),
+      document.getElementById('m-fac-zoom'),
+      document.getElementById('m-fac-img'),
+      fac,
+      false
+    );
+  });
 }
 
 function selectFacilityForFocus() {
@@ -3136,7 +3369,7 @@ function switchMainTab(key, btnEl) {
   document.getElementById('tab-' + key).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   if (btnEl) btnEl.classList.add('active');
-  if (key === 'focus') renderVisionStage();
+  if (key === 'focus') requestAnimationFrame(() => renderVisionStage());
   if (key === 'growth') setTimeout(() => centerConstellationView(false), 30);
 }
 function openModal(id) { document.getElementById(id).classList.add('open'); }
