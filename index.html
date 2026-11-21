@@ -102,11 +102,6 @@
     padding: 5px 8px; border-radius: 8px; font-size: 11px; font-weight: 700;
     white-space: nowrap;
   }
-  .btn-sm.active-toggle {
-    background: var(--gold-pale);
-    border-color: var(--gold);
-    color: #92400e;
-  }
   .btn-gold {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #fff; font-weight: 900;
@@ -189,17 +184,18 @@
     padding: 1px 5px; border-radius: 999px; margin-left: 3px; vertical-align: middle;
   }
 
-  /* Scrollable & Zoomable 2.5D Map Viewport */
+  /* Scrollable & Zoomable 2.5D Map Viewport (Auto-height prevents bottom gap on zoom-out) */
   .map-viewport-wrap { position: relative; }
   .map-scroll-outer {
     position: relative; width: 100%; height: 400px;
     border-radius: 14px; overflow: auto;
     border: 2px solid #d6c7b2;
-    background: #cbe7c8;
+    background: #d5e3cd;
     box-shadow: inset 0 0 24px rgba(0,0,0,0.12);
     -webkit-overflow-scrolling: touch;
     cursor: grab;
     touch-action: pan-x pan-y;
+    transition: height 0.18s ease;
   }
   .map-scroll-outer.dragging { cursor: grabbing; user-select: none; }
   .map-scale-sizer {
@@ -221,7 +217,7 @@
   .map-canvas-inner.evening { filter: sepia(0.28) saturate(1.15) brightness(0.92); }
   .map-canvas-inner.night { filter: brightness(0.68) contrast(1.12); }
 
-  /* Floating Map Controls (Zoom + Fit + Label Toggle + Jump) */
+  /* Floating Map Controls */
   .map-ctrl-top-right {
     position: absolute; top: 10px; right: 10px; z-index: 35;
     display: flex; gap: 5px; align-items: center;
@@ -234,6 +230,11 @@
     padding: 3px 5px;
     border-radius: 999px;
     box-shadow: 0 4px 12px rgba(74, 55, 40, 0.2);
+  }
+  .map-ctrl-bottom-right.dark-ctrl {
+    background: rgba(15, 23, 42, 0.88);
+    border-color: #475569;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
   }
   .map-pill-btn {
     background: rgba(255, 253, 248, 0.94);
@@ -257,6 +258,8 @@
     border-radius: 999px;
   }
   .zoom-mini-btn:hover { background: var(--bg-soft); }
+  .dark-ctrl .zoom-mini-btn { color: #f8fafc; }
+  .dark-ctrl .zoom-mini-btn:hover { background: rgba(255, 255, 255, 0.12); }
 
   /* Soft-Feathered 5-Stage Masked Map Layers */
   .map-base-img {
@@ -289,7 +292,7 @@
     pointer-events: none; z-index: 15;
   }
 
-  /* Facility Hotspot (Higher z-index than clouds so adjacent clouds never overlap unlocked spots) */
+  /* Facility Hotspot */
   .map-spot {
     position: absolute; cursor: pointer; z-index: 24;
     border-radius: 14px; transition: transform 0.18s ease;
@@ -305,7 +308,7 @@
     border-radius: 4px; pointer-events: none;
   }
 
-  /* Floating Overhead Target Marker (Replaces orange box border) */
+  /* Floating Overhead Target Marker */
   .target-overhead-marker {
     position: absolute;
     top: -12px;
@@ -374,7 +377,7 @@
   }
   .spot-prog-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #10b981); }
 
-  /* Natural Multi-Layer Fluffy Cloud Cover (Lower z-index & tighter bounds to prevent overlapping neighbors) */
+  /* Natural Multi-Layer Fluffy Cloud Cover */
   .cloud-spot {
     position: absolute; cursor: pointer; z-index: 18;
     display: flex; align-items: center; justify-content: center;
@@ -503,22 +506,49 @@
     width: 100%; height: 100%;
     pointer-events: none; z-index: 4;
   }
+  .vision-hint-chip {
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 5px 8px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
 
   .setup-collapsible {
     margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 10px;
   }
 
-  /* RPG Constellation Skill Tree */
+  /* RPG Constellation Skill Tree (Zoomable & Zero-Gap Auto Height) */
+  .constellation-viewport-wrap { position: relative; }
   .constellation-outer {
     position: relative; width: 100%; height: 430px;
     border-radius: 16px; overflow: auto;
-    border: 2px solid #7c5c43; background: #141928;
+    border: 2px solid #7c5c43; background: #0f172a;
     box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7);
     -webkit-overflow-scrolling: touch; cursor: grab;
+    touch-action: pan-x pan-y;
+    transition: height 0.18s ease;
   }
   .constellation-outer.dragging { cursor: grabbing; user-select: none; }
+  .constellation-sizer {
+    position: relative;
+    width: 860px;
+    height: 680px;
+    margin: 0 auto;
+  }
   .constellation-stage {
-    position: relative; width: 860px; height: 680px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 860px; height: 680px;
+    transform-origin: 0 0;
     background:
       radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.14) 0%, rgba(30, 41, 59, 0.5) 38%, rgba(15, 23, 42, 0.96) 78%),
       #0f172a;
@@ -672,7 +702,7 @@
 </head>
 <body>
 
-<!-- Clean Single-Row Header (Cozy Storybook Fraunces Logo + Sparkle) -->
+<!-- Clean Single-Row Header -->
 <header class="app-header">
   <div class="brand-wrap" onclick="onBrandLogoTap()" title="Lumina">
     <div class="brand-emblem">
@@ -743,13 +773,11 @@
         </div>
 
         <div class="map-viewport-wrap">
-          <!-- Top-right floating buttons: Label ON/OFF + Focus Jump -->
           <div class="map-ctrl-top-right">
             <button class="map-pill-btn" id="btn-toggle-labels" onclick="toggleMapLabels()">🏷️ 名前</button>
             <button class="map-pill-btn" onclick="scrollToSelectedFacility()">🎯 建築中</button>
           </div>
 
-          <!-- Bottom-right zoom controls: - / Fit / + -->
           <div class="map-ctrl-bottom-right">
             <button class="zoom-mini-btn" onclick="stepMapZoom(-0.2)" title="縮小">－</button>
             <button class="zoom-mini-btn" id="btn-zoom-fit" onclick="toggleMapFitZoom()" title="全体表示と拡大を切替">全体</button>
@@ -879,6 +907,12 @@
         <div class="prog-track" style="margin:5px 0 2px;">
           <div class="prog-fill" id="vision-prog-bar" style="width:0%"></div>
         </div>
+
+        <!-- Hint shown when all unlocked buildings are complete or all 7 are complete -->
+        <div class="vision-hint-chip" id="vision-hint-chip">
+          <span id="vision-hint-text"></span>
+          <button class="btn-sm" id="vision-hint-btn" style="background:#fff;" onclick="switchMainTab('growth', document.querySelectorAll('.nav-item')[2])">星図へ ↗</button>
+        </div>
       </div>
 
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
@@ -914,32 +948,42 @@
             </div>
           </div>
 
-          <label style="font-size:12px; font-weight:800; color:var(--wood-dark);">🏗️ 建設を進める建物</label>
+          <label style="font-size:12px; font-weight:800; color:var(--wood-dark);">🏗️ 建設・記念刻印する建物</label>
           <select id="focus-fac-sel" onchange="renderVisionStage()"></select>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= TAB 3: GROWTH (RPG CONSTELLATION SKILL TREE) ================= -->
+  <!-- ================= TAB 3: GROWTH (ZOOMABLE RPG CONSTELLATION SKILL TREE) ================= -->
   <section id="tab-growth" class="tab-section">
     <div class="card" style="padding:13px;">
       <div class="card-hd" style="margin-bottom:8px;">
-        <div class="card-title">🌌 星導の開拓スキル星図 <span style="font-size:10px; font-weight:600; color:var(--text-sub);">（ドラッグで探索）</span></div>
-        <button class="btn-sm" onclick="centerConstellationView()">🎯 中央へ戻る</button>
+        <div class="card-title">🌌 星導の開拓スキル星図 <span style="font-size:10px; font-weight:600; color:var(--text-sub);">（ドラッグ＆ズーム対応）</span></div>
+        <button class="btn-sm" onclick="centerConstellationView(true)">🎯 中央へ</button>
       </div>
       <p style="font-size:11.5px; color:var(--text-sub); margin-bottom:10px;">
         集中で得た「✨ XP」を星に注ぎ、未開拓エリアの雲を晴らしたり街の能力を開花させましょう。外側の星域は今後のアップデートでさらに広がります。
       </p>
 
-      <div class="constellation-outer" id="constellation-outer">
-        <div class="constellation-stage" id="constellation-stage">
-          <canvas class="star-bg-canvas" id="star-bg-canvas"></canvas>
-          <svg class="star-lines-svg" id="star-lines-svg" viewBox="0 0 860 680"></svg>
-          <div class="layer-ring-label" style="top: 230px;">— 第1星環：開拓の基礎 —</div>
-          <div class="layer-ring-label" style="top: 122px;">— 第2星環：熟練の叡智 —</div>
-          <div class="layer-ring-label" style="top: 28px;">— 第3星環：外洋・新大陸（拡張予定） —</div>
-          <div id="star-nodes-layer"></div>
+      <div class="constellation-viewport-wrap">
+        <div class="map-ctrl-bottom-right dark-ctrl">
+          <button class="zoom-mini-btn" onclick="stepStarZoom(-0.2)" title="縮小">－</button>
+          <button class="zoom-mini-btn" id="btn-star-zoom-fit" style="color:#fde68a;" onclick="toggleStarFitZoom()" title="全体表示と拡大を切替">全体</button>
+          <button class="zoom-mini-btn" onclick="stepStarZoom(0.2)" title="拡大">＋</button>
+        </div>
+
+        <div class="constellation-outer" id="constellation-outer">
+          <div class="constellation-sizer" id="constellation-sizer">
+            <div class="constellation-stage" id="constellation-stage">
+              <canvas class="star-bg-canvas" id="star-bg-canvas"></canvas>
+              <svg class="star-lines-svg" id="star-lines-svg" viewBox="0 0 860 680"></svg>
+              <div class="layer-ring-label" style="top: 230px;">— 第1星環：開拓の基礎 —</div>
+              <div class="layer-ring-label" style="top: 122px;">— 第2星環：熟練の叡智 —</div>
+              <div class="layer-ring-label" style="top: 28px;">— 第3星環：外洋・新大陸（拡張予定） —</div>
+              <div id="star-nodes-layer"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -960,7 +1004,6 @@
         <div class="card-title">📖 今週の開拓実績</div>
       </div>
 
-      <!-- 3 Clear KPI Summary Cards -->
       <div class="kpi-grid">
         <div class="kpi-box">
           <div class="kpi-label">今週の学習</div>
@@ -1000,7 +1043,6 @@
       <div id="records-theme-cards"></div>
     </div>
 
-    <!-- Context-Matched Recommended Learning Materials (PR) -->
     <div class="guild-pr-card">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
         <span style="font-size:13px; font-weight:900; color:var(--wood-dark);">📚 おすすめの教材・学習サービス</span>
@@ -1012,7 +1054,6 @@
       <div id="guild-pr-list"></div>
     </div>
 
-    <!-- Share, Support & Settings -->
     <div class="card">
       <div class="card-title" style="margin-bottom:8px;">⚙️ シェア・サポート・データ管理</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
@@ -1308,6 +1349,8 @@ const STORAGE_KEY = 'LUMINA_V1_MASTER_SAVE';
 const TIMER_STATE_KEY = 'LUMINA_V1_MASTER_TIMER';
 const MAP_W = 880;
 const MAP_H = 495;
+const STAR_W = 860;
+const STAR_H = 680;
 
 const STAGE_IMAGES = [
   'map_base.jpg',
@@ -1369,7 +1412,6 @@ function getMondayKey(d = new Date()) {
   return date.toISOString().slice(0, 10);
 }
 
-// Clean Facility Names (No circled numbers) + Icons
 const MASTER_FACILITIES = [
   { id: 'cafe', icon: '☕', name: '木漏れ日のカフェ', box: { left: 20.5, top: 34.0, width: 17.5, height: 25.5 },
     unlocked: true, progress: 0, reqMinutes: 50, level: 1, baseIncome: 6, cloudSkill: null,
@@ -1440,7 +1482,6 @@ const CONSTELLATION_NODES = [
     desc: '【Ver 2.0 拡張予定】外の大陸へ渡るための第3星環の星です。' }
 ];
 
-// Keyword-matched + Universal Recommended Learning Materials (PR)
 const RECOMMENDED_MATERIALS = {
   eng: [
     { icon: '📘', title: 'TOEIC・ビジネス英語 定番単語帳シリーズ', desc: 'スキマ時間の「2分着火」とも相性が良いロングセラー教材。', url: 'https://www.amazon.co.jp/s?k=TOEIC+単語帳+定番' },
@@ -1524,11 +1565,12 @@ let toastTimer = null;
 let isSetupCollapsed = true;
 let pendingLuckyEvent = null;
 
-// Map Zoom Runtime
+// Zoom Runtimes (World Map & Constellation Skill Tree)
 let mapZoom = 1.0;
+let starZoom = 0.85;
 
-// Focus Live Vision Transform Cache (Synchronizes Background Image & Carpenter Canvas 100%)
-let liveVisionTransform = { scale: 1, tx: 0, ty: 0, vw: 340, vh: 175 };
+// Focus Live Vision Transform Cache
+let liveVisionTransform = { scale: 1, tx: 0, ty: 0, vw: 340, vh: 175, isPanorama: false };
 
 // Timer Runtime
 let timerPresetMins = 25;
@@ -1549,6 +1591,10 @@ function getStageIndex(progress) {
   if (progress >= 50) return 2;
   if (progress >= 25) return 1;
   return 0;
+}
+
+function isAllFacilitiesComplete() {
+  return state.facilities.every(f => f.unlocked && f.progress >= 100);
 }
 
 /* ============================================================================
@@ -1682,21 +1728,20 @@ function setupDynamicPwaIcon() {
 }
 
 /* ============================================================================
-   Map Zoom Engine (Fit / + / - / 2-Finger Pinch)
+   Map Zoom Engine (Zero-Gap Auto Viewport Height + Fit / +/- / Pinch)
    ============================================================================ */
 function getMapFitScale() {
   const sc = document.getElementById('map-scroll-outer');
-  if (!sc || !sc.clientWidth) return 0.5;
-  const wRatio = sc.clientWidth / MAP_W;
-  const hRatio = sc.clientHeight / MAP_H;
-  return Math.max(0.36, Math.min(1.0, Math.min(wRatio, hRatio)));
+  if (!sc || !sc.clientWidth) return 0.45;
+  // Width-matched fit scale so there is zero horizontal or vertical empty space
+  return Math.max(0.32, Math.min(1.0, sc.clientWidth / MAP_W));
 }
 
 function setMapZoom(newScale, keepCenter = true) {
   const sc = document.getElementById('map-scroll-outer');
   const sizer = document.getElementById('map-scale-sizer');
   const inner = document.getElementById('map-canvas-inner');
-  if (!sc || !sizer || !inner) return;
+  if (!sc || !sizer || !inner || !sc.clientWidth) return;
 
   const fitScale = getMapFitScale();
   const clamped = Math.max(fitScale, Math.min(1.5, newScale));
@@ -1705,18 +1750,25 @@ function setMapZoom(newScale, keepCenter = true) {
   const oldCenterY = (sc.scrollTop + sc.clientHeight / 2) / mapZoom;
 
   mapZoom = clamped;
-  sizer.style.width = Math.round(MAP_W * mapZoom) + 'px';
-  sizer.style.height = Math.round(MAP_H * mapZoom) + 'px';
+  const scaledW = Math.round(MAP_W * mapZoom);
+  const scaledH = Math.round(MAP_H * mapZoom);
+
+  sizer.style.width = scaledW + 'px';
+  sizer.style.height = scaledH + 'px';
   inner.style.transform = `scale(${mapZoom})`;
+
+  // Dynamically shrink viewport height to match zoomed map height -> zero green gap below!
+  const targetViewportH = Math.min(400, scaledH);
+  sc.style.height = targetViewportH + 'px';
 
   if (keepCenter) {
     sc.scrollLeft = Math.max(0, oldCenterX * mapZoom - sc.clientWidth / 2);
-    sc.scrollTop = Math.max(0, oldCenterY * mapZoom - sc.clientHeight / 2);
+    sc.scrollTop = Math.max(0, oldCenterY * mapZoom - targetViewportH / 2);
   }
 
   const fitBtn = document.getElementById('btn-zoom-fit');
   if (fitBtn) {
-    fitBtn.textContent = (mapZoom <= fitScale + 0.04) ? '拡大' : '全体';
+    fitBtn.textContent = (mapZoom <= fitScale + 0.03) ? '拡大' : '全体';
   }
 }
 
@@ -1726,7 +1778,7 @@ function stepMapZoom(delta) {
 
 function toggleMapFitZoom() {
   const fitScale = getMapFitScale();
-  if (mapZoom <= fitScale + 0.04) {
+  if (mapZoom <= fitScale + 0.03) {
     setMapZoom(1.0, false);
     scrollToSelectedFacility(true);
   } else {
@@ -1734,8 +1786,66 @@ function toggleMapFitZoom() {
   }
 }
 
-function initMapPinchZoom() {
-  const sc = document.getElementById('map-scroll-outer');
+/* ============================================================================
+   Constellation Skill Tree Zoom Engine (Zero-Gap Auto Height + Fit / +/- / Pinch)
+   ============================================================================ */
+function getStarFitScale() {
+  const sc = document.getElementById('constellation-outer');
+  if (!sc || !sc.clientWidth) return 0.45;
+  return Math.max(0.32, Math.min(1.0, sc.clientWidth / STAR_W));
+}
+
+function setStarZoom(newScale, keepCenter = true) {
+  const sc = document.getElementById('constellation-outer');
+  const sizer = document.getElementById('constellation-sizer');
+  const stage = document.getElementById('constellation-stage');
+  if (!sc || !sizer || !stage || !sc.clientWidth) return;
+
+  const fitScale = getStarFitScale();
+  const clamped = Math.max(fitScale, Math.min(1.4, newScale));
+
+  const oldCenterX = (sc.scrollLeft + sc.clientWidth / 2) / starZoom;
+  const oldCenterY = (sc.scrollTop + sc.clientHeight / 2) / starZoom;
+
+  starZoom = clamped;
+  const scaledW = Math.round(STAR_W * starZoom);
+  const scaledH = Math.round(STAR_H * starZoom);
+
+  sizer.style.width = scaledW + 'px';
+  sizer.style.height = scaledH + 'px';
+  stage.style.transform = `scale(${starZoom})`;
+
+  // Dynamically match viewport height to scaled star chart -> zero empty space when zoomed out!
+  const targetViewportH = Math.min(430, scaledH);
+  sc.style.height = targetViewportH + 'px';
+
+  if (keepCenter) {
+    sc.scrollLeft = Math.max(0, oldCenterX * starZoom - sc.clientWidth / 2);
+    sc.scrollTop = Math.max(0, oldCenterY * starZoom - targetViewportH / 2);
+  }
+
+  const fitBtn = document.getElementById('btn-star-zoom-fit');
+  if (fitBtn) {
+    fitBtn.textContent = (starZoom <= fitScale + 0.03) ? '拡大' : '全体';
+  }
+}
+
+function stepStarZoom(delta) {
+  setStarZoom(starZoom + delta, true);
+}
+
+function toggleStarFitZoom() {
+  const fitScale = getStarFitScale();
+  if (starZoom <= fitScale + 0.03) {
+    setStarZoom(0.95, false);
+    centerConstellationView(true);
+  } else {
+    setStarZoom(fitScale, false);
+  }
+}
+
+function initPinchZoom(elId, getZoom, setZoomFn) {
+  const sc = document.getElementById(elId);
   if (!sc) return;
   let initialDist = 0;
   let initialZoom = 1.0;
@@ -1745,7 +1855,7 @@ function initMapPinchZoom() {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       initialDist = Math.hypot(dx, dy);
-      initialZoom = mapZoom;
+      initialZoom = getZoom();
     }
   }, { passive: true });
 
@@ -1755,7 +1865,7 @@ function initMapPinchZoom() {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.hypot(dx, dy);
-      setMapZoom(initialZoom * (dist / initialDist), true);
+      setZoomFn(initialZoom * (dist / initialDist), true);
     }
   }, { passive: false });
 
@@ -1791,7 +1901,6 @@ function initApp() {
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.facilities)) {
         state = Object.assign(createCleanState(), parsed);
-        // Sync updated clean names, icons, boxes, and reqMinutes
         MASTER_FACILITIES.forEach((mf, idx) => {
           if (state.facilities[idx]) {
             state.facilities[idx].name = mf.name;
@@ -1831,7 +1940,8 @@ function initApp() {
 
   initDragScroll('map-scroll-outer');
   initDragScroll('constellation-outer');
-  initMapPinchZoom();
+  initPinchZoom('map-scroll-outer', () => mapZoom, setMapZoom);
+  initPinchZoom('constellation-outer', () => starZoom, setStarZoom);
   drawStarfieldBackground();
   restoreActiveTimerIfAny();
   renderAll();
@@ -1839,13 +1949,14 @@ function initApp() {
   startLiveVisionCanvasLoop();
 
   window.addEventListener('resize', () => {
+    setMapZoom(mapZoom, false);
+    setStarZoom(starZoom, false);
     renderVisionStage();
   });
 
   setTimeout(() => {
     setMapZoom(1.0, false);
     scrollToSelectedFacility(false);
-    centerConstellationView(false);
   }, 80);
 }
 
@@ -1887,10 +1998,10 @@ function scrollToSelectedFacility(smooth = true) {
 
 function centerConstellationView(smooth = true) {
   const sc = document.getElementById('constellation-outer');
-  if (!sc) return;
+  if (!sc || !sc.clientWidth) return;
   sc.scrollTo({
-    left: Math.max(0, 430 - sc.clientWidth / 2),
-    top: Math.max(0, 340 - sc.clientHeight / 2),
+    left: Math.max(0, 430 * starZoom - sc.clientWidth / 2),
+    top: Math.max(0, 340 * starZoom - sc.clientHeight / 2),
     behavior: smooth ? 'smooth' : 'auto'
   });
 }
@@ -2051,12 +2162,10 @@ function renderTownMap() {
         ? `<span class="spot-plaque-chip">📜${fac.plaques.length}</span>`
         : '';
 
-      // Overhead floating marker instead of orange border
       const overheadMarker = (isSelected && fac.progress < 100)
         ? `<div class="target-overhead-marker"><div class="target-marker-pill">🔨 建築中</div><div class="target-marker-arrow"></div></div>`
         : '';
 
-      // Hybrid label: compact icon pin by default, full name when showMapLabels is ON
       const pinContent = showMapLabels
         ? `<span>${fac.icon} ${escapeHtml(fac.name)}</span><span class="spot-lv-chip">${chipTxt}</span>${plaqueChip}`
         : `<span>${fac.icon}</span><span class="spot-lv-chip">${chipTxt}</span>${plaqueChip}`;
@@ -2331,19 +2440,25 @@ function startMapAnimationEngine() {
 
 /* ============================================================================
    Synchronized Zoom Transform & Focus Live Construction Canvas
-   (Fixes all edge facilities 5-7 and aligns carpenters 100% with background!)
+   (Switches cleanly to Panorama Prosperity Mode once all 7 facilities are built!)
    ============================================================================ */
-function computeExactZoomTransform(viewportEl, fac) {
+function computeExactZoomTransform(viewportEl, fac, forcePanorama = false) {
   const rect = viewportEl.getBoundingClientRect();
   const vw = rect.width || 340;
   const vh = rect.height || 175;
+
+  if (forcePanorama) {
+    const scale = Math.max(vw / MAP_W, vh / MAP_H);
+    const tx = (vw - MAP_W * scale) / 2;
+    const ty = (vh - MAP_H * scale) / 2;
+    return { scale, tx, ty, vw, vh, isPanorama: true };
+  }
 
   const bx = (fac.box.left / 100) * MAP_W;
   const by = (fac.box.top / 100) * MAP_H;
   const bw = (fac.box.width / 100) * MAP_W;
   const bh = (fac.box.height / 100) * MAP_H;
 
-  // Choose scale so the facility nicely fills ~68% of viewport without over-zooming
   const targetScaleW = (vw * 0.62) / bw;
   const targetScaleH = (vh * 0.78) / bh;
   const minCoverScale = Math.max(vw / MAP_W, vh / MAP_H);
@@ -2355,17 +2470,16 @@ function computeExactZoomTransform(viewportEl, fac) {
   let tx = vw / 2 - cx * scale;
   let ty = vh / 2 - cy * scale;
 
-  // Clamp cleanly to map edges so no empty background shows
   tx = Math.min(0, Math.max(vw - MAP_W * scale, tx));
   ty = Math.min(0, Math.max(vh - MAP_H * scale, ty));
 
-  return { scale, tx, ty, vw, vh };
+  return { scale, tx, ty, vw, vh, isPanorama: false };
 }
 
-function applyZoomToBox(viewportEl, zoomEl, imgEl, fac, saveToLiveCache = false) {
-  const stageIdx = getStageIndex(fac.progress);
+function applyZoomToBox(viewportEl, zoomEl, imgEl, fac, saveToLiveCache = false, forcePanorama = false) {
+  const stageIdx = forcePanorama ? 4 : getStageIndex(fac.progress);
   imgEl.src = STAGE_IMAGES[stageIdx];
-  const tr = computeExactZoomTransform(viewportEl, fac);
+  const tr = computeExactZoomTransform(viewportEl, fac, forcePanorama);
   zoomEl.style.transform = `translate(${tr.tx}px, ${tr.ty}px) scale(${tr.scale})`;
   if (saveToLiveCache) liveVisionTransform = tr;
 }
@@ -2375,6 +2489,12 @@ function startLiveVisionCanvasLoop() {
   if (!cvs) return;
   const ctx = cvs.getContext('2d');
   const sparks = [];
+  const goldenMotes = Array.from({ length: 16 }, () => ({
+    x: Math.random(), y: Math.random(),
+    vy: -0.0015 - Math.random() * 0.002,
+    r: 1.6 + Math.random() * 2.2,
+    p: Math.random() * Math.PI * 2
+  }));
   let prevF = 0;
 
   function loop() {
@@ -2396,8 +2516,9 @@ function startLiveVisionCanvasLoop() {
     ctx.clearRect(0, 0, cssW, cssH);
 
     const fac = state.facilities.find(f => f.id === state.selectedFocusFacId) || state.facilities[0];
-    if (fac && fac.progress < 100) {
-      // Map facility coordinates directly through the exact same transform as the zoomed background!
+    const now = performance.now();
+
+    if (fac && fac.progress < 100 && !liveVisionTransform.isPanorama) {
       const { scale, tx, ty } = liveVisionTransform;
       const bx = (fac.box.left / 100) * MAP_W;
       const by = (fac.box.top / 100) * MAP_H;
@@ -2407,11 +2528,9 @@ function startLiveVisionCanvasLoop() {
       const toVx = mx => tx + mx * scale;
       const toVy = my => ty + my * scale;
 
-      const now = performance.now();
       const speed = timerRunning ? 2.2 : 0.8;
       const cycle = now * 0.004 * speed;
 
-      // Carpenter 1 at facility's exact bottom-left edge
       const frame1 = Math.sin(cycle * 2.6) > 0 ? 1 : 0;
       const c1X = toVx(bx + bw * 0.18 + Math.sin(cycle * 0.4) * 5);
       const c1Y = toVy(by + bh * 0.82);
@@ -2428,13 +2547,11 @@ function startLiveVisionCanvasLoop() {
       }
       prevF = frame1;
 
-      // Carpenter 2 at facility's exact bottom-right edge
       const c2X = toVx(bx + bw * 0.78 + Math.sin(cycle * 0.55) * 10);
       const c2Y = toVy(by + bh * 0.80);
       const facing2 = Math.cos(cycle * 0.55) >= 0 ? 1 : -1;
       drawCarpenterSprite(ctx, c2X, c2Y, 26 * scale, facing2, Math.sin(cycle * 2.1) > 0.2 ? 1 : 0, Math.abs(Math.sin(cycle * 2.1)) * -1.6);
 
-      // Crane at facility's exact right edge
       const liftRatio = (Math.sin(cycle * 0.55) + 1) / 2;
       const stageIdx = getStageIndex(fac.progress);
       const craneH = (stageIdx >= 2 ? Math.min(54, bh * 0.54) : 28) * scale;
@@ -2450,6 +2567,19 @@ function startLiveVisionCanvasLoop() {
         ctx.beginPath(); ctx.arc(s.x, s.y, s.isChip ? 2.2 : 3.8, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       }
+    } else {
+      // Gentle golden prosperity shimmer for completed facilities / full-town panorama
+      const t = now * 0.0025;
+      const spdMult = timerRunning ? 2.0 : 0.8;
+      goldenMotes.forEach(m => {
+        m.y += m.vy * spdMult;
+        if (m.y < -0.05) { m.y = 1.05; m.x = Math.random(); }
+        const alpha = (0.3 + 0.45 * Math.sin(t * 1.8 + m.p)) * (timerRunning ? 1 : 0.65);
+        ctx.fillStyle = `rgba(254, 240, 138, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(m.x * cssW, m.y * cssH, m.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
     }
     requestAnimationFrame(loop);
   }
@@ -2527,8 +2657,41 @@ function renderVisionStage(liveElapsedSec = 0) {
   state.selectedFocusFacId = facId;
   const fac = state.facilities.find(f => f.id === facId) || state.facilities[0];
 
+  const allDone = isAllFacilitiesComplete();
+  const hasLockedAreas = state.facilities.some(f => !f.unlocked);
+  const nextIncomplete = state.facilities.find(f => f.unlocked && f.progress < 100);
+
+  const hintChip = document.getElementById('vision-hint-chip');
+  const hintTxt = document.getElementById('vision-hint-text');
+  const hintBtn = document.getElementById('vision-hint-btn');
+
+  if (allDone) {
+    // Full Town Prosperity Panorama Mode
+    document.getElementById('vision-bldg-title').textContent = '👑 Greenhaven 完全復興（街全体ビュー）';
+    document.getElementById('vision-bldg-req').textContent = `刻印先: ${fac.icon}${fac.name}`;
+
+    const libPct = Math.min(100, Math.round((state.totalFocusMinutes / 600) * 100));
+    document.getElementById('vision-prog-bar').style.width = libPct + '%';
+    document.getElementById('vision-stage-txt').textContent = state.totalFocusMinutes >= 600
+      ? `🌟 大図書館・特別書庫も完成！（累計 ${formatHrsMins(state.totalFocusMinutes)}）`
+      : `🏛️ 大図書館・長期再建: ${state.totalFocusMinutes} / 600分 (${libPct}%)`;
+    document.getElementById('vision-live-delta').textContent = timerRunning ? '✨ 街の繁栄に貢献中' : '';
+
+    hintChip.style.display = 'none';
+
+    applyZoomToBox(
+      document.getElementById('live-vision-viewport'),
+      document.getElementById('live-vision-zoom'),
+      document.getElementById('live-vision-img'),
+      fac,
+      true,
+      true
+    );
+    return;
+  }
+
   document.getElementById('vision-bldg-title').textContent = `${fac.icon} ${fac.name}`;
-  document.getElementById('vision-bldg-req').textContent = `完成目安: ${fac.reqMinutes}分`;
+  document.getElementById('vision-bldg-req').textContent = fac.progress >= 100 ? `完成済・Lv.${fac.level}` : `完成目安: ${fac.reqMinutes}分`;
 
   let liveAddPct = 0;
   if (timerRunning && !isIgniteMode && fac.progress < 100 && liveElapsedSec > 0) {
@@ -2537,16 +2700,37 @@ function renderVisionStage(liveElapsedSec = 0) {
   const dispPct = Math.min(100, fac.progress + liveAddPct);
   document.getElementById('vision-prog-bar').style.width = dispPct.toFixed(1) + '%';
   document.getElementById('vision-stage-txt').textContent =
-    fac.progress >= 100 ? `100% 完成稼働中 (Lv.${fac.level})` : `現在の建築進捗: ${fac.progress}%`;
+    fac.progress >= 100 ? `100% 完成稼働中（引き続き記念プレートを刻印できます）` : `現在の建築進捗: ${fac.progress}%`;
   document.getElementById('vision-live-delta').textContent =
     liveAddPct >= 0.1 ? `🔨 +${liveAddPct.toFixed(1)}% 進行中` : '';
+
+  // Helpful prompt if selected facility is already 100% complete
+  if (fac.progress >= 100 && nextIncomplete) {
+    hintTxt.textContent = `🏗️ 未完成の「${nextIncomplete.name}」に切り替えますか？`;
+    hintBtn.textContent = '切替';
+    hintBtn.onclick = () => {
+      state.selectedFocusFacId = nextIncomplete.id;
+      saveState();
+      renderFocusTab();
+      showToast(`🏗️ 建築先を「${nextIncomplete.name}」に切り替えました`);
+    };
+    hintChip.style.display = 'flex';
+  } else if (fac.progress >= 100 && hasLockedAreas) {
+    hintTxt.textContent = '☁️ 解放済みの建物はすべて完成！星図で次の雲を晴らそう';
+    hintBtn.textContent = '星図へ ↗';
+    hintBtn.onclick = () => switchMainTab('growth', document.querySelectorAll('.nav-item')[2]);
+    hintChip.style.display = 'flex';
+  } else {
+    hintChip.style.display = 'none';
+  }
 
   applyZoomToBox(
     document.getElementById('live-vision-viewport'),
     document.getElementById('live-vision-zoom'),
     document.getElementById('live-vision-img'),
     fac,
-    true
+    true,
+    false
   );
 }
 
@@ -2573,7 +2757,7 @@ function toggleFocusTimer() {
     document.getElementById('timer-state-badge').textContent = isIgniteMode ? '🔥 2分着火中' : '🔥 集中・建築中';
     setSetupCollapsed(true);
     playSe('start');
-    showToast(isIgniteMode ? '🔥 2分着火スタート！まずは机に向かおう' : '🔨 建築スタート！大工たちが作業を始めました');
+    showToast(isIgniteMode ? '🔥 2分着火スタート！まずは机に向かおう' : '🔨 集中スタート！');
     persistActiveTimer();
     timerTickInterval = setInterval(onTimerTick, 500);
   } else {
@@ -2689,7 +2873,7 @@ function completeFocusSession(isEarly) {
   pendingLuckyEvent = null;
   const luckyBox = document.getElementById('comp-lucky-box');
   if (Math.random() < luckyChance) {
-    if (Math.random() < 0.5) {
+    if (Math.random() < 0.5 && !isAllFacilitiesComplete()) {
       pendingLuckyEvent = { type: 'build', bonusProg: 10, label: '✨ 大工の会心の出来！今回の建築進捗に +10% ボーナスがつきます！' };
     } else {
       pendingLuckyEvent = { type: 'coin', bonusCoin: 25, label: '🎁 街の住民からの差し入れ！ボーナスで 🪙+25コイン が届きました！' };
@@ -2778,7 +2962,22 @@ function confirmSessionResult(mult) {
 
   const wasInc = fac.progress < 100;
   fac.progress = Math.min(100, fac.progress + addProg);
-  if (wasInc && fac.progress >= 100) state.weeklyUpgrades += 1;
+
+  fac.plaques.unshift({
+    date: new Date().toLocaleDateString('ja-JP'),
+    theme: `${th.icon}${th.name}`,
+    mins,
+    note
+  });
+
+  if (wasInc && fac.progress >= 100) {
+    state.weeklyUpgrades += 1;
+    // Auto-advance focus target to next incomplete unlocked facility if available
+    const nextFac = state.facilities.find(f => f.unlocked && f.progress < 100);
+    if (nextFac) {
+      state.selectedFocusFacId = nextFac.id;
+    }
+  }
 
   if (getStageIndex(fac.progress) > prevStage) {
     justUpgradedFacId = fac.id;
@@ -2788,13 +2987,6 @@ function confirmSessionResult(mult) {
   } else {
     showToast(`📜 記念プレートに刻印！ ✨+${xpGain}XP / 🪙+${coinGain}`);
   }
-
-  fac.plaques.unshift({
-    date: new Date().toLocaleDateString('ja-JP'),
-    theme: `${th.icon}${th.name}`,
-    mins,
-    note
-  });
 
   checkWeeklyGoals();
   closeModal('modal-complete');
@@ -2810,8 +3002,8 @@ function drawStarfieldBackground() {
   const cvs = document.getElementById('star-bg-canvas');
   if (!cvs) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-  cvs.width = Math.round(860 * dpr);
-  cvs.height = Math.round(680 * dpr);
+  cvs.width = Math.round(STAR_W * dpr);
+  cvs.height = Math.round(STAR_H * dpr);
   const ctx = cvs.getContext('2d');
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
@@ -2826,8 +3018,8 @@ function drawStarfieldBackground() {
   ctx.setLineDash([]);
 
   for (let i = 0; i < 110; i++) {
-    const x = Math.random() * 860;
-    const y = Math.random() * 680;
+    const x = Math.random() * STAR_W;
+    const y = Math.random() * STAR_H;
     const rad = Math.random() * 1.5 + 0.4;
     const alpha = Math.random() * 0.65 + 0.2;
     ctx.fillStyle = `rgba(254, 249, 195, ${alpha})`;
@@ -2932,6 +3124,17 @@ function unlockSelectedStarSkill() {
 
   state.xp -= sel.cost;
   state.unlockedSkills.pioneer.push(sel.id);
+
+  // If this star unlocks a new facility cloud, auto-select it if current focus target is already done
+  const unlockedFac = state.facilities.find(f => f.cloudSkill === sel.id);
+  if (unlockedFac) {
+    unlockedFac.unlocked = true;
+    const curFac = state.facilities.find(f => f.id === state.selectedFocusFacId);
+    if (!curFac || curFac.progress >= 100) {
+      state.selectedFocusFacId = unlockedFac.id;
+    }
+  }
+
   playSe('stageup');
   showToast(`🌌 「${sel.name}」の星が灯りました！`);
   saveState();
@@ -3141,13 +3344,13 @@ function openFacilityModal(facId) {
     `).join('');
 
   openModal('modal-facility');
-  // Apply zoom after modal is visible so bounding rect is exact
   requestAnimationFrame(() => {
     applyZoomToBox(
       document.getElementById('m-fac-viewport'),
       document.getElementById('m-fac-zoom'),
       document.getElementById('m-fac-img'),
       fac,
+      false,
       false
     );
   });
@@ -3369,8 +3572,14 @@ function switchMainTab(key, btnEl) {
   document.getElementById('tab-' + key).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   if (btnEl) btnEl.classList.add('active');
+  if (key === 'world') requestAnimationFrame(() => setMapZoom(mapZoom, false));
   if (key === 'focus') requestAnimationFrame(() => renderVisionStage());
-  if (key === 'growth') setTimeout(() => centerConstellationView(false), 30);
+  if (key === 'growth') {
+    requestAnimationFrame(() => {
+      setStarZoom(starZoom, false);
+      centerConstellationView(false);
+    });
+  }
 }
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
