@@ -1337,9 +1337,11 @@
       <button class="btn-sm" onclick="closeModal('modal-privacy')">✕</button>
     </div>
     <div style="font-size:11px; color:var(--text-sub); line-height:1.7;">
-      <p><b>1. 学習データの保存：</b>記録された学習時間・履歴・進行データはブラウザ内（localStorage）に保存され、外部へ無断送信されることはありません。</p>
-      <p style="margin-top:6px;"><b>2. アクセス解析とPR：</b>品質向上のための匿名解析や、記録画面等における学習教材・ツール等の紹介リンク（アフィリエイトPR）を掲載する場合があります。集中タイマー稼働中に学習を妨げる広告は一切表示しません。</p>
-      <p style="margin-top:6px;"><b>3. 免責事項：</b>ブラウザのキャッシュ削除等によるデータ消失を防ぐため、記録タブ内の「💾 データ引き継ぎ・保存」より定期的なバックアップ保存を推奨いたします。</p>
+      <p><b>1. 学習データの保存：</b>記録された学習時間・履歴・進行データはご利用のブラウザ内（localStorage）にのみ保存され、開発者のサーバーへ送信されることはありません。</p>
+      <p style="margin-top:6px;"><b>2. アクセス解析について：</b>本アプリでは、利用状況の把握および品質向上のため「Cloudflare Web Analytics」を使用しています。個人を特定する情報やCookieは使用せず、匿名化された統計データのみを計測します。</p>
+      <p style="margin-top:6px;"><b>3. 広告・アフィリエイトとCookieについて：</b>記録タブ等にて、第三者配信のアフィリエイトプログラム（A8.net、楽天アフィリエイト等）を利用した教材・サービスの紹介（PR）を掲載しています。リンク先のサービスにおいて成果計測等の目的でCookieが使用される場合がありますが、集中タイマー稼働中に学習を妨げる広告は一切表示しません。</p>
+      <p style="margin-top:6px;"><b>4. 免責事項：</b>ブラウザのキャッシュ削除等によるデータ消失を防ぐため、記録タブ内の「💾 データ引き継ぎ・保存」より定期的なバックアップを推奨いたします。また、外部リンク先で提供される情報・サービス等について一切の責任を負いません。</p>
+      <p style="margin-top:6px;"><b>5. お問い合わせ窓口：</b>本アプリに関するご意見・不具合報告・お問い合わせは、<a href="https://docs.google.com/forms/d/e/1FAIpQLScCS0XP_9PvomRvrHg7YwulSxhp3diSe9CIO_P_1gaGCc4oMQ/viewform?usp=header" target="_blank" rel="noopener noreferrer" style="color:var(--gold); font-weight:800;">お問い合わせフォーム</a>、または公式Xアカウント（<a href="https://x.com/solis_studio" target="_blank" rel="noopener noreferrer" style="color:var(--gold); font-weight:800;">@solis_studio</a>）までご連絡ください。</p>
     </div>
   </div>
 </div>
@@ -1484,24 +1486,89 @@ const CONSTELLATION_NODES = [
 
 const RECOMMENDED_MATERIALS = {
   eng: [
-    { icon: '📘', title: 'TOEIC・ビジネス英語 定番単語帳シリーズ', desc: 'スキマ時間の「2分着火」とも相性が良いロングセラー教材。', url: 'https://www.amazon.co.jp/s?k=TOEIC+単語帳+定番' },
-    { icon: '🎧', title: 'Audible（オーディブル）英語リスニング聴き放題', desc: '通勤や休憩中にも洋書や英語ニュースを耳から学べます。', url: 'https://www.amazon.co.jp/b/ref=adbl_JP_as_0068?ie=UTF8&node=5816607051' }
+    {
+      icon: '💼',
+      desc: 'ビジネスシーンで使える実践英語をスキマ時間で習得。',
+      a8Html: '<a href="https://px.a8.net/svt/ejp?a8mat=4BGR8X+D1R12Q+3AQG+TRVYQ" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">スタディサプリEnglish　ビジネス英語</a><img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4BGR8X+D1R12Q+3AQG+TRVYQ" alt="">'
+    },
+    {
+      icon: '🗣️',
+      desc: 'ドラマ式レッスンと英会話セットで日常英語を定着。',
+      a8Html: '<a href="https://px.a8.net/svt/ejp?a8mat=4BGR8X+D2XWAA+3AQG+1BSOG2" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">新日常英会話セットプラン</a><img border="0" width="1" height="1" src="https://www14.a8.net/0.gif?a8mat=4BGR8X+D2XWAA+3AQG+1BSOG2" alt="">'
+    },
+    {
+      icon: '🌍',
+      desc: '1回3分から始められる人気の日英会話アプリ。',
+      a8Html: '<a href="https://px.a8.net/svt/ejp?a8mat=4BGR8X+CZYQ9E+3AQG+ZQ80I" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">スタディサプリENGLISH（新日常英会話コース）</a><img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4BGR8X+CZYQ9E+3AQG+ZQ80I" alt="">'
+    },
+    {
+      icon: '📘',
+      desc: 'TOEIC単語帳や洋書・参考書を送料無料で探す。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0eac8dc2.9a477d4e.0eac8dc3.0aa56a48%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6VCBM%3Fpc%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天ブックス</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM" alt="">'
+    }
   ],
   cert: [
-    { icon: '📕', title: '資格試験・検定 定番テキスト＆過去問題集', desc: '最新の出題傾向に対応した人気シリーズの参考書を探す。', url: 'https://www.amazon.co.jp/s?k=資格+問題集+ベストセラー' },
-    { icon: '📖', title: 'Kindle Unlimited（資格・ビジネス書読み放題）', desc: '参考書や関連書籍をスマホ・タブレットで手軽に持ち歩けます。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' }
+    {
+      icon: '📕',
+      desc: '資格試験の定番テキストや過去問題集をチェック。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0eac8dc2.9a477d4e.0eac8dc3.0aa56a48%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6VCBM%3Fpc%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天ブックス</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM" alt="">'
+    },
+    {
+      icon: '🎓',
+      desc: '基礎から効率よく学び直せるオンライン講義サービス。',
+      a8Html: '<a href="https://px.a8.net/svt/ejp?a8mat=4BGR8X+D15LGY+36T2+TWTFM" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">スタサプ</a><img border="0" width="1" height="1" src="https://www15.a8.net/0.gif?a8mat=4BGR8X+D15LGY+36T2+TWTFM" alt="">'
+    },
+    {
+      icon: '🛒',
+      desc: '文房具やタイマー、学習環境を整えるアイテム探しに。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6B70I&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6B70I%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天市場</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6B70I" alt="">'
+    }
   ],
   prog: [
-    { icon: '💻', title: 'プログラミング・IT設計 定番技術書', desc: '基礎文法から実務設計まで体系的に学べるおすすめ書籍。', url: 'https://www.amazon.co.jp/s?k=プログラミング+技術書+ベストセラー' },
-    { icon: '📖', title: 'Kindle Unlimited（IT・技術書読み放題）', desc: '気になる技術トレンドや入門書をまとめてチェックできます。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' }
+    {
+      icon: '💻',
+      desc: 'プログラミング入門書や設計・技術書をまとめて探す。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0eac8dc2.9a477d4e.0eac8dc3.0aa56a48%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6VCBM%3Fpc%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天ブックス</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM" alt="">'
+    },
+    {
+      icon: '⌨️',
+      desc: 'キーボードやデスクライトなど作業環境を快適にするグッズ。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6B70I&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6B70I%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天市場</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6B70I" alt="">'
+    },
+    {
+      icon: '💼',
+      desc: '英語ドキュメントや海外技術情報に強くなるビジネス英語。',
+      a8Html: '<a href="https://px.a8.net/svt/ejp?a8mat=4BGR8X+D1R12Q+3AQG+TRVYQ" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">スタディサプリEnglish　ビジネス英語</a><img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4BGR8X+D1R12Q+3AQG+TRVYQ" alt="">'
+    }
   ],
   read: [
-    { icon: '📖', title: 'Kindle Unlimited（200万冊以上が読み放題）', desc: 'ビジネス書・教養書・小説まで毎日の読書習慣に。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' },
-    { icon: '🎧', title: 'Audible（聴く読書・オーディオブック）', desc: '目が疲れた夜や移動中でもプロの朗読でインプットできます。', url: 'https://www.amazon.co.jp/b/ref=adbl_JP_as_0068?ie=UTF8&node=5816607051' }
+    {
+      icon: '📖',
+      desc: 'ビジネス書・教養書・話題の新刊を送料無料でお届け。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0eac8dc2.9a477d4e.0eac8dc3.0aa56a48%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6VCBM%3Fpc%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天ブックス</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM" alt="">'
+    },
+    {
+      icon: '☕',
+      desc: '読書タイムのお供になるコーヒーやブックライト探しに。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6C1VM&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6C1VM%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6C1VM" alt="">'
+    }
   ],
   universal: [
-    { icon: '📖', title: 'Kindle Unlimited（学習書・ビジネス書読み放題）', desc: '幅広いジャンルの参考書・教養書を手軽にインプット。', url: 'https://www.amazon.co.jp/kindle-dbs/hz/signup' },
-    { icon: '🎧', title: 'Audible（聴く読書・学習オーディオブック）', desc: 'スキマ時間の耳学習で、毎日の学びを無理なく継続。', url: 'https://www.amazon.co.jp/b/ref=adbl_JP_as_0068?ie=UTF8&node=5816607051' }
+    {
+      icon: '📚',
+      desc: '学習書・ビジネス書・実用書を幅広くラインナップ。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0eac8dc2.9a477d4e.0eac8dc3.0aa56a48%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6VCBM%3Fpc%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fbooks.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天ブックス</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6VCBM" alt="">'
+    },
+    {
+      icon: '💼',
+      desc: '毎日のスキマ時間で実践的なビジネス英語を習慣化。',
+      a8Html: '<a href="https://px.a8.net/svt/ejp?a8mat=4BGR8X+D1R12Q+3AQG+TRVYQ" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">スタディサプリEnglish　ビジネス英語</a><img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4BGR8X+D1R12Q+3AQG+TRVYQ" alt="">'
+    },
+    {
+      icon: '🛒',
+      desc: 'デスク周りのガジェットや学習アイテムを探す。',
+      a8Html: '<a href="https://rpx.a8.net/svt/ejp?a8mat=4BGR8X+9UUDBM+2HOM+6B70I&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26112286066_4BGR8X_9UUDBM_2HOM_6B70I%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" rel="nofollow" target="_blank" class="btn-sm" style="text-decoration:none; font-weight:800; color:var(--wood-dark);">楽天市場</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BGR8X+9UUDBM+2HOM+6B70I" alt="">'
+    }
   ]
 };
 
@@ -3163,19 +3230,22 @@ function formatHrsMins(m) {
 function renderGuildPr() {
   const th = state.themes.find(t => t.id === state.selectedThemeId) || state.themes[0];
   const cat = detectMaterialCategory(th);
-  const items = RECOMMENDED_MATERIALS[cat] || RECOMMENDED_MATERIALS.universal;
+  const pool = [...(RECOMMENDED_MATERIALS[cat] || RECOMMENDED_MATERIALS.universal)];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const items = pool.slice(0, 2);
+
   document.getElementById('guild-pr-subtitle').textContent =
     `「${th.icon}${th.name}」に取り組む方におすすめの教材・学習サービスです。`;
   document.getElementById('guild-pr-list').innerHTML = items.map(item => `
-    <div class="pr-item-row">
-      <div style="display:flex; gap:9px; align-items:center;">
+    <div class="pr-item-row" style="flex-wrap:wrap;">
+      <div style="display:flex; gap:9px; align-items:center; flex:1; min-width:180px;">
         <span style="font-size:22px;">${item.icon}</span>
-        <div>
-          <div style="font-size:12px; font-weight:800; color:var(--wood-dark);">${escapeHtml(item.title)}</div>
-          <div style="font-size:10.5px; color:var(--text-sub);">${escapeHtml(item.desc)}</div>
-        </div>
+        <div style="font-size:11px; color:var(--text-sub);">${escapeHtml(item.desc)}</div>
       </div>
-      <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-sm" style="text-decoration:none; white-space:nowrap;">見る ↗</a>
+      <div style="display:flex; align-items:center;">${item.a8Html}</div>
     </div>
   `).join('');
 }
@@ -3550,7 +3620,7 @@ function downloadShareCardPng() {
   a.href = document.getElementById('share-canvas').toDataURL('image/png');
   a.download = 'lumina_share.png'; a.click();
 }
-function openFeedbackModal() { openModal('modal-feedback'); }
+function openFeedbackModal() { window.open('https://docs.google.com/forms/d/e/1FAIpQLScCS0XP_9PvomRvrHg7YwulSxhp3diSe9CIO_P_1gaGCc4oMQ/viewform?usp=header', '_blank', 'noopener,noreferrer'); }
 function copyStructuredFeedback() {
   const s = document.getElementById('fb-star').value;
   const b = document.getElementById('fb-best').value;
