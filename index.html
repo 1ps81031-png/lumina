@@ -764,27 +764,52 @@
     font-weight: 800;
     color: var(--wood-dark);
   }
-  .hm-grid-30 {
+  .hm-weekdays {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 5px;
-    margin: 6px 0 8px;
+    margin: 6px 0 4px;
+    text-align: center;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--text-sub);
+    width: 100%;
   }
-  .hm-cell-30 {
-    aspect-ratio: 1 / 1;
-    border-radius: 6px;
+  .hm-grid-4w {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 5px;
+    margin: 0 0 8px;
+    width: 100%;
+  }
+  .hm-cell-4w {
+    min-width: 0;
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
     border: 1px solid rgba(74, 55, 40, 0.12);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
-    font-weight: 800;
+    line-height: 1.15;
+    overflow: hidden;
     cursor: pointer;
     transition: transform 0.12s ease;
   }
-  .hm-cell-30:hover { transform: scale(1.08); }
+  .hm-cell-4w:hover { transform: scale(1.05); }
+  .hm-cell-date { font-size: 10.5px; font-weight: 800; white-space: nowrap; }
+  .hm-cell-mins { font-size: 8.5px; font-weight: 700; opacity: 0.9; white-space: nowrap; }
+  .hm-cell-future {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: #c4b8a6;
+    cursor: default;
+  }
+  .hm-cell-future:hover { transform: none; }
   .hm-year-scroll {
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     padding-bottom: 6px;
     -webkit-overflow-scrolling: touch;
@@ -1175,7 +1200,7 @@
       <div class="card-hd" style="margin-bottom:8px;">
         <div class="card-title">🟩 学習カレンダー（ヒートマップ）</div>
         <div class="hm-tabs">
-          <button class="hm-tab-btn active" id="hm-btn-30" onclick="switchHeatmapMode('30d')">直近30日</button>
+          <button class="hm-tab-btn active" id="hm-btn-4w" onclick="switchHeatmapMode('4w')">直近4週間</button>
           <button class="hm-tab-btn" id="hm-btn-365" onclick="switchHeatmapMode('365d')">年間</button>
         </div>
       </div>
@@ -1186,8 +1211,11 @@
         <span class="hm-stat-chip">📅 累計学習日: <span id="hm-total-days">0</span>日</span>
       </div>
 
-      <div id="hm-view-30">
-        <div class="hm-grid-30" id="hm-grid-30"></div>
+      <div id="hm-view-4w">
+        <div class="hm-weekdays">
+          <span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span style="color:var(--sky);">土</span><span style="color:var(--rose);">日</span>
+        </div>
+        <div class="hm-grid-4w" id="hm-grid-4w"></div>
       </div>
       <div id="hm-view-365" style="display:none;">
         <div class="hm-year-scroll" id="hm-year-scroll">
@@ -1647,7 +1675,7 @@ function trackEvent(eventName, props = {}) {
         api_key: POSTHOG_API_KEY,
         event: eventName,
         distinct_id: getOrCreateDistinctId(),
-        properties: Object.assign({ app: 'lumina', version: 'v1.1-w1' }, props)
+        properties: Object.assign({ app: 'lumina', version: 'v1.1-w1b' }, props)
       })
     }).catch(() => {});
   } catch (e) {}
@@ -1903,7 +1931,7 @@ let showMapLabels = false;
 let toastTimer = null;
 let isSetupCollapsed = true;
 let pendingLuckyEvent = null;
-let heatmapMode = '30d';
+let heatmapMode = '4w';
 
 // Zoom Runtimes (World Map & Constellation Skill Tree)
 let mapZoom = 1.0;
@@ -3756,9 +3784,9 @@ function computeStudyStreaks() {
 
 function switchHeatmapMode(mode) {
   heatmapMode = mode;
-  document.getElementById('hm-btn-30').classList.toggle('active', mode === '30d');
+  document.getElementById('hm-btn-4w').classList.toggle('active', mode === '4w');
   document.getElementById('hm-btn-365').classList.toggle('active', mode === '365d');
-  document.getElementById('hm-view-30').style.display = mode === '30d' ? 'block' : 'none';
+  document.getElementById('hm-view-4w').style.display = mode === '4w' ? 'block' : 'none';
   document.getElementById('hm-view-365').style.display = mode === '365d' ? 'block' : 'none';
   if (mode === '365d') {
     const sc = document.getElementById('hm-year-scroll');
@@ -3776,9 +3804,9 @@ function selectHeatmapCell(dateKey, mins) {
 }
 
 function renderStudyHeatmap() {
-  const g30 = document.getElementById('hm-grid-30');
+  const g4w = document.getElementById('hm-grid-4w');
   const g365 = document.getElementById('hm-grid-365');
-  if (!g30 || !g365) return;
+  if (!g4w || !g365) return;
 
   const hist = state.dailyHistory || {};
   const { curStreak, bestStreak, totalDays } = computeStudyStreaks();
@@ -3790,19 +3818,29 @@ function renderStudyHeatmap() {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const todayKey = getLocalDateKey(today);
 
-  // 1) Last 30 days grid
-  let html30 = '';
-  for (let offset = 29; offset >= 0; offset--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - offset);
+  // 1) Last 4 weeks calendar grid (Mon-Sun x 4 rows = 28 cells)
+  const dayOfWeekMon = (today.getDay() + 6) % 7; // 0=Mon ... 6=Sun
+  const start4w = new Date(today);
+  start4w.setDate(today.getDate() - dayOfWeekMon - 21);
+
+  let html4w = '';
+  for (let i = 0; i < 28; i++) {
+    const d = new Date(start4w);
+    d.setDate(start4w.getDate() + i);
     const dk = getLocalDateKey(d);
-    const mins = hist[dk] || 0;
-    const lv = getHeatmapLevel(mins);
-    const isToday = dk === todayKey ? 'hm-cell-today' : '';
-    const dayLabel = d.getDate() === 1 || offset === 29 ? `${d.getMonth() + 1}/${d.getDate()}` : `${d.getDate()}`;
-    html30 += `<div class="hm-cell-30 hm-lv-${lv} ${isToday}" title="${dk}: ${mins}分" onclick="selectHeatmapCell('${dk}', ${mins})">${dayLabel}</div>`;
+    const dayLabel = (i === 0 || d.getDate() === 1) ? `${d.getMonth() + 1}/${d.getDate()}` : `${d.getDate()}`;
+
+    if (d > today) {
+      html4w += `<div class="hm-cell-4w hm-cell-future"><span class="hm-cell-date">${dayLabel}</span></div>`;
+    } else {
+      const mins = hist[dk] || 0;
+      const lv = getHeatmapLevel(mins);
+      const isToday = dk === todayKey ? 'hm-cell-today' : '';
+      const subLabel = mins > 0 ? `<span class="hm-cell-mins">${mins}分</span>` : '';
+      html4w += `<div class="hm-cell-4w hm-lv-${lv} ${isToday}" title="${dk}: ${mins}分" onclick="selectHeatmapCell('${dk}', ${mins})"><span class="hm-cell-date">${dayLabel}</span>${subLabel}</div>`;
+    }
   }
-  g30.innerHTML = html30;
+  g4w.innerHTML = html4w;
 
   // 2) Full 365 days grid (aligned to Sunday start for clean 7-row GitHub columns)
   const startYear = new Date(today);
