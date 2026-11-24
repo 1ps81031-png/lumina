@@ -698,6 +698,140 @@
     z-index: 300; max-width: 92vw; text-align: center;
   }
   .cozy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Exam Countdown Banner */
+  .exam-banner {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1.5px solid #f59e0b;
+    border-radius: 12px;
+    padding: 9px 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .exam-banner.empty {
+    background: var(--bg-soft);
+    border: 1px dashed var(--wood-mid);
+  }
+  .exam-days-pill {
+    background: var(--wood-dark);
+    color: #fef08a;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* Study Calendar Heatmap */
+  .hm-tabs {
+    display: inline-flex;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+  }
+  .hm-tab-btn {
+    background: transparent;
+    color: var(--text-sub);
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .hm-tab-btn.active {
+    background: #fff;
+    color: var(--wood-dark);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .hm-stats-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: var(--text-sub);
+  }
+  .hm-stat-chip {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-weight: 800;
+    color: var(--wood-dark);
+  }
+  .hm-grid-30 {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+    margin: 6px 0 8px;
+  }
+  .hm-cell-30 {
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    border: 1px solid rgba(74, 55, 40, 0.12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.12s ease;
+  }
+  .hm-cell-30:hover { transform: scale(1.08); }
+  .hm-year-scroll {
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .hm-year-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 11px);
+    grid-auto-flow: column;
+    grid-auto-columns: 11px;
+    gap: 3px;
+    width: max-content;
+  }
+  .hm-cell-yr {
+    width: 11px;
+    height: 11px;
+    border-radius: 2.5px;
+    border: 1px solid rgba(74, 55, 40, 0.08);
+    cursor: pointer;
+  }
+  .hm-lv-0 { background: #efe9dc; color: #9c8c7c; }
+  .hm-lv-1 { background: #bbf7d0; color: #166534; }
+  .hm-lv-2 { background: #4ade80; color: #14532d; }
+  .hm-lv-3 { background: #16a34a; color: #ffffff; }
+  .hm-lv-4 { background: #065f46; color: #fef08a; border-color: #f59e0b; }
+  .hm-cell-today { box-shadow: 0 0 0 2px #d97706; }
+  .hm-legend-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 10.5px;
+    color: var(--text-sub);
+    margin-top: 6px;
+  }
+  .hm-legend-dots { display: inline-flex; align-items: center; gap: 3px; }
+  .hm-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  /* First Ignite Stage-Up Banner */
+  .ignite-stageup-box {
+    background: linear-gradient(135deg, #fefce8 0%, #dcfce7 100%);
+    border: 2px solid #10b981;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    display: none;
+  }
 </style>
 </head>
 <body>
@@ -736,7 +870,7 @@
       <div>
         <div style="font-size:14px; font-weight:900; color:var(--wood-dark);">🌱 はじまりの街 Greenhaven へようこそ！</div>
         <p style="font-size:12px; color:var(--text-sub); margin-top:4px;">
-          あなたが集中した時間に応じて、大工たちがこの街の建物を少しずつ組み上げていきます。まずは「2分着火」で最初の建設を始めてみませんか？
+          あなたが集中した時間に応じて、大工たちがこの街の建物を少しずつ組み上げていきます。最初の「2分着火」を終えると、<b>木漏れ日のカフェの基礎が一気に組み上がります</b>！
         </p>
       </div>
       <button class="btn-sm" onclick="dismissOnboarding()">✕</button>
@@ -814,16 +948,16 @@
         <div style="background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:11px 13px; margin-top:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
             <span style="font-size:12px; font-weight:900; color:var(--wood-dark);">🏛️ 街全体の長期計画：『叡智の大図書館』再建</span>
-            <span class="badge" id="lib-stage-badge">第0段階 (0/600分)</span>
+            <span class="badge" id="lib-stage-badge">第0段階 (0/1500分)</span>
           </div>
           <div class="prog-track">
             <div class="prog-fill" id="lib-prog-fill" style="width:0%"></div>
           </div>
           <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-sub);">
-            <span id="lib-ms-60">60分:基礎</span>
-            <span id="lib-ms-180">180分:大ホール</span>
-            <span id="lib-ms-360">360分:時計室</span>
-            <span id="lib-ms-600">600分:特別書庫</span>
+            <span id="lib-ms-150">150分:基礎</span>
+            <span id="lib-ms-450">450分:大ホール</span>
+            <span id="lib-ms-900">900分:時計室</span>
+            <span id="lib-ms-1500">1500分:特別書庫</span>
           </div>
         </div>
       </div>
@@ -868,6 +1002,11 @@
         <span class="badge" id="timer-state-badge">待機中</span>
       </div>
 
+      <div class="exam-banner empty" id="focus-exam-banner" style="display:none;" onclick="openExamGoalModal()">
+        <span id="focus-exam-txt" style="font-size:12px; font-weight:800; color:var(--wood-dark);"></span>
+        <span class="exam-days-pill" id="focus-exam-days"></span>
+      </div>
+
       <div class="next-memo-banner" id="next-memo-banner">
         <span>📝 <b>前回の引き継ぎメモ：</b><span id="next-memo-text"></span></span>
         <button class="btn-sm" style="background:#fff;" onclick="applyNextMemoToDecl()">今回の取り組みに使う</button>
@@ -881,7 +1020,7 @@
       </div>
 
       <div class="ignite-guide" id="ignite-guide-box">
-        🔥 <b>2分着火モード：</b> 目標入力は不要です！机に座って教材を開くだけでOK。2分完走で <b>+5 XP確定</b> ＆ そのまま本集中へ進むと <b>+10 XPボーナス</b> がつきます。
+        🔥 <b>2分着火モード：</b> 目標入力は不要です！机に座って教材を開くだけでOK。<b>初回は木漏れ日のカフェが一気にStage 1へ進化</b>＆2分完走で <b>+5 XP確定</b>（そのまま本集中へ進むと <b>+10 XPボーナス</b>）。
       </div>
 
       <div class="timer-digits" id="timer-digits">25:00</div>
@@ -1027,6 +1166,50 @@
       </div>
     </div>
 
+    <div class="exam-banner empty" id="records-exam-banner" onclick="openExamGoalModal()">
+      <div style="font-size:12px; font-weight:800; color:var(--wood-dark);" id="records-exam-txt">🎯 試験日・目標日を設定してカウントダウンを表示</div>
+      <span class="exam-days-pill" id="records-exam-days">設定する</span>
+    </div>
+
+    <div class="card">
+      <div class="card-hd" style="margin-bottom:8px;">
+        <div class="card-title">🟩 学習カレンダー（ヒートマップ）</div>
+        <div class="hm-tabs">
+          <button class="hm-tab-btn active" id="hm-btn-30" onclick="switchHeatmapMode('30d')">直近30日</button>
+          <button class="hm-tab-btn" id="hm-btn-365" onclick="switchHeatmapMode('365d')">年間</button>
+        </div>
+      </div>
+
+      <div class="hm-stats-row">
+        <span class="hm-stat-chip">🔥 連続学習: <span id="hm-cur-streak">0</span>日</span>
+        <span class="hm-stat-chip">🏆 最長: <span id="hm-best-streak">0</span>日</span>
+        <span class="hm-stat-chip">📅 累計学習日: <span id="hm-total-days">0</span>日</span>
+      </div>
+
+      <div id="hm-view-30">
+        <div class="hm-grid-30" id="hm-grid-30"></div>
+      </div>
+      <div id="hm-view-365" style="display:none;">
+        <div class="hm-year-scroll" id="hm-year-scroll">
+          <div class="hm-year-grid" id="hm-grid-365"></div>
+        </div>
+        <div style="font-size:10px; color:var(--text-sub); margin-top:2px;">※ 左右にスクロールして過去1年分の積み上げを確認できます</div>
+      </div>
+
+      <div class="hm-legend-row">
+        <span id="hm-selected-info" style="font-weight:800; color:var(--wood-dark);">マスをタップすると日付と学習時間を表示します</span>
+        <span class="hm-legend-dots">
+          少
+          <span class="hm-dot hm-lv-0"></span>
+          <span class="hm-dot hm-lv-1"></span>
+          <span class="hm-dot hm-lv-2"></span>
+          <span class="hm-dot hm-lv-3"></span>
+          <span class="hm-dot hm-lv-4"></span>
+          多
+        </span>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-hd">
         <div class="card-title">📊 今週の積み重ねグラフ</div>
@@ -1159,12 +1342,26 @@
     <div class="card-hd">
       <div class="card-title">🔥 2分着火クリア！（✨+5 XP 獲得）</div>
     </div>
+    <div class="ignite-stageup-box" id="ignite-stageup-box">
+      <div style="font-size:13px; font-weight:900; color:#065f46; margin-bottom:6px;">
+        🎉 初回着工ボーナス！『☕ 木漏れ日のカフェ』がStage 1（基礎・足場）へ進化しました！
+      </div>
+      <div class="live-vision-viewport" id="ignite-cafe-viewport" style="height:120px; margin:4px 0 6px;">
+        <div class="live-vision-zoom" id="ignite-cafe-zoom">
+          <img src="map_stage1.jpg" alt="カフェStage1" id="ignite-cafe-img" />
+        </div>
+      </div>
+      <div style="font-size:11px; color:#047857; font-weight:700;">
+        📜 建設記念プレートにも「初回着工記念」が刻まれました！
+      </div>
+    </div>
     <p style="font-size:12.5px; color:var(--text-sub); margin-bottom:14px;">
       最初の2分を突破しました！今日も街を開拓した日として記録されています。このまま本集中へ突入すると、完了時に<b>連続突破ボーナス（+10 XP）</b>が上乗せされます！
     </p>
     <div style="display:flex; flex-direction:column; gap:8px;">
       <button class="btn-gold" onclick="transitionFromIgniteToMain(25)">🔥 このまま25分本集中へ進む (+10 XPボーナス)</button>
       <button class="btn-emerald" onclick="transitionFromIgniteToMain(15)">⚡ 15分集中へ進む (+10 XPボーナス)</button>
+      <button class="btn-outline" id="btn-ignite-see-map" style="display:none; border-color:#10b981; color:#047857;" onclick="viewEvolvedTownFromIgnite()">🗺️ 進化したカフェをマップで見る</button>
       <button class="btn-outline" onclick="closeModal('modal-ignite-done')">今日は2分着火だけで終える（十分えらい！）</button>
     </div>
   </div>
@@ -1346,6 +1543,28 @@
   </div>
 </div>
 
+
+<!-- ================= MODAL 11: EXAM / GOAL COUNTDOWN ================= -->
+<div class="modal-mask" id="modal-exam-goal">
+  <div class="modal-box">
+    <div class="card-hd">
+      <div class="card-title">🎯 試験日・目標日のカウントダウン設定</div>
+      <button class="btn-sm" onclick="closeModal('modal-exam-goal')">✕</button>
+    </div>
+    <p style="font-size:11.5px; color:var(--text-sub); margin-bottom:10px;">
+      資格試験やTOEIC、締切日などを設定すると、記録タブと集中タブに残り日数が表示されます。
+    </p>
+    <label style="font-size:12px; font-weight:800; color:var(--wood-dark);">目標・試験名</label>
+    <input type="text" class="input-el" id="exam-title-input" placeholder="例：TOEIC公開テスト / 簿記2級本試験">
+    <label style="font-size:12px; font-weight:800; color:var(--wood-dark);">試験日・目標日</label>
+    <input type="date" class="input-el" id="exam-date-input">
+    <div style="display:flex; gap:8px; margin-top:6px;">
+      <button class="btn-gold" style="flex:2;" onclick="saveExamGoal()">💾 保存する</button>
+      <button class="btn-outline" style="flex:1; color:var(--rose);" onclick="clearExamGoal()">解除</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const STORAGE_KEY = 'LUMINA_V1_MASTER_SAVE';
 const TIMER_STATE_KEY = 'LUMINA_V1_MASTER_TIMER';
@@ -1407,11 +1626,61 @@ function escapeHtml(str) {
   return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// PostHog Analytics Hook (API Key未設定時は完全ノーオペレーション・変動費ゼロ)
+const POSTHOG_API_KEY = '';
+const POSTHOG_HOST = 'https://us.i.posthog.com';
+function getOrCreateDistinctId() {
+  let id = localStorage.getItem('LUMINA_ANON_ID');
+  if (!id) {
+    id = 'u_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    localStorage.setItem('LUMINA_ANON_ID', id);
+  }
+  return id;
+}
+function trackEvent(eventName, props = {}) {
+  if (!POSTHOG_API_KEY) return;
+  try {
+    fetch(`${POSTHOG_HOST}/capture/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: POSTHOG_API_KEY,
+        event: eventName,
+        distinct_id: getOrCreateDistinctId(),
+        properties: Object.assign({ app: 'lumina', version: 'v1.1-w1' }, props)
+      })
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+function getLocalDateKey(d = new Date()) {
+  const date = new Date(d);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function parseJaDateToKey(str) {
+  if (!str) return null;
+  const m = String(str).match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if (!m) return null;
+  return `${m[1]}-${String(m[2]).padStart(2, '0')}-${String(m[3]).padStart(2, '0')}`;
+}
+
 function getMondayKey(d = new Date()) {
   const date = new Date(d);
   const day = date.getDay();
   date.setDate(date.getDate() - day + (day === 0 ? -6 : 1));
-  return date.toISOString().slice(0, 10);
+  return getLocalDateKey(date);
+}
+
+const LIB_LONG_TERM_TARGET = 1500;
+
+function getFacilityUpgradeCost(level) {
+  const table = [0, 100, 250, 500, 900, 1500];
+  if (level < table.length) return table[level];
+  return level * 350;
 }
 
 const MASTER_FACILITIES = [
@@ -1419,61 +1688,61 @@ const MASTER_FACILITIES = [
     unlocked: true, progress: 0, reqMinutes: 50, level: 1, baseIncome: 6, cloudSkill: null,
     desc: '香り高い珈琲と焼きたてパンで開拓者を癒やす緑屋根のカフェ（最初の建築・完成目安：50分）。', plaques: [] },
   { id: 'clock', icon: '🕰️', name: '暁の時計塔', box: { left: 33.5, top: 7.5, width: 14.0, height: 38.0 },
-    unlocked: true, progress: 0, reqMinutes: 100, level: 1, baseIncome: 8, cloudSkill: null,
-    desc: '街の中心に正確な時を告げる、真鍮の歯車とレンガ造りの時計塔（完成目安：100分）。', plaques: [] },
+    unlocked: true, progress: 0, reqMinutes: 150, level: 1, baseIncome: 9, cloudSkill: null,
+    desc: '街の中心に正確な時を告げる、真鍮の歯車とレンガ造りの時計塔（完成目安：150分）。', plaques: [] },
   { id: 'library', icon: '🏛️', name: '叡智の大図書館', box: { left: 53.5, top: 10.5, width: 19.5, height: 37.5 },
-    unlocked: true, progress: 0, reqMinutes: 120, level: 1, baseIncome: 14, cloudSkill: null,
-    desc: '知の殿堂。本館は120分で完成し、さらに累計600分の長期計画とも連動します。', plaques: [] },
+    unlocked: true, progress: 0, reqMinutes: 240, level: 1, baseIncome: 15, cloudSkill: null,
+    desc: '知の殿堂。本館は240分で完成し、さらに累計1,500分の長期再建計画とも連動します。', plaques: [] },
   { id: 'fountain', icon: '⛲', name: '星雫の噴水広場', box: { left: 41.5, top: 41.0, width: 17.0, height: 22.0 },
     unlocked: true, progress: 100, reqMinutes: 100, level: 1, baseIncome: 5, cloudSkill: null,
     desc: '透き通った湧き水がきらめく中央広場。最初から完成しており、いつでも記念プレートを刻めます。', plaques: [] },
   { id: 'greenhouse', icon: '🌿', name: '錬金術師の硝子温室', box: { left: 66.5, top: 33.0, width: 15.5, height: 21.5 },
-    unlocked: false, progress: 0, reqMinutes: 180, level: 1, baseIncome: 16, cloudSkill: 'p_cloud_east',
-    desc: '東の雲を晴らすと現れる、光る薬草と花々を育てる大温室（完成目安：180分）。', plaques: [] },
+    unlocked: false, progress: 0, reqMinutes: 450, level: 1, baseIncome: 20, cloudSkill: 'p_cloud_east',
+    desc: '東の雲を晴らすと現れる、光る薬草と花々を育てる大温室（完成目安：450分）。', plaques: [] },
   { id: 'bakery', icon: '🌾', name: 'そよ風の風車ベーカリー', box: { left: 69.0, top: 47.5, width: 17.5, height: 29.5 },
-    unlocked: false, progress: 0, reqMinutes: 200, level: 1, baseIncome: 18, cloudSkill: 'p_cloud_south',
-    desc: '南の雲を晴らすと現れる、大きな風車が回る黄金麦のベーカリー（完成目安：200分）。', plaques: [] },
+    unlocked: false, progress: 0, reqMinutes: 550, level: 1, baseIncome: 24, cloudSkill: 'p_cloud_south',
+    desc: '南の雲を晴らすと現れる、大きな風車が回る黄金麦のベーカリー（完成目安：550分）。', plaques: [] },
   { id: 'lighthouse', icon: '🔭', name: '星見の天文灯台', box: { left: 75.5, top: 1.5, width: 19.5, height: 29.0 },
-    unlocked: false, progress: 0, reqMinutes: 300, level: 1, baseIncome: 28, cloudSkill: 'p_cloud_north',
-    desc: '北嶺の断崖から星空と外洋を照らす白亜の天文灯台（完成目安：300分）。', plaques: [] }
+    unlocked: false, progress: 0, reqMinutes: 900, level: 1, baseIncome: 36, cloudSkill: 'p_cloud_north',
+    desc: '北嶺の断崖から星空と外洋を照らす白亜の天文灯台（完成目安：900分）。', plaques: [] }
 ];
 
 const CONSTELLATION_NODES = [
   { id: 'p_core', ring: 0, x: 430, y: 340, name: '開拓CORE', icon: '🌟', cost: 0, req: [], special: true,
     desc: 'Greenhaven開拓の起点となる星。ここからすべての星環へと道が広がります。' },
 
-  { id: 'p_build1', ring: 1, x: 430, y: 210, name: '建築の工夫', icon: '🔨', cost: 25, req: ['p_core'], special: false,
+  { id: 'p_build1', ring: 1, x: 430, y: 210, name: '建築の工夫', icon: '🔨', cost: 55, req: ['p_core'], special: false,
     desc: '集中時の建物建設進捗スピードが+15%上昇します。' },
-  { id: 'p_cloud_east', ring: 1, x: 545, y: 275, name: '東の開拓星', icon: '☁️', cost: 35, req: ['p_core'], special: true,
+  { id: 'p_cloud_east', ring: 1, x: 545, y: 275, name: '東の開拓星', icon: '☁️', cost: 120, req: ['p_core'], special: true,
     desc: '【固有】東の雲を晴らし『錬金術師の硝子温室』を解放します！' },
-  { id: 'p_coin1', ring: 1, x: 545, y: 405, name: '街の活気 I', icon: '🪙', cost: 25, req: ['p_core'], special: false,
+  { id: 'p_coin1', ring: 1, x: 545, y: 405, name: '街の活気 I', icon: '🪙', cost: 55, req: ['p_core'], special: false,
     desc: '全施設の放置コイン生産量が+15%上昇します。' },
-  { id: 'p_cloud_south', ring: 1, x: 430, y: 470, name: '南の開拓星', icon: '🍃', cost: 45, req: ['p_core'], special: true,
+  { id: 'p_cloud_south', ring: 1, x: 430, y: 470, name: '南の開拓星', icon: '🍃', cost: 180, req: ['p_core'], special: true,
     desc: '【固有】南の雲を晴らし『そよ風の風車ベーカリー』を解放します！' },
-  { id: 'p_vault1', ring: 1, x: 315, y: 405, name: '金庫拡張 I', icon: '📦', cost: 25, req: ['p_core'], special: false,
+  { id: 'p_vault1', ring: 1, x: 315, y: 405, name: '金庫拡張 I', icon: '📦', cost: 55, req: ['p_core'], special: false,
     desc: '放置コイン金庫の最大蓄積量が+60枚増加します。' },
-  { id: 'p_xp1', ring: 1, x: 315, y: 275, name: '集中の導き', icon: '✨', cost: 30, req: ['p_core'], special: false,
+  { id: 'p_xp1', ring: 1, x: 315, y: 275, name: '集中の導き', icon: '✨', cost: 65, req: ['p_core'], special: false,
     desc: '集中完了時の獲得XPが常時+15%増加します。' },
 
-  { id: 'p_build2', ring: 2, x: 430, y: 100, name: '熟練の建築術', icon: '🏗️', cost: 60, req: ['p_build1'], special: false,
+  { id: 'p_build2', ring: 2, x: 430, y: 100, name: '熟練の建築術', icon: '🏗️', cost: 180, req: ['p_build1'], special: false,
     desc: '集中時の建物建設スピードがさらに+25%上昇します。' },
-  { id: 'p_cloud_north', ring: 2, x: 560, y: 145, name: '北嶺の開拓星', icon: '🔭', cost: 70, req: ['p_build1', 'p_cloud_east'], special: true,
-    desc: '【固有】北嶺の雲を晴らし、最難関『星見の天文灯台』を解放します！' },
-  { id: 'p_lucky1', ring: 2, x: 660, y: 245, name: '職人の閃き', icon: '🌠', cost: 55, req: ['p_cloud_east'], special: true,
+  { id: 'p_cloud_north', ring: 2, x: 560, y: 145, name: '北嶺の開拓星', icon: '🔭', cost: 320, req: ['p_build1', 'p_cloud_east'], reqAll: true, special: true,
+    desc: '【固有】「建築の工夫」と「東の開拓星」の両方を灯すと解放可能。北嶺の雲を晴らし最難関『星見の天文灯台』を解放します！' },
+  { id: 'p_lucky1', ring: 2, x: 660, y: 245, name: '職人の閃き', icon: '🌠', cost: 160, req: ['p_cloud_east'], special: true,
     desc: '【固有】完了時の「大工の会心の出来（変動ボーナス）」発生率がアップします！' },
-  { id: 'p_coin2', ring: 2, x: 675, y: 365, name: '街の活気 II', icon: '🪙', cost: 55, req: ['p_coin1'], special: false,
+  { id: 'p_coin2', ring: 2, x: 675, y: 365, name: '街の活気 II', icon: '🪙', cost: 160, req: ['p_coin1'], special: false,
     desc: '放置コイン生産量がさらに+25%上昇します。' },
-  { id: 'p_gold_town', ring: 2, x: 605, y: 495, name: '黄金の街並み', icon: '👑', cost: 85, req: ['p_coin1', 'p_cloud_south'], special: true,
+  { id: 'p_gold_town', ring: 2, x: 605, y: 495, name: '黄金の街並み', icon: '👑', cost: 280, req: ['p_coin1', 'p_cloud_south'], reqAll: true, special: true,
     desc: '【固有】集中完了時に獲得するコインが常時1.3倍になります！' },
-  { id: 'p_vault2', ring: 2, x: 430, y: 580, name: '金庫拡張 II', icon: '🏦', cost: 60, req: ['p_cloud_south'], special: false,
+  { id: 'p_vault2', ring: 2, x: 430, y: 580, name: '金庫拡張 II', icon: '🏦', cost: 170, req: ['p_cloud_south'], special: false,
     desc: '放置コイン金庫の最大蓄積量がさらに+120枚増加します。' },
-  { id: 'p_vault3', ring: 2, x: 255, y: 495, name: '大金庫の鍵', icon: '🔐', cost: 70, req: ['p_vault1'], special: false,
+  { id: 'p_vault3', ring: 2, x: 255, y: 495, name: '大金庫の鍵', icon: '🔐', cost: 200, req: ['p_vault1'], special: false,
     desc: '放置コイン金庫の最大蓄積量がさらに+180枚増加します。' },
-  { id: 'p_xp2', ring: 2, x: 185, y: 365, name: '深い没入', icon: '✨', cost: 65, req: ['p_vault1', 'p_xp1'], special: false,
+  { id: 'p_xp2', ring: 2, x: 185, y: 365, name: '深い没入', icon: '✨', cost: 210, req: ['p_vault1', 'p_xp1'], special: false,
     desc: '集中完了時の獲得XPがさらに+20%増加します。' },
-  { id: 'p_artisan', ring: 2, x: 200, y: 245, name: '名匠の刻印', icon: '📜', cost: 75, req: ['p_xp1'], special: true,
+  { id: 'p_artisan', ring: 2, x: 200, y: 245, name: '名匠の刻印', icon: '📜', cost: 250, req: ['p_xp1'], special: true,
     desc: '【固有】記念プレート刻印時のボーナス報酬 +15 XP ＆ +15 🪙！' },
-  { id: 'p_master', ring: 2, x: 300, y: 145, name: '大開拓者の証', icon: '🏆', cost: 110, req: ['p_build1', 'p_xp1'], special: true,
+  { id: 'p_master', ring: 2, x: 300, y: 145, name: '大開拓者の証', icon: '🏆', cost: 450, req: ['p_build1', 'p_xp1'], reqAll: true, special: true,
     desc: '【固有】全施設の金庫生産と獲得報酬が底上げされる伝説の称号。' },
 
   { id: 'f_room_star', ring: 3, x: 755, y: 155, name: '書斎の星(予定)', icon: '🛋️', cost: 999, req: ['p_cloud_north'], future: true,
@@ -1595,7 +1864,10 @@ function createCleanState() {
     timeOfDay: 'day',
     seEnabled: true,
     onboardingDone: false,
+    firstIgniteCafeBoosted: false,
     nextSessionMemo: '',
+    examGoal: { title: '', date: '' },
+    dailyHistory: {},
     weekMondayKey: getMondayKey(),
     weeklyMinutes: [0, 0, 0, 0, 0, 0, 0],
     weeklySessions: 0,
@@ -1631,6 +1903,7 @@ let showMapLabels = false;
 let toastTimer = null;
 let isSetupCollapsed = true;
 let pendingLuckyEvent = null;
+let heatmapMode = '30d';
 
 // Zoom Runtimes (World Map & Constellation Skill Tree)
 let mapZoom = 1.0;
@@ -1974,11 +2247,52 @@ function initApp() {
             state.facilities[idx].icon = mf.icon;
             state.facilities[idx].box = mf.box;
             state.facilities[idx].reqMinutes = mf.reqMinutes;
+            state.facilities[idx].baseIncome = mf.baseIncome;
+            state.facilities[idx].desc = mf.desc;
           }
         });
       }
     }
   } catch (e) {}
+
+  // Migrate legacy theme history & current week minutes into persistent dailyHistory
+  if (!state.dailyHistory || typeof state.dailyHistory !== 'object') {
+    state.dailyHistory = {};
+  }
+  if (!state.examGoal || typeof state.examGoal !== 'object') {
+    state.examGoal = { title: '', date: '' };
+  }
+  if (Object.keys(state.dailyHistory).length === 0) {
+    (state.themes || []).forEach(th => {
+      (th.history || []).forEach(h => {
+        const dk = parseJaDateToKey(h.date);
+        if (dk && h.mins > 0) {
+          state.dailyHistory[dk] = (state.dailyHistory[dk] || 0) + Number(h.mins);
+        }
+      });
+    });
+    if (state.weekMondayKey && Array.isArray(state.weeklyMinutes)) {
+      const [wy, wm, wd] = state.weekMondayKey.split('-').map(Number);
+      if (wy && wm && wd) {
+        state.weeklyMinutes.forEach((mins, idx) => {
+          if (mins > 0) {
+            const dObj = new Date(wy, wm - 1, wd + idx);
+            const dk = getLocalDateKey(dObj);
+            if (!state.dailyHistory[dk] || state.dailyHistory[dk] < mins) {
+              state.dailyHistory[dk] = mins;
+            }
+          }
+        });
+      }
+    }
+  }
+  // If cafe is already >= 25% for existing users, mark first ignite boost as done
+  const existingCafe = state.facilities.find(f => f.id === 'cafe');
+  if (existingCafe && existingCafe.progress >= 25) {
+    state.firstIgniteCafeBoosted = true;
+  }
+
+  trackEvent('app_visit', { total_sessions: state.totalSessions });
 
   const mon = getMondayKey();
   if (state.weekMondayKey !== mon) {
@@ -2139,7 +2453,7 @@ function updateVaultByElapsed() {
 }
 
 function isDailyBoostAvailable() {
-  return state.lastDailyBoostDate !== new Date().toISOString().slice(0, 10);
+  return state.lastDailyBoostDate !== getLocalDateKey();
 }
 
 /* ============================================================================
@@ -2295,13 +2609,13 @@ function renderTownMap() {
   document.getElementById('btn-vault-boost').disabled = !isDailyBoostAvailable();
 
   const m = state.totalFocusMinutes;
-  document.getElementById('lib-prog-fill').style.width = Math.min(100, Math.round((m / 600) * 100)) + '%';
+  document.getElementById('lib-prog-fill').style.width = Math.min(100, Math.round((m / LIB_LONG_TERM_TARGET) * 100)) + '%';
   let stg = '第0段階';
-  if (m >= 600) stg = '🌟特別書庫完成';
-  else if (m >= 360) stg = '第3段階:時計室';
-  else if (m >= 180) stg = '第2段階:大ホール';
-  else if (m >= 60) stg = '第1段階:基礎完了';
-  document.getElementById('lib-stage-badge').textContent = `${stg} (${m}/600分)`;
+  if (m >= 1500) stg = '🌟特別書庫完成';
+  else if (m >= 900) stg = '第3段階:時計室';
+  else if (m >= 450) stg = '第2段階:大ホール';
+  else if (m >= 150) stg = '第1段階:基礎完了';
+  document.getElementById('lib-stage-badge').textContent = `${stg} (${m}/${LIB_LONG_TERM_TARGET}分)`;
 }
 
 /* ============================================================================
@@ -2711,6 +3025,7 @@ function renderFocusTab() {
   });
 
   setSetupCollapsed(isSetupCollapsed);
+  renderExamCountdown();
   renderVisionStage();
 }
 
@@ -2737,11 +3052,11 @@ function renderVisionStage(liveElapsedSec = 0) {
     document.getElementById('vision-bldg-title').textContent = '👑 Greenhaven 完全復興（街全体ビュー）';
     document.getElementById('vision-bldg-req').textContent = `刻印先: ${fac.icon}${fac.name}`;
 
-    const libPct = Math.min(100, Math.round((state.totalFocusMinutes / 600) * 100));
+    const libPct = Math.min(100, Math.round((state.totalFocusMinutes / LIB_LONG_TERM_TARGET) * 100));
     document.getElementById('vision-prog-bar').style.width = libPct + '%';
-    document.getElementById('vision-stage-txt').textContent = state.totalFocusMinutes >= 600
+    document.getElementById('vision-stage-txt').textContent = state.totalFocusMinutes >= LIB_LONG_TERM_TARGET
       ? `🌟 大図書館・特別書庫も完成！（累計 ${formatHrsMins(state.totalFocusMinutes)}）`
-      : `🏛️ 大図書館・長期再建: ${state.totalFocusMinutes} / 600分 (${libPct}%)`;
+      : `🏛️ 大図書館・長期再建: ${state.totalFocusMinutes} / ${LIB_LONG_TERM_TARGET}分 (${libPct}%)`;
     document.getElementById('vision-live-delta').textContent = timerRunning ? '✨ 街の繁栄に貢献中' : '';
 
     hintChip.style.display = 'none';
@@ -2824,6 +3139,7 @@ function toggleFocusTimer() {
     document.getElementById('timer-state-badge').textContent = isIgniteMode ? '🔥 2分着火中' : '🔥 集中・建築中';
     setSetupCollapsed(true);
     playSe('start');
+    trackEvent(isIgniteMode ? 'ignite_start' : 'focus_start', { preset_mins: timerPresetMins, fac_id: state.selectedFocusFacId });
     showToast(isIgniteMode ? '🔥 2分着火スタート！まずは机に向かおう' : '🔨 集中スタート！');
     persistActiveTimer();
     timerTickInterval = setInterval(onTimerTick, 500);
@@ -2915,6 +3231,7 @@ function completeFocusSession(isEarly) {
   playSe('chime');
 
   if (isIgniteMode) {
+    let triggeredCafeStage1 = false;
     if (activeSessionId && !state.completedSessionIds.includes(activeSessionId)) {
       state.completedSessionIds.push(activeSessionId);
       state.xp += 5;
@@ -2923,12 +3240,68 @@ function completeFocusSession(isEarly) {
       state.weeklySessions += 1;
       const dayIdx = (new Date().getDay() + 6) % 7;
       state.weeklyMinutes[dayIdx] = (state.weeklyMinutes[dayIdx] || 0) + 2;
+      const todayKey = getLocalDateKey();
+      state.dailyHistory[todayKey] = (state.dailyHistory[todayKey] || 0) + 2;
+
+      const cafe = state.facilities.find(f => f.id === 'cafe');
+      if (!state.firstIgniteCafeBoosted && cafe && cafe.progress < 25) {
+        cafe.progress = 25;
+        state.firstIgniteCafeBoosted = true;
+        state.selectedFocusFacId = 'cafe';
+        justUpgradedFacId = 'cafe';
+        triggeredCafeStage1 = true;
+        cafe.plaques.unshift({
+          date: new Date().toLocaleDateString('ja-JP'),
+          theme: '🔥 2分着火',
+          mins: 2,
+          note: '初回着工記念！木漏れ日のカフェがStage 1へ進化'
+        });
+        playSe('stageup');
+        trackEvent('stage_up', { fac_id: 'cafe', stage: 1, via: 'first_ignite' });
+        setTimeout(() => { justUpgradedFacId = null; }, 1400);
+      } else {
+        const curFac = state.facilities.find(f => f.id === state.selectedFocusFacId);
+        if (curFac && curFac.unlocked && curFac.progress < 100) {
+          const prevSt = getStageIndex(curFac.progress);
+          curFac.progress = Math.min(100, curFac.progress + 1);
+          if (getStageIndex(curFac.progress) > prevSt) {
+            justUpgradedFacId = curFac.id;
+            playSe('stageup');
+            setTimeout(() => { justUpgradedFacId = null; }, 1250);
+          }
+        }
+      }
+
+      trackEvent('ignite_complete', { cafe_stage1_triggered: triggeredCafeStage1 });
       checkWeeklyGoals();
       saveState();
       renderAll();
     }
     resetFocusTimer();
+
+    const stBox = document.getElementById('ignite-stageup-box');
+    const seeMapBtn = document.getElementById('btn-ignite-see-map');
+    if (triggeredCafeStage1) {
+      stBox.style.display = 'block';
+      seeMapBtn.style.display = 'block';
+    } else {
+      stBox.style.display = 'none';
+      seeMapBtn.style.display = 'none';
+    }
     openModal('modal-ignite-done');
+    if (triggeredCafeStage1) {
+      const cafe = state.facilities.find(f => f.id === 'cafe');
+      requestAnimationFrame(() => {
+        applyZoomToBox(
+          document.getElementById('ignite-cafe-viewport'),
+          document.getElementById('ignite-cafe-zoom'),
+          document.getElementById('ignite-cafe-img'),
+          cafe,
+          false,
+          false
+        );
+      });
+    }
     return;
   }
 
@@ -2965,6 +3338,12 @@ function completeFocusSession(isEarly) {
   openModal('modal-complete');
 }
 
+function viewEvolvedTownFromIgnite() {
+  closeModal('modal-ignite-done');
+  switchMainTab('world', document.querySelectorAll('.nav-item')[0]);
+  requestAnimationFrame(() => scrollToSelectedFacility(true));
+}
+
 function transitionFromIgniteToMain(mins) {
   closeModal('modal-ignite-done');
   igniteBonusPending = true;
@@ -2987,7 +3366,7 @@ function confirmSessionResult(mult) {
     return;
   }
   if (activeSessionId) state.completedSessionIds.push(activeSessionId);
-  if (mult > 1) state.lastDailyBoostDate = new Date().toISOString().slice(0, 10);
+  if (mult > 1) state.lastDailyBoostDate = getLocalDateKey();
 
   const mins = window._pendingMins || timerPresetMins;
   const note = document.getElementById('comp-decl-edit').value.trim() || '集中学習';
@@ -3014,6 +3393,8 @@ function confirmSessionResult(mult) {
 
   const dayIdx = (new Date().getDay() + 6) % 7;
   state.weeklyMinutes[dayIdx] = (state.weeklyMinutes[dayIdx] || 0) + mins;
+  const todayKey = getLocalDateKey();
+  state.dailyHistory[todayKey] = (state.dailyHistory[todayKey] || 0) + mins;
 
   th.minutes += mins;
   th.lastNote = note;
@@ -3046,9 +3427,11 @@ function confirmSessionResult(mult) {
     }
   }
 
+  trackEvent('focus_complete', { mins, theme_id: th.id, fac_id: fac.id, mult });
   if (getStageIndex(fac.progress) > prevStage) {
     justUpgradedFacId = fac.id;
     playSe('stageup');
+    trackEvent('stage_up', { fac_id: fac.id, stage: getStageIndex(fac.progress), via: 'focus' });
     showToast(fac.progress >= 100 ? `🎊 祝・完成！${fac.name} が竣工＆プレート刻印！` : `🎉 ${fac.name} が進化＆記念プレートに刻印！`);
     setTimeout(() => { justUpgradedFacId = null; }, 1250);
   } else {
@@ -3137,7 +3520,7 @@ function renderConstellationTree() {
 
   CONSTELLATION_NODES.forEach(node => {
     const isUnl = unlocked.includes(node.id);
-    const isAvail = !node.future && !isUnl && node.req.some(r => unlocked.includes(r));
+    const isAvail = !node.future && !isUnl && (node.reqAll ? node.req.every(r => unlocked.includes(r)) : node.req.some(r => unlocked.includes(r)));
 
     const el = document.createElement('div');
     let cls = 'star-node';
@@ -3161,7 +3544,7 @@ function renderConstellationTree() {
 
   const sel = nodeMap[selectedStarId] || CONSTELLATION_NODES[0];
   const isUnl = unlocked.includes(sel.id);
-  const isAvail = !sel.future && !isUnl && sel.req.some(r => unlocked.includes(r));
+  const isAvail = !sel.future && !isUnl && (sel.reqAll ? sel.req.every(r => unlocked.includes(r)) : sel.req.some(r => unlocked.includes(r)));
 
   document.getElementById('sk-detail-title').textContent = sel.future
     ? `${sel.icon} ${sel.name}`
@@ -3179,7 +3562,7 @@ function renderConstellationTree() {
     btn.textContent = `✨ ${sel.cost} XPで星を灯す`;
     btn.disabled = false;
   } else {
-    btn.textContent = isAvail ? `XP不足 (${sel.cost}XP)` : '隣接する星が未解放';
+    btn.textContent = isAvail ? `XP不足 (${sel.cost}XP)` : (sel.reqAll ? '繋がる星をすべて解放で解禁' : '隣接する星が未解放');
     btn.disabled = true;
   }
 }
@@ -3203,6 +3586,7 @@ function unlockSelectedStarSkill() {
   }
 
   playSe('stageup');
+  trackEvent('skill_unlock', { skill_id: sel.id, cost: sel.cost });
   showToast(`🌌 「${sel.name}」の星が灯りました！`);
   saveState();
   renderAll();
@@ -3248,6 +3632,194 @@ function renderGuildPr() {
       <div style="display:flex; align-items:center;">${item.a8Html}</div>
     </div>
   `).join('');
+}
+
+
+/* ============================================================================
+   Exam / Goal Countdown & Study Calendar Heatmap
+   ============================================================================ */
+function renderExamCountdown() {
+  const recBanner = document.getElementById('records-exam-banner');
+  const recTxt = document.getElementById('records-exam-txt');
+  const recDays = document.getElementById('records-exam-days');
+  const focBanner = document.getElementById('focus-exam-banner');
+  const focTxt = document.getElementById('focus-exam-txt');
+  const focDays = document.getElementById('focus-exam-days');
+  if (!recBanner) return;
+
+  const g = state.examGoal || { title: '', date: '' };
+  if (!g.title || !g.date) {
+    recBanner.classList.add('empty');
+    recTxt.textContent = '🎯 試験日・目標日を設定してカウントダウンを表示';
+    recDays.textContent = '設定する';
+    if (focBanner) focBanner.style.display = 'none';
+    return;
+  }
+
+  const [y, m, d] = g.date.split('-').map(Number);
+  const target = new Date(y, m - 1, d);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffDays = Math.round((target - today) / 86400000);
+
+  let badgeText = '';
+  if (diffDays > 0) badgeText = `あと ${diffDays}日`;
+  else if (diffDays === 0) badgeText = '🔥 本番当日！';
+  else badgeText = `${Math.abs(diffDays)}日経過`;
+
+  const dateDisp = `${y}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')}`;
+  recBanner.classList.remove('empty');
+  recTxt.textContent = `🎯 ${g.title}（${dateDisp}）`;
+  recDays.textContent = badgeText;
+
+  if (focBanner) {
+    focBanner.classList.remove('empty');
+    focBanner.style.display = 'flex';
+    focTxt.textContent = `🎯 ${g.title}`;
+    focDays.textContent = badgeText;
+  }
+}
+
+function openExamGoalModal() {
+  const g = state.examGoal || { title: '', date: '' };
+  document.getElementById('exam-title-input').value = g.title || '';
+  document.getElementById('exam-date-input').value = g.date || '';
+  openModal('modal-exam-goal');
+}
+
+function saveExamGoal() {
+  const title = document.getElementById('exam-title-input').value.trim();
+  const date = document.getElementById('exam-date-input').value;
+  if (!title || !date) {
+    showToast('⚠️ 目標名と日付の両方を入力してください');
+    return;
+  }
+  state.examGoal = { title, date };
+  trackEvent('exam_goal_set', { date });
+  saveState();
+  renderAll();
+  closeModal('modal-exam-goal');
+  showToast(`🎯 「${title}」のカウントダウンを設定しました`);
+}
+
+function clearExamGoal() {
+  state.examGoal = { title: '', date: '' };
+  saveState();
+  renderAll();
+  closeModal('modal-exam-goal');
+  showToast('🎯 カウントダウンを解除しました');
+}
+
+function getHeatmapLevel(mins) {
+  if (!mins || mins <= 0) return 0;
+  if (mins < 25) return 1;
+  if (mins < 60) return 2;
+  if (mins < 120) return 3;
+  return 4;
+}
+
+function computeStudyStreaks() {
+  const hist = state.dailyHistory || {};
+  const activeKeys = Object.keys(hist).filter(k => hist[k] > 0).sort();
+  const totalDays = activeKeys.length;
+
+  let bestStreak = 0;
+  let run = 0;
+  let prevTime = null;
+  activeKeys.forEach(k => {
+    const [y, m, d] = k.split('-').map(Number);
+    const t = new Date(y, m - 1, d).getTime();
+    if (prevTime !== null && Math.round((t - prevTime) / 86400000) === 1) {
+      run += 1;
+    } else {
+      run = 1;
+    }
+    if (run > bestStreak) bestStreak = run;
+    prevTime = t;
+  });
+
+  // Current streak: count backwards from today (or yesterday if today not studied yet)
+  const now = new Date();
+  const todayObj = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let curStreak = 0;
+  let cursor = new Date(todayObj);
+  if (!(hist[getLocalDateKey(cursor)] > 0)) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  while (hist[getLocalDateKey(cursor)] > 0) {
+    curStreak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  return { curStreak, bestStreak, totalDays };
+}
+
+function switchHeatmapMode(mode) {
+  heatmapMode = mode;
+  document.getElementById('hm-btn-30').classList.toggle('active', mode === '30d');
+  document.getElementById('hm-btn-365').classList.toggle('active', mode === '365d');
+  document.getElementById('hm-view-30').style.display = mode === '30d' ? 'block' : 'none';
+  document.getElementById('hm-view-365').style.display = mode === '365d' ? 'block' : 'none';
+  if (mode === '365d') {
+    const sc = document.getElementById('hm-year-scroll');
+    if (sc) requestAnimationFrame(() => { sc.scrollLeft = sc.scrollWidth; });
+  }
+}
+
+function selectHeatmapCell(dateKey, mins) {
+  const el = document.getElementById('hm-selected-info');
+  if (!el) return;
+  const dispDate = dateKey.replace(/-/g, '/');
+  el.textContent = mins > 0
+    ? `📅 ${dispDate}：${formatHrsMins(mins)} 学習`
+    : `📅 ${dispDate}：学習記録なし`;
+}
+
+function renderStudyHeatmap() {
+  const g30 = document.getElementById('hm-grid-30');
+  const g365 = document.getElementById('hm-grid-365');
+  if (!g30 || !g365) return;
+
+  const hist = state.dailyHistory || {};
+  const { curStreak, bestStreak, totalDays } = computeStudyStreaks();
+  document.getElementById('hm-cur-streak').textContent = curStreak;
+  document.getElementById('hm-best-streak').textContent = bestStreak;
+  document.getElementById('hm-total-days').textContent = totalDays;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayKey = getLocalDateKey(today);
+
+  // 1) Last 30 days grid
+  let html30 = '';
+  for (let offset = 29; offset >= 0; offset--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - offset);
+    const dk = getLocalDateKey(d);
+    const mins = hist[dk] || 0;
+    const lv = getHeatmapLevel(mins);
+    const isToday = dk === todayKey ? 'hm-cell-today' : '';
+    const dayLabel = d.getDate() === 1 || offset === 29 ? `${d.getMonth() + 1}/${d.getDate()}` : `${d.getDate()}`;
+    html30 += `<div class="hm-cell-30 hm-lv-${lv} ${isToday}" title="${dk}: ${mins}分" onclick="selectHeatmapCell('${dk}', ${mins})">${dayLabel}</div>`;
+  }
+  g30.innerHTML = html30;
+
+  // 2) Full 365 days grid (aligned to Sunday start for clean 7-row GitHub columns)
+  const startYear = new Date(today);
+  startYear.setDate(today.getDate() - 364);
+  startYear.setDate(startYear.getDate() - startYear.getDay()); // align to Sunday
+
+  let html365 = '';
+  const cursor = new Date(startYear);
+  while (cursor <= today) {
+    const dk = getLocalDateKey(cursor);
+    const mins = hist[dk] || 0;
+    const lv = getHeatmapLevel(mins);
+    const isToday = dk === todayKey ? 'hm-cell-today' : '';
+    html365 += `<div class="hm-cell-yr hm-lv-${lv} ${isToday}" title="${dk}: ${mins}分" onclick="selectHeatmapCell('${dk}', ${mins})"></div>`;
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  g365.innerHTML = html365;
 }
 
 function renderRecordsTab() {
@@ -3307,6 +3879,8 @@ function renderRecordsTab() {
     `;
   }).join('');
 
+  renderExamCountdown();
+  renderStudyHeatmap();
   renderGuildPr();
 }
 
@@ -3391,7 +3965,7 @@ function openFacilityModal(facId) {
   document.getElementById('m-fac-inc').textContent = fac.progress >= 100 ? `+${fac.baseIncome * fac.level}/時間` : '完成後に生産開始';
 
   const upgBtn = document.getElementById('btn-m-fac-upgrade');
-  const cost = fac.level * 50;
+  const cost = getFacilityUpgradeCost(fac.level);
   if (fac.progress < 100) {
     upgBtn.textContent = '🔒 完成後に強化可能';
     upgBtn.disabled = true;
@@ -3437,7 +4011,7 @@ function selectFacilityForFocus() {
 function upgradeFacilityLevel() {
   const fac = state.facilities.find(f => f.id === activeModalFacId);
   if (!fac || fac.progress < 100) return;
-  const cost = fac.level * 50;
+  const cost = getFacilityUpgradeCost(fac.level);
   if (state.coins < cost) return;
   state.coins -= cost;
   fac.level += 1;
@@ -3458,7 +4032,7 @@ function collectVaultCoins(boost) {
   let m = 1;
   if (boost && isDailyBoostAvailable()) {
     m = 2;
-    state.lastDailyBoostDate = new Date().toISOString().slice(0, 10);
+    state.lastDailyBoostDate = getLocalDateKey();
   }
   const gained = state.vaultCoins * m;
   state.coins += gained;
