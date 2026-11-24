@@ -1659,7 +1659,7 @@ function escapeHtml(str) {
 }
 
 // PostHog Analytics Hook (API Key未設定時は完全ノーオペレーション・変動費ゼロ)
-const POSTHOG_API_KEY = '';
+const POSTHOG_API_KEY = 'phc_tPpughyiACjFVQQbhqDwa9qnvPhVyoB8xgjfiAkBvKcE';
 const POSTHOG_HOST = 'https://us.i.posthog.com';
 function getOrCreateDistinctId() {
   let id = localStorage.getItem('LUMINA_ANON_ID');
@@ -1679,7 +1679,7 @@ function trackEvent(eventName, props = {}) {
         api_key: POSTHOG_API_KEY,
         event: eventName,
         distinct_id: getOrCreateDistinctId(),
-        properties: Object.assign({ app: 'lumina', version: 'v1.1-share' }, props)
+        properties: Object.assign({ app: 'lumina', version: 'v1.1-posthog' }, props)
       })
     }).catch(() => {});
   } catch (e) {}
