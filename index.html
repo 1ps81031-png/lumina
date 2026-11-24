@@ -1542,15 +1542,19 @@
 <div class="modal-mask" id="modal-share">
   <div class="modal-box">
     <div class="card-hd">
-      <div class="card-title">📸 SNSシェアカード</div>
+      <div class="card-title">📸 SNSシェアカード（2.5D街並み合成）</div>
       <button class="btn-sm" onclick="closeModal('modal-share')">✕</button>
     </div>
-    <canvas id="share-canvas" width="600" height="320" style="width:100%; border-radius:12px; border:1px solid var(--border); margin-bottom:10px;"></canvas>
-    <textarea id="share-post-txt" rows="3"></textarea>
-    <div style="display:flex; gap:8px;">
-      <button class="btn-gold" style="flex:1;" onclick="copySharePostText()">📋 投稿文コピー</button>
-      <button class="btn-outline" style="flex:1;" onclick="downloadShareCardPng()">🖼️ 画像を保存</button>
+    <p style="font-size:11px; color:var(--text-sub); margin-bottom:8px;">
+      現在のGreenhavenの開拓状況と学習記録を1枚の画像にまとめました。画像を保存してXに添付してシェアできます。
+    </p>
+    <canvas id="share-canvas" width="1200" height="675" style="width:100%; height:auto; aspect-ratio:16/9; border-radius:12px; border:1.5px solid var(--border); margin-bottom:10px; background:#d5e3cd;"></canvas>
+    <textarea id="share-post-txt" rows="4"></textarea>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <button class="btn-gold" style="flex:1;" onclick="downloadShareCardPng()">🖼️ 画像を保存</button>
+      <button class="btn-outline" style="flex:1;" onclick="copySharePostText()">📋 投稿文コピー</button>
     </div>
+    <button class="btn-emerald" style="width:100%; background:#1f2937;" onclick="openXShareIntent()">𝕏 Xの投稿画面を開く</button>
   </div>
 </div>
 
@@ -1675,7 +1679,7 @@ function trackEvent(eventName, props = {}) {
         api_key: POSTHOG_API_KEY,
         event: eventName,
         distinct_id: getOrCreateDistinctId(),
-        properties: Object.assign({ app: 'lumina', version: 'v1.1-w1b' }, props)
+        properties: Object.assign({ app: 'lumina', version: 'v1.1-share' }, props)
       })
     }).catch(() => {});
   } catch (e) {}
@@ -4209,28 +4213,261 @@ function devResetClean() {
   );
 }
 
-function openShareCardModal() {
-  const cvs = document.getElementById('share-canvas');
-  const ctx = cvs.getContext('2d');
-  ctx.fillStyle = '#f8f5ee'; ctx.fillRect(0, 0, 600, 320);
-  ctx.strokeStyle = '#d97706'; ctx.lineWidth = 4; ctx.strokeRect(14, 14, 572, 292);
-  ctx.fillStyle = '#4a3728'; ctx.font = 'bold 24px sans-serif';
-  ctx.fillText('🌱 Lumina - はじまりの街 Greenhaven', 32, 58);
-  const compCnt = state.facilities.filter(f => f.unlocked && f.progress >= 100).length;
-  ctx.font = 'bold 18px sans-serif';
-  ctx.fillText(`⏱️ 累計学習時間: ${formatHrsMins(state.totalFocusMinutes)}`, 32, 110);
-  ctx.fillText(`🏰 完成した建物: ${compCnt} / 7 棟`, 32, 148);
-  ctx.fillStyle = '#059669'; ctx.font = '15px sans-serif';
-  ctx.fillText('勉強した時間が、自分だけの街と歴史になる。 #Lumina', 32, 265);
-  document.getElementById('share-post-txt').value =
-    `【Lumina 街づくり学習記録🌱】\n⏱️ 累計学習：${formatHrsMins(state.totalFocusMinutes)}\n🏰 完成した建物：${compCnt}/7棟\n#Lumina #勉強記録`;
-  openModal('modal-share');
+function loadImageAsync(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
 }
-function copySharePostText() { navigator.clipboard?.writeText(document.getElementById('share-post-txt').value); showToast('📋 投稿文をコピーしました'); }
+
+function drawRoundedRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+async function renderShareCardCanvas() {
+  const cvs = document.getElementById('share-canvas');
+  if (!cvs) return;
+  const ctx = cvs.getContext('2d');
+  const W = 1200, H = 675;
+
+  // Fallback warm background while loading
+  ctx.fillStyle = '#d5e3cd';
+  ctx.fillRect(0, 0, W, H);
+
+  // Determine which stage images are needed
+  const neededStages = new Set([0]);
+  state.facilities.forEach(fac => {
+    if (fac.unlocked) {
+      const st = getStageIndex(fac.progress);
+      if (st > 0) neededStages.add(st);
+    }
+  });
+
+  const stageImgMap = {};
+  await Promise.all(Array.from(neededStages).map(async st => {
+    stageImgMap[st] = await loadImageAsync(STAGE_IMAGES[st]);
+  }));
+
+  // 1) Draw base watercolor map
+  if (stageImgMap[0]) {
+    ctx.drawImage(stageImgMap[0], 0, 0, W, H);
+  }
+
+  // 2) Composite each unlocked facility's stage with feathered radial mask
+  const offCvs = document.createElement('canvas');
+  offCvs.width = W;
+  offCvs.height = H;
+  const offCtx = offCvs.getContext('2d');
+
+  state.facilities.forEach(fac => {
+    if (!fac.unlocked) return;
+    const st = getStageIndex(fac.progress);
+    if (st <= 0 || !stageImgMap[st]) return;
+
+    const pad = 2.2;
+    const exLeft = Math.max(0, fac.box.left - pad);
+    const exTop = Math.max(0, fac.box.top - pad);
+    const exW = Math.min(100 - exLeft, fac.box.width + pad * 2);
+    const exH = Math.min(100 - exTop, fac.box.height + pad * 2);
+
+    const pxL = (exLeft / 100) * W;
+    const pxT = (exTop / 100) * H;
+    const pxW = (exW / 100) * W;
+    const pxH = (exH / 100) * H;
+
+    offCtx.clearRect(0, 0, W, H);
+    offCtx.globalCompositeOperation = 'source-over';
+    offCtx.drawImage(stageImgMap[st], 0, 0, W, H);
+
+    // Apply soft elliptical feather mask matching the live map
+    offCtx.globalCompositeOperation = 'destination-in';
+    offCtx.save();
+    offCtx.translate(pxL + pxW / 2, pxT + pxH / 2);
+    offCtx.scale(pxW / 2, pxH / 2);
+    const grad = offCtx.createRadialGradient(0, 0, 0.58, 0, 0, 1.0);
+    grad.addColorStop(0, 'rgba(0,0,0,1)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    offCtx.fillStyle = grad;
+    offCtx.beginPath();
+    offCtx.arc(0, 0, 1.0, 0, Math.PI * 2);
+    offCtx.fill();
+    offCtx.restore();
+
+    ctx.drawImage(offCvs, 0, 0);
+  });
+
+  // 3) Draw soft clouds over locked areas
+  state.facilities.forEach(fac => {
+    if (fac.unlocked) return;
+    const cx = ((fac.box.left + fac.box.width / 2) / 100) * W;
+    const cy = ((fac.box.top + fac.box.height / 2) / 100) * H;
+    const rx = (fac.box.width / 100) * W * 0.56;
+    const ry = (fac.box.height / 100) * H * 0.45;
+    ctx.save();
+    ctx.fillStyle = 'rgba(255, 253, 248, 0.86)';
+    ctx.shadowColor = 'rgba(74, 55, 40, 0.16)';
+    ctx.shadowBlur = 18;
+    [
+      [0, -ry * 0.15, rx * 0.72, ry * 0.65],
+      [-rx * 0.45, ry * 0.1, rx * 0.52, ry * 0.5],
+      [rx * 0.45, ry * 0.1, rx * 0.52, ry * 0.5]
+    ].forEach(([ox, oy, rw, rh]) => {
+      ctx.beginPath();
+      ctx.ellipse(cx + ox, cy + oy, rw, rh, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+  });
+
+  // 4) Apply subtle evening/night atmosphere if active
+  if (state.timeOfDay === 'evening') {
+    ctx.fillStyle = 'rgba(217, 119, 6, 0.16)';
+    ctx.fillRect(0, 0, W, H);
+  } else if (state.timeOfDay === 'night') {
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.34)';
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // 5) Bottom gradient scrim for crisp readable stats
+  const scrim = ctx.createLinearGradient(0, H - 250, 0, H);
+  scrim.addColorStop(0, 'rgba(45, 35, 26, 0)');
+  scrim.addColorStop(0.45, 'rgba(45, 35, 26, 0.62)');
+  scrim.addColorStop(1, 'rgba(45, 35, 26, 0.90)');
+  ctx.fillStyle = scrim;
+  ctx.fillRect(0, H - 250, W, 250);
+
+  // 6) Top-left Brand Pill
+  ctx.save();
+  drawRoundedRectPath(ctx, 28, 26, 368, 60, 30);
+  ctx.fillStyle = 'rgba(253, 251, 247, 0.93)';
+  ctx.fill();
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  ctx.fillStyle = '#3f2b1d';
+  ctx.font = 'bold 28px Georgia, serif';
+  ctx.fillText('Lumina ✦', 52, 65);
+  ctx.fillStyle = '#6b5a4c';
+  ctx.font = 'bold 18px "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif';
+  ctx.fillText('はじまりの街 Greenhaven', 186, 63);
+  ctx.restore();
+
+  // Top-right Date Pill
+  const todayStr = new Date().toLocaleDateString('ja-JP');
+  ctx.save();
+  drawRoundedRectPath(ctx, W - 196, 26, 168, 44, 22);
+  ctx.fillStyle = 'rgba(45, 35, 26, 0.72)';
+  ctx.fill();
+  ctx.fillStyle = '#fef3c7';
+  ctx.font = 'bold 17px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(todayStr, W - 112, 54);
+  ctx.restore();
+
+  // 7) Bottom KPI Cards
+  const todayMins = (state.dailyHistory && state.dailyHistory[getLocalDateKey()]) || 0;
+  const compCnt = state.facilities.filter(f => f.unlocked && f.progress >= 100).length;
+  const { curStreak } = computeStudyStreaks();
+
+  const kpis = [
+    { label: '今日の学習', val: formatHrsMins(todayMins) },
+    { label: '累計学習', val: formatHrsMins(state.totalFocusMinutes) },
+    { label: '連続学習', val: `${curStreak}日` },
+    { label: '完成した施設', val: `${compCnt} / 7棟` }
+  ];
+
+  const cardW = 266;
+  const cardGap = 20;
+  const startX = (W - (cardW * 4 + cardGap * 3)) / 2;
+  const cardY = H - 154;
+
+  kpis.forEach((k, idx) => {
+    const x = startX + idx * (cardW + cardGap);
+    ctx.save();
+    drawRoundedRectPath(ctx, x, cardY, cardW, 92, 16);
+    ctx.fillStyle = 'rgba(255, 253, 248, 0.94)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.7)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#6b5a4c';
+    ctx.font = 'bold 16px "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif';
+    ctx.fillText(k.label, x + 20, cardY + 32);
+
+    ctx.fillStyle = '#2d231a';
+    ctx.font = 'bold 30px "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif';
+    ctx.fillText(k.val, x + 20, cardY + 72);
+    ctx.restore();
+  });
+
+  // 8) Footer Tagline & Watermark
+  ctx.fillStyle = '#fef3c7';
+  ctx.font = 'bold 18px "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif';
+  ctx.fillText('勉強した時間が、自分だけの街と歴史になる。', startX, H - 24);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#fde68a';
+  ctx.fillText('#Lumina開拓記録', W - startX, H - 24);
+  ctx.textAlign = 'left';
+
+  // Decorative outer gold border
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(3, 3, W - 6, H - 6);
+}
+
+function openShareCardModal() {
+  const todayMins = (state.dailyHistory && state.dailyHistory[getLocalDateKey()]) || 0;
+  const compCnt = state.facilities.filter(f => f.unlocked && f.progress >= 100).length;
+  const { curStreak } = computeStudyStreaks();
+
+  const lines = [
+    '【Lumina 街づくり学習記録🌱】',
+    todayMins > 0 ? `⏱️ 今日の学習：${formatHrsMins(todayMins)}（累計 ${formatHrsMins(state.totalFocusMinutes)}）` : `⏱️ 累計学習：${formatHrsMins(state.totalFocusMinutes)}`,
+    `🏰 完成した建物：${compCnt}/7棟${curStreak > 0 ? ` ／ 🔥 連続${curStreak}日` : ''}`,
+    '#Lumina開拓記録 #今日の積み上げ #勉強記録'
+  ];
+  document.getElementById('share-post-txt').value = lines.join('\n');
+  openModal('modal-share');
+  trackEvent('share_card_open', { comp_cnt: compCnt, streak: curStreak });
+  renderShareCardCanvas();
+}
+function copySharePostText() {
+  navigator.clipboard?.writeText(document.getElementById('share-post-txt').value);
+  trackEvent('share_text_copy');
+  showToast('📋 投稿文をコピーしました');
+}
 function downloadShareCardPng() {
-  const a = document.createElement('a');
-  a.href = document.getElementById('share-canvas').toDataURL('image/png');
-  a.download = 'lumina_share.png'; a.click();
+  try {
+    const a = document.createElement('a');
+    a.href = document.getElementById('share-canvas').toDataURL('image/png');
+    a.download = `lumina_greenhaven_${getLocalDateKey()}.png`;
+    a.click();
+    trackEvent('share_card_download');
+    showToast('🖼️ シェア画像を保存しました');
+  } catch (e) {
+    showToast('⚠️ 画像の保存に失敗しました（公開URL上でお試しください）');
+  }
+}
+function openXShareIntent() {
+  const txt = document.getElementById('share-post-txt').value;
+  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(txt);
+  trackEvent('share_x_intent');
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
 function openFeedbackModal() { window.open('https://docs.google.com/forms/d/e/1FAIpQLScCS0XP_9PvomRvrHg7YwulSxhp3diSe9CIO_P_1gaGCc4oMQ/viewform?usp=header', '_blank', 'noopener,noreferrer'); }
 function copyStructuredFeedback() {
